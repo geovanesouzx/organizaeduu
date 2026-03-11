@@ -2,7 +2,7 @@
 <html lang="pt-PT" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>OrganizaEdu</title>
     <link rel="icon" href="https://i.imgur.com/PC5Ijma.png" />
     
@@ -19,15 +19,20 @@
                 extend: {
                     colors: {
                         primary: '#4A90E2',
-                        darkBg: '#050505',
-                        darkSurface: '#1C1C1E',
-                        lightBg: '#F9FAFB',
-                        lightSurface: '#FFFFFF'
+                        darkBg: '#000000',
+                        lightBg: '#F2F2F7',
+                        success: '#32D74B',
+                        danger: '#FF3B30',
+                        warning: '#FF9F0A',
+                        purple: '#B14AE2'
                     }
                 }
             }
         }
-        if (localStorage.getItem('theme') === 'light') {
+        
+        // Carregar Tema Guardado
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
             document.documentElement.classList.remove('dark');
         } else {
             document.documentElement.classList.add('dark');
@@ -38,37 +43,47 @@
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
             -webkit-font-smoothing: antialiased;
+            overscroll-behavior-y: none;
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Efeito Liquid Glass Profissional */
+        /* Efeito Liquid Glass Premium (Otimizado para Mobile e PC) */
         .glass-card {
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
-            transition: all 0.3s ease;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .dark .glass-card {
-            background: rgba(28, 28, 30, 0.4);
+            background: rgba(28, 28, 30, 0.65);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
         }
         html:not(.dark) .glass-card {
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
+            background: rgba(255, 255, 255, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
         }
-        .glass-card:hover {
-            transform: translateY(-2px);
+        
+        /* Glass Navbar especifico para não misturar fundos */
+        .glass-nav {
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+        }
+        .dark .glass-nav {
+            background: rgba(20, 20, 20, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        html:not(.dark) .glass-nav {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        .chat-bubble-user {
-            background: linear-gradient(to right, #B14AE2, #6A0DAD);
-            border-radius: 20px 20px 4px 20px;
-            color: white;
-        }
-        .chat-bubble-ai {
-            border-radius: 20px 20px 20px 4px;
+        /* Efeito Hover Apenas para Desktop */
+        @media (min-width: 768px) {
+            .glass-card.interactive:hover {
+                transform: translateY(-2px);
+            }
         }
     </style>
 </head>
@@ -77,14 +92,14 @@
     <!-- Orbes de luz de fundo -->
     <div class="fixed top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden">
         <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary/20 dark:bg-primary/10 rounded-full blur-[100px]"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-[#B14AE2]/20 dark:bg-[#B14AE2]/10 rounded-full blur-[120px]"></div>
-        <div class="absolute top-[40%] left-[60%] w-[400px] h-[400px] bg-[#32D74B]/10 dark:bg-[#32D74B]/5 rounded-full blur-[100px]"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple/20 dark:bg-purple/10 rounded-full blur-[120px]"></div>
+        <div class="absolute top-[40%] left-[60%] w-[400px] h-[400px] bg-success/10 dark:bg-success/5 rounded-full blur-[100px]"></div>
     </div>
 
     <!-- 1. TELA DE CARREGAMENTO -->
     <div id="screen-loading" class="relative z-10 flex flex-col items-center justify-center min-h-screen">
         <div class="flex flex-col items-center justify-center animate-pulse">
-            <img src="https://i.imgur.com/PC5Ijma.png" alt="OrganizaEdu Logo" class="w-40 h-40 object-contain drop-shadow-2xl" />
+            <img src="https://i.imgur.com/PC5Ijma.png" alt="Logo" class="w-40 h-40 object-contain drop-shadow-2xl" />
             <h1 class="mt-8 text-3xl font-bold tracking-wide">OrganizaEdu</h1>
         </div>
     </div>
@@ -93,13 +108,12 @@
     <div id="screen-login" class="hidden relative z-10 flex-col items-center justify-center min-h-screen">
         <div class="flex flex-col items-center justify-center w-full max-w-5xl px-8 h-full">
             <div class="flex flex-col items-center justify-center flex-1 w-full mt-16 md:mt-0">
-                <img src="https://i.imgur.com/PC5Ijma.png" alt="OrganizaEdu Logo" class="w-32 h-32 md:w-48 md:h-48 object-contain mb-8 md:mb-12 hover:scale-105 transition-transform duration-500" />
+                <img src="https://i.imgur.com/PC5Ijma.png" alt="Logo" class="w-32 h-32 md:w-48 md:h-48 object-contain mb-8 md:mb-12 hover:scale-105 transition-transform duration-500" />
                 <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4 text-center">Bem-vindo</h1>
-                <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 text-center max-w-md md:max-w-lg leading-relaxed">A sua vida académica organizada de forma incrivelmente simples.</p>
+                <p class="text-lg md:text-xl text-gray-500 dark:text-gray-400 text-center max-w-md md:max-w-lg leading-relaxed">A sua vida académica organizada de forma incrivelmente simples.</p>
             </div>
             <div class="w-full flex justify-center pb-12 pt-8 md:pb-24">
-                <button id="btn-login" class="flex items-center justify-center w-full max-w-sm md:max-w-md glass-card py-4 px-6 rounded-full font-semibold text-lg hover:scale-[1.02] active:scale-95 transition-all text-gray-900 dark:text-white">
-                    <!-- Único SVG mantido (Logo da Google) -->
+                <button id="btn-login" class="flex items-center justify-center w-full max-w-sm md:max-w-md glass-card py-4 px-6 rounded-full font-semibold text-lg active:scale-95 transition-all text-gray-900 dark:text-white">
                     <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
                         <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)"><path fill="#4285F4" d="M -3.264,51.509 C -3.264,50.719 -3.334,49.969 -3.454,49.239 L -14.754,49.239 L -14.754,53.749 L -8.284,53.749 C -8.574,55.229 -9.424,56.479 -10.684,57.329 L -10.684,60.329 L -6.824,60.329 C -4.564,58.239 -3.264,55.159 -3.264,51.509 Z"/><path fill="#34A853" d="M -14.754,63.239 C -11.514,63.239 -8.804,62.159 -6.824,60.329 L -10.684,57.329 C -11.764,58.049 -13.134,58.489 -14.754,58.489 C -17.884,58.489 -20.534,56.379 -21.484,53.529 L -25.464,53.529 L -25.464,56.619 C -23.494,60.539 -19.444,63.239 -14.754,63.239 Z"/><path fill="#FBBC05" d="M -21.484,53.529 C -21.734,52.809 -21.864,52.039 -21.864,51.239 C -21.864,50.439 -21.724,49.669 -21.484,48.949 L -21.484,45.859 L -25.464,45.859 C -26.284,47.479 -26.754,49.299 -26.754,51.239 C -26.754,53.179 -26.284,54.999 -25.464,56.619 L -21.484,53.529 Z"/><path fill="#EA4335" d="M -14.754,43.989 C -12.984,43.989 -11.404,44.599 -10.154,45.789 L -6.734,41.939 C -8.804,40.009 -11.514,38.989 -14.754,38.989 C -19.444,38.989 -23.494,41.689 -25.464,45.859 L -21.484,48.949 C -20.534,46.099 -17.884,43.989 -14.754,43.989 Z"/></g>
                     </svg>
@@ -109,7 +123,7 @@
         </div>
     </div>
 
-    <!-- 3. TELA DE CONFIGURAÇÃO DE PERFIL -->
+    <!-- 3. TELA DE CONFIGURAÇÃO DE PERFIL INICIAL -->
     <div id="screen-setup" class="hidden relative z-10 flex-col items-center pt-12 px-6 pb-8 min-h-screen overflow-y-auto">
         <div class="w-full max-w-md">
             <h2 class="text-3xl font-extrabold mb-2 text-center tracking-tight">Complete o seu perfil</h2>
@@ -117,37 +131,37 @@
 
             <form id="form-setup" class="space-y-5">
                 <div class="flex flex-col">
-                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1 font-medium">Nome de Perfil</label>
-                    <input type="text" id="setup-name" required placeholder="Ex: João Silva" class="w-full glass-card text-gray-900 dark:text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary" />
+                    <label class="text-sm text-gray-500 dark:text-gray-400 mb-1 ml-1 font-medium">Nome de Perfil</label>
+                    <input type="text" id="setup-name" required placeholder="Ex: João Silva" class="w-full glass-card rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary placeholder-gray-400 dark:placeholder-gray-500" />
                 </div>
 
                 <div class="flex flex-col">
-                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1 font-medium">Nome de Utilizador</label>
+                    <label class="text-sm text-gray-500 dark:text-gray-400 mb-1 ml-1 font-medium">Nome de Utilizador</label>
                     <div class="relative">
-                        <input type="text" id="setup-username" required placeholder="@usuario" class="w-full glass-card text-gray-900 dark:text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary" />
+                        <input type="text" id="setup-username" required placeholder="@usuario" class="w-full glass-card rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary placeholder-gray-400 dark:placeholder-gray-500" />
                         <div class="absolute right-4 top-1/2 -translate-y-1/2" id="username-icon-container"></div>
                     </div>
-                    <p id="username-error-msg" class="hidden text-[#FF3B30] text-xs mt-1 ml-1">Este nome de utilizador já está em uso!</p>
+                    <p id="username-error-msg" class="hidden text-danger text-xs mt-1 ml-1">Este nome de utilizador já está em uso!</p>
                 </div>
 
                 <div class="flex flex-col">
-                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1 font-medium">Curso</label>
-                    <input type="text" id="setup-course" required placeholder="Ex: Engenharia Informática" class="w-full glass-card text-gray-900 dark:text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary" />
+                    <label class="text-sm text-gray-500 dark:text-gray-400 mb-1 ml-1 font-medium">Curso</label>
+                    <input type="text" id="setup-course" required placeholder="Ex: Engenharia Informática" class="w-full glass-card rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary placeholder-gray-400 dark:placeholder-gray-500" />
                 </div>
 
                 <div class="flex flex-col">
-                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1 font-medium">Semestre atual</label>
-                    <button type="button" id="btn-select-semester" class="w-full text-left glass-card rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary text-gray-500 truncate hover:scale-100 flex justify-between items-center">
+                    <label class="text-sm text-gray-500 dark:text-gray-400 mb-1 ml-1 font-medium">Semestre atual</label>
+                    <button type="button" id="btn-select-semester" class="w-full text-left glass-card rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary text-gray-400 dark:text-gray-500 flex justify-between items-center">
                         <span id="label-semester">Selecione o semestre...</span>
-                        <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i>
+                        <i data-lucide="chevron-down" class="w-5 h-5"></i>
                     </button>
                 </div>
 
                 <div class="flex flex-col mb-4">
-                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1 font-medium">Universidade</label>
-                    <button type="button" id="btn-select-uni" class="w-full text-left glass-card rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary text-gray-500 truncate hover:scale-100 flex justify-between items-center">
+                    <label class="text-sm text-gray-500 dark:text-gray-400 mb-1 ml-1 font-medium">Universidade</label>
+                    <button type="button" id="btn-select-uni" class="w-full text-left glass-card rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary text-gray-400 dark:text-gray-500 flex justify-between items-center">
                         <span id="label-uni" class="truncate pr-4">Toque para buscar...</span>
-                        <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 flex-shrink-0"></i>
+                        <i data-lucide="chevron-down" class="w-5 h-5 flex-shrink-0"></i>
                     </button>
                 </div>
 
@@ -177,28 +191,22 @@
 
             <div class="flex-1 px-4 space-y-2 overflow-y-auto no-scrollbar">
                 <button onclick="switchTab('home')" id="sidebar-btn-home" class="sidebar-btn flex items-center w-full px-4 py-3.5 rounded-xl font-bold text-primary bg-primary/10 transition-all">
-                    <i data-lucide="layout-dashboard" class="mr-3 w-5 h-5"></i>
-                    Painel
+                    <i data-lucide="layout-dashboard" class="mr-3 w-5 h-5"></i> Painel
                 </button>
                 <button onclick="switchTab('aulas')" id="sidebar-btn-aulas" class="sidebar-btn flex items-center w-full px-4 py-3.5 rounded-xl font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-200/50 dark:hover:bg-white/5 transition-all">
-                    <i data-lucide="calendar-days" class="mr-3 w-5 h-5"></i>
-                    Aulas
+                    <i data-lucide="calendar-days" class="mr-3 w-5 h-5"></i> Aulas
                 </button>
                 <button onclick="switchTab('ia')" id="sidebar-btn-ia" class="sidebar-btn flex items-center w-full px-4 py-3.5 rounded-xl font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-200/50 dark:hover:bg-white/5 transition-all">
-                    <i data-lucide="sparkles" class="mr-3 w-5 h-5"></i>
-                    Organiza IA
+                    <i data-lucide="sparkles" class="mr-3 w-5 h-5"></i> Organiza IA
                 </button>
                 <button onclick="switchTab('menu')" id="sidebar-btn-menu" class="sidebar-btn flex items-center w-full px-4 py-3.5 rounded-xl font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-200/50 dark:hover:bg-white/5 transition-all">
-                    <i data-lucide="grid-2x2" class="mr-3 w-5 h-5"></i>
-                    Ferramentas
+                    <i data-lucide="grid-2x2" class="mr-3 w-5 h-5"></i> Ferramentas
                 </button>
                 <button onclick="switchTab('circular')" id="sidebar-btn-circular" class="sidebar-btn hidden items-center w-full px-4 py-3.5 rounded-xl font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-200/50 dark:hover:bg-white/5 transition-all">
-                    <i data-lucide="bus-front" class="mr-3 w-5 h-5"></i>
-                    Circular
+                    <i data-lucide="bus-front" class="mr-3 w-5 h-5"></i> Circular
                 </button>
                 <button onclick="switchTab('profile')" id="sidebar-btn-profile" class="sidebar-btn flex items-center w-full px-4 py-3.5 rounded-xl font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-200/50 dark:hover:bg-white/5 transition-all">
-                    <i data-lucide="user" class="mr-3 w-5 h-5"></i>
-                    Perfil
+                    <i data-lucide="user" class="mr-3 w-5 h-5"></i> Perfil
                 </button>
             </div>
             
@@ -216,7 +224,7 @@
         <div class="flex-1 flex flex-col min-w-0 h-full z-10 relative">
             
             <!-- HEADER MOBILE -->
-            <header class="md:hidden flex items-center justify-between p-4 px-6 glass-card rounded-none border-t-0 border-l-0 border-r-0 hover:transform-none z-20">
+            <header class="md:hidden flex items-center justify-between p-4 px-6 glass-card rounded-none border-t-0 border-l-0 border-r-0 z-20">
                 <div class="flex items-center gap-2">
                     <img src="https://i.imgur.com/PC5Ijma.png" class="w-8 h-8 object-contain" />
                     <span class="font-bold text-lg">OrganizaEdu</span>
@@ -228,106 +236,100 @@
             </header>
 
             <!-- CONTEÚDO SCROLLÁVEL DAS ABAS -->
-            <main class="flex-1 overflow-y-auto p-4 md:p-8 pb-28 md:pb-8 no-scrollbar">
+            <main class="flex-1 overflow-y-auto p-4 md:p-8 pb-32 md:pb-8 no-scrollbar relative">
                 
                 <!-- TAB INÍCIO -->
                 <div id="tab-content-home" class="block w-full max-w-5xl mx-auto animate-fade-in">
                     <div class="flex justify-between items-center mb-8 mt-2 md:mt-0">
                         <div>
-                            <h1 id="home-greeting" class="text-3xl font-extrabold">Olá, Estudante</h1>
-                            <p class="text-gray-500 dark:text-gray-400 mt-1">Bem-vindo(a) ao seu painel.</p>
+                            <h1 id="home-greeting" class="text-3xl font-extrabold tracking-tight">Olá, Estudante</h1>
+                            <p class="text-gray-500 dark:text-gray-400 mt-1 font-medium">Bem-vindo(a) ao seu painel.</p>
                         </div>
-                        <div class="md:hidden w-12 h-12 rounded-full overflow-hidden glass-card flex items-center justify-center cursor-pointer hover:transform-none" onclick="switchTab('profile')">
+                        <div class="md:hidden w-12 h-12 rounded-full overflow-hidden glass-card flex items-center justify-center cursor-pointer border border-primary/30" onclick="switchTab('profile')">
                             <img id="home-photo" src="" alt="Perfil" class="w-full h-full object-cover hidden" />
-                            <i data-lucide="user" id="home-photo-placeholder" class="w-6 h-6 text-gray-500"></i>
+                            <i data-lucide="user" id="home-photo-placeholder" class="w-6 h-6 text-primary"></i>
                         </div>
                     </div>
 
-                    <!-- Grelha de Widgets -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        
                         <!-- Aulas Widget -->
-                        <div class="glass-card rounded-3xl p-6 cursor-pointer" onclick="switchTab('aulas')">
+                        <div class="glass-card interactive rounded-3xl p-6 cursor-pointer" onclick="switchTab('aulas')">
                             <div class="flex items-center mb-4">
                                 <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                                     <i data-lucide="book-open" class="w-6 h-6"></i>
                                 </div>
                                 <h3 class="font-bold text-lg ml-4">Aulas de Hoje</h3>
                             </div>
-                            <div id="home-widget-aulas-content" class="p-4 bg-white/50 dark:bg-black/20 rounded-2xl flex flex-col items-center justify-center text-center min-h-[8rem]">
-                                <i data-lucide="coffee" class="w-8 h-8 mb-2 text-gray-400"></i>
+                            <div id="home-widget-aulas-content" class="p-5 bg-white/40 dark:bg-black/20 rounded-2xl flex flex-col items-center justify-center text-center min-h-[8rem] border border-white/20 dark:border-white/5">
+                                <i data-lucide="coffee" class="w-8 h-8 mb-3 text-gray-400"></i>
                                 <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">A carregar...</p>
                             </div>
                         </div>
 
                         <!-- Tarefas Widget -->
-                        <div class="glass-card rounded-3xl p-6 cursor-pointer" onclick="switchTab('menu')">
+                        <div class="glass-card interactive rounded-3xl p-6 cursor-pointer" onclick="switchTab('menu')">
                             <div class="flex items-center mb-4">
                                 <div class="w-12 h-12 rounded-full bg-[#0A84FF]/10 flex items-center justify-center text-[#0A84FF]">
                                     <i data-lucide="check-square" class="w-6 h-6"></i>
                                 </div>
                                 <h3 class="font-bold text-lg ml-4">Produtividade</h3>
                             </div>
-                            <div id="home-widget-tarefas-content" class="p-4 bg-white/50 dark:bg-black/20 rounded-2xl flex flex-col items-center justify-center text-center min-h-[8rem]">
-                                <i data-lucide="check-circle-2" class="w-8 h-8 mb-2 text-gray-400"></i>
-                                <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Tudo em dia.<br>Nenhuma tarefa pendente.</p>
+                            <div id="home-widget-tarefas-content" class="p-5 bg-white/40 dark:bg-black/20 rounded-2xl flex flex-col items-center justify-center text-center min-h-[8rem] border border-white/20 dark:border-white/5">
+                                <i data-lucide="check-circle-2" class="w-8 h-8 mb-3 text-gray-400"></i>
+                                <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">A carregar...</p>
                             </div>
                         </div>
 
                         <!-- Circular Widget -->
-                        <div id="home-widget-circular" class="hidden glass-card rounded-3xl p-6 cursor-pointer" onclick="switchTab('circular')">
+                        <div id="home-widget-circular" class="hidden glass-card interactive rounded-3xl p-6 cursor-pointer" onclick="switchTab('circular')">
                             <div class="flex items-center mb-4">
-                                <div class="w-12 h-12 rounded-full bg-[#32D74B]/10 flex items-center justify-center text-[#32D74B]">
+                                <div class="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center text-success">
                                     <i data-lucide="bus-front" class="w-6 h-6"></i>
                                 </div>
                                 <h3 class="font-bold text-lg ml-4">Circular UFRB</h3>
                             </div>
-                            <div id="home-widget-circular-content" class="p-4 bg-white/50 dark:bg-black/20 rounded-2xl flex flex-col justify-center text-left min-h-[8rem]">
-                                <p class="text-gray-500 text-center text-sm">A carregar...</p>
+                            <div id="home-widget-circular-content" class="p-5 bg-white/40 dark:bg-black/20 rounded-2xl flex flex-col justify-center text-left min-h-[8rem] border border-white/20 dark:border-white/5">
+                                <p class="text-gray-500 text-center text-sm font-medium">A carregar...</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- TAB AULAS -->
-                <div id="tab-content-aulas" class="hidden flex-col w-full max-w-4xl mx-auto min-h-full pb-20">
+                <div id="tab-content-aulas" class="hidden flex-col w-full max-w-4xl mx-auto min-h-full">
                     <div class="flex justify-between items-center mb-8 mt-2 md:mt-0">
-                        <h1 class="text-3xl font-extrabold">As Tuas Aulas</h1>
-                        <button onclick="alert('Adicionar Aula em breve (App Nativa tem prioridade)')" class="bg-primary text-white px-4 py-2 rounded-xl font-bold shadow-lg shadow-primary/30 flex items-center hover:scale-105 active:scale-95 transition-transform">
-                            <i data-lucide="plus" class="w-5 h-5 mr-2"></i>
-                            Nova Aula
-                        </button>
+                        <h1 class="text-3xl font-extrabold tracking-tight">As Tuas Aulas</h1>
                     </div>
-                    <div class="flex-1 flex flex-col items-center justify-center text-center border-2 border-dashed border-gray-300 dark:border-white/10 rounded-3xl p-10 glass-card hover:transform-none">
-                        <i data-lucide="calendar-x" class="w-12 h-12 text-gray-400 mb-4"></i>
+                    <div class="flex-1 flex flex-col items-center justify-center text-center border-2 border-dashed border-gray-300 dark:border-white/10 rounded-3xl p-10 glass-card">
+                        <i data-lucide="calendar-x" class="w-16 h-16 text-gray-400 dark:text-gray-500 mb-4"></i>
                         <h3 class="text-xl font-bold mb-2">Nenhuma aula registada</h3>
-                        <p class="text-gray-500">A sincronização da base de dados ocorrerá em breve.</p>
+                        <p class="text-gray-500 dark:text-gray-400">A sincronização da base de dados ocorrerá em breve.</p>
                     </div>
                 </div>
 
                 <!-- TAB IA -->
-                <div id="tab-content-ia" class="hidden flex-col w-full max-w-4xl mx-auto h-[80vh] md:h-[85vh]">
+                <div id="tab-content-ia" class="hidden flex-col w-full max-w-4xl mx-auto h-[75vh] md:h-full">
                     <div class="flex items-center mb-6 mt-2 md:mt-0">
-                        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center p-1 mr-4 shadow-sm">
+                        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center p-1 mr-4 shadow-md">
                             <img src="https://i.imgur.com/PC5Ijma.png" alt="IA" class="w-full h-full object-contain" />
                         </div>
                         <div>
                             <h2 class="text-2xl font-extrabold">Organiza IA</h2>
-                            <p class="text-sm text-[#32D74B] font-bold">Sempre online</p>
+                            <p class="text-sm text-success font-bold flex items-center"><span class="w-2 h-2 rounded-full bg-success mr-2 animate-pulse"></span> Sempre online</p>
                         </div>
                     </div>
                     
                     <div class="flex-1 glass-card rounded-3xl p-4 md:p-6 flex flex-col hover:transform-none">
                         <div class="flex-1 overflow-y-auto space-y-4 no-scrollbar flex flex-col justify-end mb-4">
                             <div class="flex items-start max-w-[85%]">
-                                <div class="p-4 text-[15px] bg-white/50 dark:bg-[#1C1C1E] border border-gray-200 dark:border-transparent chat-bubble-ai shadow-sm">
+                                <div class="p-4 text-[15px] bg-white/60 dark:bg-[#1C1C1E] border border-gray-200 dark:border-white/5 chat-bubble-ai shadow-sm font-medium leading-relaxed">
                                     Olá! Sou a Organiza IA ✨<br>A integração do motor LLaMA para a Web está a ser ultimada.
                                 </div>
                             </div>
                         </div>
-                        <div class="flex bg-white/50 dark:bg-[#050505] rounded-full p-1.5 border border-gray-300 dark:border-white/10 shadow-inner">
+                        <div class="flex bg-white/60 dark:bg-[#050505] rounded-full p-1.5 border border-gray-300 dark:border-white/10 shadow-inner">
                             <input type="text" placeholder="Escreva a sua mensagem..." class="flex-1 bg-transparent px-4 py-2 outline-none placeholder-gray-500" disabled />
-                            <button class="w-10 h-10 rounded-full bg-[#B14AE2] flex items-center justify-center opacity-50 cursor-not-allowed">
+                            <button class="w-10 h-10 rounded-full bg-purple flex items-center justify-center opacity-50 cursor-not-allowed">
                                 <i data-lucide="send" class="w-4 h-4 text-white -ml-0.5 mt-0.5"></i>
                             </button>
                         </div>
@@ -337,29 +339,29 @@
                 <!-- TAB MENU (FERRAMENTAS) -->
                 <div id="tab-content-menu" class="hidden flex-col w-full max-w-4xl mx-auto min-h-full pb-20">
                     <h1 class="text-3xl font-extrabold tracking-tight mb-2 mt-2 md:mt-0">Ferramentas</h1>
-                    <p class="text-gray-500 mb-8">Tudo que precisa para o seu dia a dia académico.</p>
+                    <p class="text-gray-500 dark:text-gray-400 mb-8 font-medium">Tudo que precisa para o seu dia a dia académico.</p>
 
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                        <div onclick="alert('Em breve')" class="glass-card rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer aspect-square text-center">
-                            <div class="w-14 h-14 rounded-full bg-[#32D74B]/10 flex items-center justify-center mb-3 text-[#32D74B]">
+                        <div onclick="alert('Em breve')" class="glass-card interactive rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer aspect-square text-center">
+                            <div class="w-14 h-14 rounded-full bg-success/10 flex items-center justify-center mb-4 text-success">
                                 <i data-lucide="wallet" class="w-7 h-7"></i>
                             </div>
                             <h3 class="font-bold text-sm">Finanças</h3>
                         </div>
-                        <div onclick="alert('Em breve')" class="glass-card rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer aspect-square text-center">
-                            <div class="w-14 h-14 rounded-full bg-[#0A84FF]/10 flex items-center justify-center mb-3 text-[#0A84FF]">
+                        <div onclick="alert('Em breve')" class="glass-card interactive rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer aspect-square text-center">
+                            <div class="w-14 h-14 rounded-full bg-[#0A84FF]/10 flex items-center justify-center mb-4 text-[#0A84FF]">
                                 <i data-lucide="list-todo" class="w-7 h-7"></i>
                             </div>
                             <h3 class="font-bold text-sm">Tarefas</h3>
                         </div>
-                        <div onclick="alert('Em breve')" class="glass-card rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer aspect-square text-center">
-                            <div class="w-14 h-14 rounded-full bg-[#5E5CE6]/10 flex items-center justify-center mb-3 text-[#5E5CE6]">
+                        <div onclick="alert('Em breve')" class="glass-card interactive rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer aspect-square text-center">
+                            <div class="w-14 h-14 rounded-full bg-[#5E5CE6]/10 flex items-center justify-center mb-4 text-[#5E5CE6]">
                                 <i data-lucide="sticky-note" class="w-7 h-7"></i>
                             </div>
                             <h3 class="font-bold text-sm">Anotações</h3>
                         </div>
-                        <div onclick="alert('Em breve')" class="glass-card rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer aspect-square text-center">
-                            <div class="w-14 h-14 rounded-full bg-[#00C7BE]/10 flex items-center justify-center mb-3 text-[#00C7BE]">
+                        <div onclick="alert('Em breve')" class="glass-card interactive rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer aspect-square text-center">
+                            <div class="w-14 h-14 rounded-full bg-[#00C7BE]/10 flex items-center justify-center mb-4 text-[#00C7BE]">
                                 <i data-lucide="focus" class="w-7 h-7"></i>
                             </div>
                             <h3 class="font-bold text-sm">Modo Foco</h3>
@@ -370,26 +372,63 @@
                 <!-- TAB CIRCULAR (ITINERÁRIOS COMPLETOS) -->
                 <div id="tab-content-circular" class="hidden flex-col w-full max-w-4xl mx-auto min-h-full pb-20">
                     <h1 class="text-3xl font-extrabold tracking-tight mb-8 mt-2 md:mt-0">Circular UFRB</h1>
-                    <h2 class="text-xl font-bold mb-4">Horários de Hoje</h2>
+                    <h2 class="text-xl font-bold mb-4 flex items-center"><i data-lucide="clock" class="w-5 h-5 mr-2 text-primary"></i> Horários de Hoje</h2>
                     <div id="circular-schedule-list" class="space-y-4">
                         <!-- Lista injetada via JS -->
                     </div>
                 </div>
 
                 <!-- TAB PERFIL -->
-                <div id="tab-content-profile" class="hidden flex-col w-full max-w-lg mx-auto min-h-full items-center pt-8 pb-20">
-                    <h1 class="text-3xl font-extrabold tracking-tight mb-8 w-full text-left">Meu Perfil</h1>
+                <div id="tab-content-profile" class="hidden flex-col w-full max-w-2xl mx-auto min-h-full items-center pt-2 pb-20">
+                    <div class="flex justify-between items-center mb-8 w-full">
+                        <h1 class="text-3xl font-extrabold tracking-tight">Meu Perfil</h1>
+                        <button onclick="switchScreen('screen-settings')" class="p-3 glass-card rounded-full hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors">
+                            <i data-lucide="settings" class="w-6 h-6"></i>
+                        </button>
+                    </div>
                     
-                    <div class="glass-card rounded-3xl p-8 w-full flex flex-col items-center mb-8 hover:transform-none">
-                        <img id="profile-tab-photo" src="" alt="Perfil" class="w-32 h-32 rounded-full border-4 border-primary mb-4 object-cover hidden shadow-md" />
-                        <div id="profile-tab-placeholder" class="w-32 h-32 rounded-full bg-white/5 flex items-center justify-center mb-4 border border-white/10 text-gray-500">
-                            <i data-lucide="user" class="w-12 h-12"></i>
+                    <div class="flex flex-col items-center mb-8 w-full">
+                        <div class="relative w-32 h-32 mb-4">
+                            <img id="profile-tab-photo" src="" alt="Perfil" class="w-full h-full rounded-full border-4 border-primary object-cover shadow-xl hidden" />
+                            <div id="profile-tab-placeholder" class="w-full h-full rounded-full glass-card border-4 border-gray-300 dark:border-white/10 flex items-center justify-center">
+                                <i data-lucide="user" class="w-12 h-12 text-gray-500"></i>
+                            </div>
                         </div>
                         <h2 id="profile-tab-name" class="text-2xl font-bold mb-1">Nome</h2>
-                        <p id="profile-tab-uni" class="text-gray-500 text-sm text-center">Universidade</p>
+                        <p id="profile-tab-username" class="text-primary font-medium mb-6">@usuario</p>
+                        
+                        <div class="w-full space-y-3">
+                            <div class="glass-card rounded-2xl p-4 flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 mr-4">
+                                    <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Curso</p>
+                                    <p id="profile-tab-course" class="font-medium text-gray-900 dark:text-white">...</p>
+                                </div>
+                            </div>
+                            <div class="glass-card rounded-2xl p-4 flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-purple/10 flex items-center justify-center text-purple mr-4">
+                                    <i data-lucide="calendar" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Semestre</p>
+                                    <p id="profile-tab-semester" class="font-medium text-gray-900 dark:text-white">...</p>
+                                </div>
+                            </div>
+                            <div class="glass-card rounded-2xl p-4 flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center text-success mr-4">
+                                    <i data-lucide="building-2" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Universidade</p>
+                                    <p id="profile-tab-uni" class="font-medium text-gray-900 dark:text-white">...</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <button id="btn-logout" class="w-full px-6 py-4 glass-card border border-[#FF3B30]/30 text-[#FF3B30] rounded-2xl font-bold flex items-center justify-center hover:bg-[#FF3B30]/10 transition-colors">
+                    <button id="btn-logout" class="w-full px-6 py-4 glass-card border border-danger/30 text-danger rounded-2xl font-bold flex items-center justify-center hover:bg-danger/10 transition-colors">
                         <i data-lucide="log-out" class="w-5 h-5 mr-3"></i>
                         Sair da Conta
                     </button>
@@ -400,37 +439,110 @@
 
         <!-- NavBar Inferior (MOBILE APENAS) -->
         <div class="md:hidden fixed bottom-0 left-0 right-0 p-4 pb-6 flex justify-center z-50 pointer-events-none">
-            <div class="pointer-events-auto flex items-center justify-evenly w-full max-w-md liquid-glass py-3 rounded-[32px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+            <div class="pointer-events-auto flex items-center justify-evenly w-full max-w-md glass-nav py-3 rounded-[32px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
                 
                 <button onclick="switchTab('home')" id="bottom-btn-home" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-primary">
                     <i data-lucide="layout-dashboard" class="mb-1 w-6 h-6 stroke-[2.5]"></i>
-                    <span class="text-[11px] font-bold">Início</span>
+                    <span class="text-[10px] font-bold mt-0.5">Início</span>
                 </button>
                 
-                <button onclick="switchTab('aulas')" id="bottom-btn-aulas" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white">
+                <button onclick="switchTab('aulas')" id="bottom-btn-aulas" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-500 hover:text-gray-900 dark:hover:text-white">
                     <i data-lucide="calendar-days" class="mb-1 w-6 h-6 stroke-2"></i>
-                    <span class="text-[11px] font-medium">Aulas</span>
+                    <span class="text-[10px] font-medium mt-0.5">Aulas</span>
                 </button>
 
-                <button onclick="switchTab('ia')" id="bottom-btn-ia" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white">
+                <button onclick="switchTab('ia')" id="bottom-btn-ia" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-500 hover:text-gray-900 dark:hover:text-white">
                     <i data-lucide="sparkles" class="mb-1 w-6 h-6 stroke-2"></i>
-                    <span class="text-[11px] font-medium">IA</span>
+                    <span class="text-[10px] font-medium mt-0.5">IA</span>
                 </button>
 
-                <button onclick="switchTab('menu')" id="bottom-btn-menu" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white">
+                <button onclick="switchTab('menu')" id="bottom-btn-menu" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-500 hover:text-gray-900 dark:hover:text-white">
                     <i data-lucide="grid-2x2" class="mb-1 w-6 h-6 stroke-2"></i>
-                    <span class="text-[11px] font-medium">Menu</span>
+                    <span class="text-[10px] font-medium mt-0.5">Menu</span>
                 </button>
 
-                <button onclick="switchTab('profile')" id="bottom-btn-profile" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white">
+                <button onclick="switchTab('profile')" id="bottom-btn-profile" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-500 hover:text-gray-900 dark:hover:text-white">
                     <i data-lucide="user" class="mb-1 icon-person w-6 h-6 stroke-2"></i>
                     <i data-lucide="bus-front" class="mb-1 icon-bus hidden w-6 h-6 stroke-2"></i>
-                    <span id="bottom-label-profile" class="text-[11px] font-medium">Perfil</span>
+                    <span id="bottom-label-profile" class="text-[10px] font-medium mt-0.5">Perfil</span>
                 </button>
 
             </div>
         </div>
 
+    </div>
+
+    <!-- 5. TELA DE CONFIGURAÇÕES -->
+    <div id="screen-settings" class="hidden relative z-50 flex-col min-h-screen bg-lightBg dark:bg-darkBg w-full transition-colors duration-500">
+        <header class="flex items-center p-4 pt-6 border-b border-gray-200 dark:border-white/5 glass-card rounded-none z-30 sticky top-0">
+            <button onclick="switchScreen('screen-home'); switchTab('profile');" class="p-2 mr-2 hover:bg-gray-200 dark:hover:bg-white/10 rounded-full transition-colors">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-gray-900 dark:text-white"></i>
+            </button>
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white">Configurações</h2>
+        </header>
+        <main class="flex-1 overflow-y-auto p-6 space-y-8 max-w-3xl mx-auto w-full pb-12 no-scrollbar">
+            
+            <!-- Aparência -->
+            <section>
+                <h3 class="text-xs font-bold text-primary uppercase tracking-wider mb-3 ml-2 flex items-center"><i data-lucide="palette" class="w-4 h-4 mr-2"></i> Aparência</h3>
+                <div class="glass-card rounded-3xl overflow-hidden divide-y divide-gray-200/50 dark:divide-white/5">
+                    <label class="flex items-center justify-between p-4 cursor-pointer hover:bg-white/50 dark:hover:bg-white/5 transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="sun" class="w-5 h-5 text-gray-500"></i>
+                            <span class="font-medium text-gray-900 dark:text-white">Modo Claro</span>
+                        </div>
+                        <input type="radio" name="theme" value="light" class="w-5 h-5 accent-primary" onchange="setTheme('light')">
+                    </label>
+                    <label class="flex items-center justify-between p-4 cursor-pointer hover:bg-white/50 dark:hover:bg-white/5 transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="moon" class="w-5 h-5 text-gray-500"></i>
+                            <span class="font-medium text-gray-900 dark:text-white">Modo Escuro</span>
+                        </div>
+                        <input type="radio" name="theme" value="dark" class="w-5 h-5 accent-primary" onchange="setTheme('dark')">
+                    </label>
+                </div>
+            </section>
+
+            <!-- Preferências -->
+            <section>
+                <h3 class="text-xs font-bold text-primary uppercase tracking-wider mb-3 ml-2 flex items-center"><i data-lucide="layout-template" class="w-4 h-4 mr-2"></i> Estilo dos Widgets</h3>
+                <div class="glass-card rounded-3xl overflow-hidden divide-y divide-gray-200/50 dark:divide-white/5">
+                    <div class="flex items-center justify-between p-4">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="book-open" class="w-5 h-5 text-gray-500"></i>
+                            <span class="font-medium text-gray-900 dark:text-white">Aulas</span>
+                        </div>
+                        <select class="bg-transparent text-gray-500 outline-none text-right appearance-none font-medium cursor-pointer">
+                            <option>Avançado</option>
+                            <option>Simples</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center justify-between p-4">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="check-square" class="w-5 h-5 text-gray-500"></i>
+                            <span class="font-medium text-gray-900 dark:text-white">Tarefas</span>
+                        </div>
+                        <select class="bg-transparent text-gray-500 outline-none text-right appearance-none font-medium cursor-pointer">
+                            <option>Avançado</option>
+                            <option>Simples</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center justify-between p-4">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="bus-front" class="w-5 h-5 text-gray-500"></i>
+                            <span class="font-medium text-gray-900 dark:text-white">Circular</span>
+                        </div>
+                        <select class="bg-transparent text-gray-500 outline-none text-right appearance-none font-medium cursor-pointer">
+                            <option>Avançado</option>
+                            <option>Detalhado</option>
+                            <option>Simples</option>
+                        </select>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-3 ml-2">As alterações dos widgets são sincronizadas com a app móvel.</p>
+            </section>
+
+        </main>
     </div>
 
     <!-- MODAL DE SELEÇÃO GLOBAL -->
@@ -452,6 +564,7 @@
         <div id="modal-list" class="flex-1 overflow-y-auto p-4 space-y-2 no-scrollbar bg-transparent">
         </div>
     </div>
+
 
     <!-- ========================================== -->
     <!-- LÓGICA JAVASCRIPT                          -->
@@ -481,7 +594,30 @@
         let isUfrb = false;
         let widgetInterval = null;
 
-        // --- SISTEMA DO CIRCULAR UFRB ---
+        // Inicializa ícones do Lucide
+        lucide.createIcons();
+
+        // --- SISTEMA DE TEMA CLARO/ESCURO ---
+        window.toggleTheme = function() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            const isDark = html.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            
+            // Sincroniza os radio buttons das Settings
+            const radios = document.getElementsByName('theme');
+            for(let r of radios) {
+                if(r.value === (isDark ? 'dark' : 'light')) r.checked = true;
+            }
+        }
+        
+        window.setTheme = function(mode) {
+            if(mode === 'dark') document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', mode);
+        }
+
+        // --- SISTEMA DO CIRCULAR UFRB (Completo) ---
         function timeToMinutes(timeStr) {
             const parts = timeStr.split(":");
             if (parts.length !== 2) return 0;
@@ -543,12 +679,14 @@
         window.toggleTripDetails = function(id) {
             const el = document.getElementById(id);
             const icon = document.getElementById(id.replace('details', 'icon'));
-            if (el.classList.contains('hidden')) {
-                el.classList.remove('hidden');
-                if (icon) icon.style.transform = 'rotate(180deg)';
-            } else {
-                el.classList.add('hidden');
-                if (icon) icon.style.transform = 'rotate(0deg)';
+            if (el && el.classList) { // Add null check
+                if (el.classList.contains('hidden')) {
+                    el.classList.remove('hidden');
+                    if (icon) icon.style.transform = 'rotate(180deg)';
+                } else {
+                    el.classList.add('hidden');
+                    if (icon) icon.style.transform = 'rotate(0deg)';
+                }
             }
         };
 
@@ -565,15 +703,15 @@
                 const endMins = timeToMinutes(trip.end);
 
                 let status = "upcoming";
-                let statusColor = "text-[#4A90E2]";
-                let bgColor = "bg-[#4A90E2]/10";
-                let borderColor = "border-[#4A90E2]";
+                let statusColor = "text-primary";
+                let bgColor = "bg-primary/10";
+                let borderColor = "border-primary";
                 
                 if (currentMinutes >= startMins && currentMinutes <= endMins) {
                     status = "current";
-                    statusColor = "text-[#32D74B]";
-                    bgColor = "bg-[#32D74B]/10";
-                    borderColor = "border-[#32D74B]";
+                    statusColor = "text-success";
+                    bgColor = "bg-success/10";
+                    borderColor = "border-success";
                 } else if (currentMinutes > endMins) {
                     status = "past";
                     statusColor = "text-gray-500 dark:text-gray-400";
@@ -582,9 +720,9 @@
                 }
 
                 const stopsHtml = trip.stops.map(stop => `
-                    <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-white/5 last:border-0">
+                    <div class="flex justify-between items-center py-3 border-b border-gray-200 dark:border-white/5 last:border-0">
                         <span class="text-sm font-medium ${timeToMinutes(stop.time) < currentMinutes ? 'text-gray-400' : 'text-gray-900 dark:text-white'}">${stop.loc}</span>
-                        <span class="text-sm ${timeToMinutes(stop.time) < currentMinutes ? 'text-gray-400' : statusColor}">${stop.time}</span>
+                        <span class="text-sm font-bold ${timeToMinutes(stop.time) < currentMinutes ? 'text-gray-400' : statusColor}">${stop.time}</span>
                     </div>
                 `).join('');
 
@@ -593,7 +731,7 @@
                         <div class="p-5 flex items-center border-l-4 ${borderColor}">
                             <div class="flex-1">
                                 <div class="flex items-center gap-2 mb-1">
-                                    <span class="text-xs font-bold ${statusColor} ${bgColor} px-2 py-0.5 rounded">${trip.start} - ${trip.end}</span>
+                                    <span class="text-xs font-extrabold ${statusColor} ${bgColor} px-2 py-0.5 rounded tracking-wider">${trip.start} - ${trip.end}</span>
                                 </div>
                                 <h3 class="font-bold text-lg text-gray-900 dark:text-white">${trip.routeName}</h3>
                             </div>
@@ -601,7 +739,7 @@
                                 <i data-lucide="chevron-down" class="w-6 h-6"></i>
                             </div>
                         </div>
-                        <div id="trip-details-${index}" class="hidden bg-white/50 dark:bg-black/20 px-5 py-3 transition-all">
+                        <div id="trip-details-${index}" class="hidden bg-white/40 dark:bg-black/20 px-5 py-2 transition-all">
                             ${stopsHtml}
                         </div>
                     </div>
@@ -617,92 +755,65 @@
 
             if (isUfrb) {
                 const circContainer = document.getElementById('home-widget-circular-content');
-                const currentTrip = busSchedule.find(t => currentMinutes >= timeToMinutes(t.start) && currentMinutes <= timeToMinutes(t.end));
-                const nextTrip = busSchedule.find(t => timeToMinutes(t.start) > currentMinutes);
-                
-                if (currentTrip) {
-                    const nextStop = currentTrip.stops.find(s => timeToMinutes(s.time) >= currentMinutes);
-                    circContainer.innerHTML = `
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-xs font-bold text-[#32D74B] bg-[#32D74B]/10 px-2 py-1 rounded">EM ROTA AGORA</span>
-                            <span class="text-xs text-gray-500 font-bold">${currentTrip.start} - ${currentTrip.end}</span>
-                        </div>
-                        <h4 class="font-extrabold text-lg text-gray-900 dark:text-white">${currentTrip.routeName}</h4>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center justify-center">
-                            <i data-lucide="map-pin" class="w-4 h-4 mr-1"></i> ${nextStop ? `Próxima: ${nextStop.loc}` : 'Quase no destino'}
-                        </p>
-                    `;
-                } else if (nextTrip) {
-                    const minsLeft = timeToMinutes(nextTrip.start) - currentMinutes;
-                    circContainer.innerHTML = `
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded">AGENDADO</span>
-                            <span class="text-xs text-gray-500 font-bold">${nextTrip.start} - ${nextTrip.end}</span>
-                        </div>
-                        <h4 class="font-extrabold text-lg text-gray-900 dark:text-white">${nextTrip.routeName}</h4>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center justify-center">
-                            <i data-lucide="clock" class="w-4 h-4 mr-1"></i> Sai em ${minsLeft} min da ${nextTrip.origin}
-                        </p>
-                    `;
-                } else {
-                    circContainer.innerHTML = `
-                        <div class="flex flex-col items-center justify-center">
-                            <i data-lucide="moon" class="w-8 h-8 text-gray-400 dark:text-gray-500 mb-2"></i>
-                            <h4 class="font-bold text-md text-gray-900 dark:text-white">Serviço Encerrado</h4>
-                            <p class="text-xs text-gray-500 mt-1">Retorna amanhã</p>
-                        </div>
-                    `;
+                if (circContainer) { // Add null check
+                    const currentTrip = busSchedule.find(t => currentMinutes >= timeToMinutes(t.start) && currentMinutes <= timeToMinutes(t.end));
+                    const nextTrip = busSchedule.find(t => timeToMinutes(t.start) > currentMinutes);
+                    
+                    if (currentTrip) {
+                        const nextStop = currentTrip.stops.find(s => timeToMinutes(s.time) >= currentMinutes);
+                        circContainer.innerHTML = `
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-[10px] font-extrabold text-success bg-success/10 px-2 py-1 rounded tracking-widest">EM ROTA AGORA</span>
+                                <span class="text-xs text-gray-500 font-bold">${currentTrip.start} - ${currentTrip.end}</span>
+                            </div>
+                            <h4 class="font-extrabold text-lg text-gray-900 dark:text-white">${currentTrip.routeName}</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 flex items-center">
+                                <i data-lucide="map-pin" class="w-4 h-4 mr-2 text-success"></i> ${nextStop ? `Próxima: ${nextStop.loc}` : 'Quase no destino'}
+                            </p>
+                        `;
+                    } else if (nextTrip) {
+                        const minsLeft = timeToMinutes(nextTrip.start) - currentMinutes;
+                        circContainer.innerHTML = `
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-[10px] font-extrabold text-primary bg-primary/10 px-2 py-1 rounded tracking-widest">AGENDADO</span>
+                                <span class="text-xs text-gray-500 font-bold">${nextTrip.start} - ${nextTrip.end}</span>
+                            </div>
+                            <h4 class="font-extrabold text-lg text-gray-900 dark:text-white">${nextTrip.routeName}</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 flex items-center">
+                                <i data-lucide="clock" class="w-4 h-4 mr-2 text-primary"></i> Sai em ${minsLeft} min da ${nextTrip.origin}
+                            </p>
+                        `;
+                    } else {
+                        circContainer.innerHTML = `
+                            <div class="flex flex-col items-center justify-center py-2">
+                                <i data-lucide="moon" class="w-8 h-8 text-gray-400 dark:text-gray-500 mb-2"></i>
+                                <h4 class="font-bold text-md text-gray-900 dark:text-white">Serviço Encerrado</h4>
+                                <p class="text-xs text-gray-500 mt-1">Retorna amanhã</p>
+                            </div>
+                        `;
+                    }
                 }
                 renderCircularScheduleList();
             }
             lucide.createIcons();
         }
 
-        // Setup Form State
-        let setupName = "";
-        let setupUsername = "";
-        let setupCourse = "";
-        let setupSemester = "";
-        let setupUni = "";
-        let setupCustomUni = "";
-        let isUsernameAvailable = true;
-        let isCheckingUsername = false;
-        let usernameTimeout = null;
-
-        const iconCheck = `<i data-lucide="check-circle-2" class="w-5 h-5 text-[#32D74B]"></i>`;
-        const iconX = `<i data-lucide="x-circle" class="w-5 h-5 text-[#FF3B30]"></i>`;
-        const iconLoader = `<div class="w-5 h-5 border-2 border-gray-400 border-t-primary rounded-full animate-spin"></div>`;
-
-        const universitiesList = [
-            "UFRB - Universidade Federal do Recôncavo da Bahia", "UFBA - Universidade Federal da Bahia", "UFOB - Universidade Federal do Oeste da Bahia", "UFSB - Universidade Federal do Sul da Bahia", "UNIVASF - Universidade Federal do Vale do São Francisco", "UNEB - Universidade do Estado da Bahia", "UEFS - Universidade Estadual de Feira de Santana", "UESB - Universidade Estadual do Sudoeste da Bahia", "UESC - Universidade Estadual de Santa Cruz", "IFBA - Instituto Federal da Bahia", "IF Baiano - Instituto Federal Baiano",
-            "UFAC - Universidade Federal do Acre", "UFAL - Universidade Federal de Alagoas", "UNIFAP - Universidade Federal do Amapá", "UFAM - Universidade Federal do Amazonas", "UNILAB - Universidade da Integração Internacional da Lusofonia Afro-Brasileira", "UFC - Universidade Federal do Ceará", "UFCA - Universidade Federal do Cariri", "UnB - Universidade de Brasília", "UFES - Universidade Federal do Espírito Santo", "UFG - Universidade Federal de Goiás", "UFCAT - Universidade Federal de Catalão", "UFJ - Universidade Federal de Jataí", "UFMA - Universidade Federal do Maranhão", "UFMT - Universidade Federal de Mato Grosso", "UFR - Universidade Federal de Rondonópolis", "UFMS - Universidade Federal de Mato Grosso do Sul", "UFGD - Universidade Federal da Grande Dourados", "UFMG - Universidade Federal de Minas Gerais", "UFOP - Universidade Federal de Ouro Preto", "UFLA - Universidade Federal de Lavras", "UFV - Universidade Federal de Viçosa", "UNIFAL - Universidade Federal de Alfenas", "UNIFEI - Universidade Federal de Itajubá", "UFJF - Universidade Federal de Juiz de Fora", "UFSJ - Universidade Federal de São João del-Rei", "UFU - Universidade Federal de Uberlândia", "UFVJM - Universidade Federal dos Vales do Jequitinhonha e Mucuri", "UFTM - Universidade Federal do Triângulo Mineiro", "UFPA - Universidade Federal do Pará", "UNIFESSPA - Universidade Federal do Sul e Sudeste do Pará", "UFOPA - Universidade Federal do Oeste do Pará", "UFPB - Universidade Federal da Paraíba", "UFCG - Universidade Federal de Campina Grande", "UFPR - Universidade Federal do Paraná", "UTFPR - Universidade Tecnológica Federal do Paraná", "UNILA - Universidade Federal da Integração Latino-Americana", "UFPE - Universidade Federal de Pernambuco", "UFRPE - Universidade Federal Rural de Pernambuco", "UFAPE - Universidade Federal do Agreste de Pernambuco", "UFPI - Universidade Federal do Piauí", "UFDPar - Universidade Federal do Delta do Parnaíba", "UFRJ - Universidade Federal do Rio de Janeiro", "UFF - Universidade Federal Fluminense", "UFRRJ - Universidade Federal Rural do Rio de Janeiro", "UNIRIO - Universidade Federal do Estado do Rio de Janeiro", "UFRN - Universidade Federal do Rio Grande do Norte", "UFERSA - Universidade Federal Rural do Semi-Árido", "UFRGS - Universidade Federal do Rio Grande do Sul", "UFSM - Universidade Federal de Santa Maria", "UFPel - Universidade Federal de Pelotas", "UNIPAMPA - Universidade Federal do Pampa", "UFCSPA - Universidade Federal de Ciências da Saúde de Porto Alegre", "UFFS - Universidade Federal da Fronteira Sul", "UNIR - Universidade Federal de Rondônia", "UFRR - Universidade Federal de Roraima", "UFSC - Universidade Federal de Santa Catarina", "UNIFESP - Universidade Federal de São Paulo", "UFSCar - Universidade Federal de São Carlos", "UFABC - Universidade Federal do ABC", "UFS - Universidade Federal de Sergipe", "UFT - Universidade Federal do Tocantins", "UFNT - Universidade Federal do Norte do Tocantins",
-            "USP - Universidade de São Paulo", "UNICAMP - Universidade Estadual de Campinas", "UNESP - Universidade Estadual Paulista", "UERJ - Universidade do Estado do Rio de Janeiro", "UEL - Universidade Estadual de Londrina", "UEM - Universidade Estadual de Maringá", "UENF - Universidade Estadual do Norte Fluminense", "UECE - Universidade Estadual do Ceará", "UVA - Universidade Estadual Vale do Acaraú", "URCA - Universidade Regional do Cariri", "UEMG - Universidade do Estado de Minas Gerais", "UNIMONTES - Universidade Estadual de Montes Claros", "UEG - Universidade Estadual de Goiás", "UEMA - Universidade Estadual do Maranhão", "UEPB - Universidade Estadual da Paraíba", "UEPG - Universidade Estadual de Ponta Grossa", "UNIOESTE - Universidade Estadual do Oeste do Paraná", "UNICENTRO - Universidade Estadual do Centro-Oeste", "UENP - Universidade Estadual do Norte do Paraná",
-            "IFCE - Instituto Federal do Ceará", "IFMG - Instituto Federal de Minas Gerais", "IFPB - Instituto Federal da Paraíba", "IFPE - Instituto Federal de Pernambuco", "IFPI - Instituto Federal do Piauí", "IFPR - Instituto Federal do Paraná", "IFRJ - Instituto Federal do Rio de Janeiro", "IFRN - Instituto Federal do Rio Grande do Norte", "IFRS - Instituto Federal do Rio Grande do Sul", "IFSC - Instituto Federal de Santa Catarina", "IFSP - Instituto Federal de São Paulo",
-            "Anhanguera", "Anhembi Morumbi", "Cruzeiro do Sul", "ESPM - Escola Superior de Propaganda e Marketing", "Estácio", "FGV - Fundação Getulio Vargas", "FMU - Faculdades Metropolitanas Unidas", "Ibmec", "Insper", "Mackenzie - Universidade Presbiteriana Mackenzie", "PUC-Campinas - Pontifícia Universidade Católica de Campinas", "PUC-MG - Pontifícia Universidade Católica de Minas Gerais", "PUC-PR - Pontifícia Universidade Católica do Paraná", "PUC-RJ - Pontifícia Universidade Católica do Rio de Janeiro", "PUC-RS - Pontifícia Universidade Católica do Rio Grande do Sul", "PUC-SP - Pontifícia Universidade Católica de São Paulo", "UNIP - Universidade Paulista", "UNISINOS - Universidade do Vale do Rio dos Sinos",
-            "Outra (Digitar manualmente)"
-        ];
-
-        const semestersList = ["1º Semestre", "2º Semestre", "3º Semestre", "4º Semestre", "5º Semestre", "6º Semestre", "7º Semestre", "8º Semestre", "9º Semestre", "10º Semestre", "11º Semestre", "12º Semestre"];
-
-        // --- SISTEMA DE TEMA CLARO/ESCURO ---
-        window.toggleTheme = function() {
-            const html = document.documentElement;
-            html.classList.toggle('dark');
-            const isDark = html.classList.contains('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        }
-
-        // --- NAVEGAÇÃO ENTRE TELAS ---
+        // --- NAVEGAÇÃO E REGRAS ---
         function switchScreen(screenId) {
-            ['screen-loading', 'screen-login', 'screen-setup', 'screen-home'].forEach(id => {
-                document.getElementById(id).classList.add('hidden');
-                document.getElementById(id).classList.remove(id === 'screen-home' ? 'flex' : 'flex');
+            ['screen-loading', 'screen-login', 'screen-setup', 'screen-home', 'screen-settings'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    el.classList.add('hidden');
+                    el.classList.remove(id === 'screen-home' ? 'flex' : 'flex');
+                }
             });
-            document.getElementById(screenId).classList.remove('hidden');
-            document.getElementById(screenId).classList.add('flex');
+            const targetEl = document.getElementById(screenId);
+            if (targetEl) {
+               targetEl.classList.remove('hidden');
+               targetEl.classList.add('flex');
+            }
         }
 
-        // --- NAVEGAÇÃO DAS TABS DO HOME ---
         window.switchTab = function(tabId) {
             currentTab = tabId;
             ['home', 'aulas', 'ia', 'menu', 'circular', 'profile'].forEach(id => {
@@ -718,17 +829,20 @@
                 activeEl.classList.add(tabId === 'home' ? 'block' : 'flex');
             }
 
-            // Atualiza Mobile Nav
+            // Mobile Nav Update
             document.querySelectorAll('.bottom-btn').forEach(btn => {
                 btn.classList.remove('text-primary', 'dark:text-white', 'text-gray-900');
                 btn.classList.add('text-gray-400', 'dark:text-gray-500');
                 const svg = btn.querySelector('svg');
                 if(svg) {
-                    svg.classList.remove('fill-current', 'stroke-[2.5]');
-                    svg.classList.add('fill-none', 'stroke-2');
+                    svg.classList.remove('stroke-[2.5]');
+                    svg.classList.add('stroke-2');
                 }
-                btn.querySelector('span').classList.remove('font-bold');
-                btn.querySelector('span').classList.add('font-medium');
+                const span = btn.querySelector('span');
+                if(span) {
+                   span.classList.remove('font-bold');
+                   span.classList.add('font-medium');
+                }
             });
             const activeBottomBtn = document.getElementById(`bottom-btn-${tabId}`);
             if(activeBottomBtn) {
@@ -736,193 +850,240 @@
                 activeBottomBtn.classList.add('text-primary', 'dark:text-white');
                 const svg = activeBottomBtn.querySelector('svg');
                 if(svg) {
-                    svg.classList.remove('fill-none', 'stroke-2');
-                    svg.classList.add('fill-current', 'stroke-[2.5]');
+                    svg.classList.remove('stroke-2');
+                    svg.classList.add('stroke-[2.5]');
                 }
-                activeBottomBtn.querySelector('span').classList.remove('font-medium');
-                activeBottomBtn.querySelector('span').classList.add('font-bold');
+                const span = activeBottomBtn.querySelector('span');
+                if(span) {
+                   span.classList.remove('font-medium');
+                   span.classList.add('font-bold');
+                }
             }
 
-            // Atualiza PC Nav
+            // PC Nav Update
             document.querySelectorAll('.sidebar-btn').forEach(btn => {
                 btn.classList.remove('text-primary', 'bg-primary/10', 'font-bold');
                 btn.classList.add('text-gray-600', 'dark:text-gray-400', 'font-medium');
-                const svg = btn.querySelector('svg');
-                if(svg) {
-                    svg.classList.remove('stroke-[2.5]');
-                    svg.classList.add('stroke-2');
-                }
             });
             const activeSideBtn = document.getElementById(`sidebar-btn-${tabId}`);
             if(activeSideBtn) {
                 activeSideBtn.classList.remove('text-gray-600', 'dark:text-gray-400', 'font-medium');
                 activeSideBtn.classList.add('text-primary', 'bg-primary/10', 'font-bold');
-                const svg = activeSideBtn.querySelector('svg');
-                if(svg) {
-                    svg.classList.remove('stroke-2');
-                    svg.classList.add('stroke-[2.5]');
-                }
             }
         }
 
-        // Inicializa ícones do Lucide após carregar
-        lucide.createIcons();
-
-        // --- AUTENTICAÇÃO E ESTADO ---
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
-                try {
-                    const docSnap = await getDoc(doc(db, "users", user.uid));
-                    if (docSnap.exists()) {
-                        userData = docSnap.data();
-                        isUfrb = userData.university && userData.university.toLowerCase().includes('ufrb');
-                        
-                        document.getElementById('home-greeting').innerText = `Olá, ${userData.displayName.split(" ")[0] || 'Estudante'}`;
-                        if(userData.profileImageUrl) {
-                            document.getElementById('home-photo').src = userData.profileImageUrl;
-                            document.getElementById('home-photo').classList.remove('hidden');
-                            document.getElementById('home-photo-placeholder').classList.add('hidden');
-                            document.getElementById('profile-tab-photo').src = userData.profileImageUrl;
-                            document.getElementById('profile-tab-photo').classList.remove('hidden');
-                            document.getElementById('profile-tab-placeholder').classList.add('hidden');
-                        }
-                        
-                        document.getElementById('profile-tab-name').innerText = userData.displayName;
-                        document.getElementById('profile-tab-uni').innerText = userData.university;
-
-                        const bottomBtnProfile = document.getElementById('bottom-btn-profile');
-                        const bottomBtnLabel = document.getElementById('bottom-label-profile');
-                        const sideBtnCircular = document.getElementById('sidebar-btn-circular');
-
-                        if (isUfrb) {
-                            document.getElementById('home-widget-circular').classList.remove('hidden');
+        // --- AUTENTICAÇÃO E FIRESTORE ---
+        window.onload = function() {
+             onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    currentUser = user;
+                    try {
+                        const docSnap = await getDoc(doc(db, "users", user.uid));
+                        if (docSnap.exists()) {
+                            userData = docSnap.data();
+                            isUfrb = userData.university && userData.university.toLowerCase().includes('ufrb');
                             
-                            bottomBtnProfile.setAttribute('onclick', "switchTab('circular')");
-                            bottomBtnProfile.id = 'bottom-btn-circular';
-                            bottomBtnLabel.innerText = 'Circular';
-                            document.querySelectorAll('.icon-person').forEach(el => el.classList.add('hidden'));
-                            document.querySelectorAll('.icon-bus').forEach(el => el.classList.remove('hidden'));
-
-                            sideBtnCircular.classList.remove('hidden');
-                            sideBtnCircular.classList.add('flex');
-                        }
-
-                        onSnapshot(collection(db, "users", user.uid, "tarefas"), (snapshot) => {
-                            const tarefas = snapshot.docs.map(doc => doc.data());
-                            const concluidas = tarefas.filter(t => t.concluida).length;
-                            const widgetTxt = document.getElementById('home-widget-tarefas-content');
+                            // Atualiza Interface (Home e Perfil)
+                            const greetingEl = document.getElementById('home-greeting');
+                            if(greetingEl) greetingEl.innerText = `Olá, ${userData.displayName.split(" ")[0] || 'Estudante'}`;
                             
-                            if (tarefas.length === 0) {
-                                widgetTxt.innerHTML = `
-                                    <i data-lucide="check-circle-2" class="w-8 h-8 mb-2 text-gray-400"></i>
-                                    <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Tudo em dia.<br>Nenhuma tarefa pendente.</p>
-                                `;
-                            } else if (concluidas === tarefas.length) {
-                                widgetTxt.innerHTML = `
-                                    <i data-lucide="check-square" class="w-8 h-8 mb-2 text-[#32D74B]"></i>
-                                    <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Tudo concluído!</p>
-                                `;
-                            } else {
-                                widgetTxt.innerHTML = `
-                                    <i data-lucide="list-todo" class="w-8 h-8 mb-2 text-[#0A84FF]"></i>
-                                    <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">${tarefas.length - concluidas} tarefas pendentes</p>
-                                `;
+                            const profileNameEl = document.getElementById('profile-tab-name');
+                            if(profileNameEl) profileNameEl.innerText = userData.displayName;
+                            
+                            const profileUsernameEl = document.getElementById('profile-tab-username');
+                            if(profileUsernameEl) profileUsernameEl.innerText = `@${userData.username}`;
+                            
+                            const profileCourseEl = document.getElementById('profile-tab-course');
+                            if(profileCourseEl) profileCourseEl.innerText = userData.course;
+                            
+                            const profileSemesterEl = document.getElementById('profile-tab-semester');
+                            if(profileSemesterEl) profileSemesterEl.innerText = userData.semester;
+                            
+                            const profileUniEl = document.getElementById('profile-tab-uni');
+                            if(profileUniEl) profileUniEl.innerText = userData.university;
+
+                            if(userData.profileImageUrl) {
+                                ['home-photo', 'profile-tab-photo'].forEach(id => {
+                                    const img = document.getElementById(id);
+                                    if(img) {
+                                        img.src = userData.profileImageUrl;
+                                        img.classList.remove('hidden');
+                                    }
+                                });
+                                ['home-photo-placeholder', 'profile-tab-placeholder'].forEach(id => {
+                                    const placeholder = document.getElementById(id);
+                                    if(placeholder) placeholder.classList.add('hidden');
+                                });
                             }
-                            lucide.createIcons();
-                        });
 
-                        switchScreen('screen-home');
-                        switchTab('home');
+                            // Lógica da UFRB e Navbar
+                            const bottomBtnProfile = document.getElementById('bottom-btn-profile');
+                            const bottomBtnLabel = document.getElementById('bottom-label-profile');
+                            const sideBtnCircular = document.getElementById('sidebar-btn-circular');
 
-                        if(widgetInterval) clearInterval(widgetInterval);
-                        renderDashboardWidgets();
-                        widgetInterval = setInterval(renderDashboardWidgets, 10000);
+                            if (isUfrb) {
+                                const homeCircular = document.getElementById('home-widget-circular');
+                                if(homeCircular) homeCircular.classList.remove('hidden');
+                                
+                                if(bottomBtnProfile) {
+                                    bottomBtnProfile.setAttribute('onclick', "switchTab('circular')");
+                                    bottomBtnProfile.id = 'bottom-btn-circular';
+                                }
+                                if(bottomBtnLabel) bottomBtnLabel.innerText = 'Circular';
+                                document.querySelectorAll('.icon-person').forEach(el => el.classList.add('hidden'));
+                                document.querySelectorAll('.icon-bus').forEach(el => el.classList.remove('hidden'));
+                                
+                                if(sideBtnCircular) {
+                                    sideBtnCircular.classList.remove('hidden');
+                                    sideBtnCircular.classList.add('flex');
+                                }
+                            }
 
-                    } else {
-                        document.getElementById('setup-name').value = user.displayName || '';
-                        setupName = user.displayName || '';
-                        validateSetupForm();
+                            // Escutar Tarefas
+                            onSnapshot(collection(db, "users", user.uid, "tarefas"), (snapshot) => {
+                                const tarefas = snapshot.docs.map(doc => doc.data());
+                                const concluidas = tarefas.filter(t => t.concluida).length;
+                                const widgetTxt = document.getElementById('home-widget-tarefas-content');
+                                
+                                if(widgetTxt) {
+                                    if (tarefas.length === 0) {
+                                        widgetTxt.innerHTML = `
+                                            <i data-lucide="check-circle-2" class="w-8 h-8 mb-3 text-gray-400"></i>
+                                            <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Tudo em dia.<br>Nenhuma tarefa pendente.</p>
+                                        `;
+                                    } else if (concluidas === tarefas.length) {
+                                        widgetTxt.innerHTML = `
+                                            <i data-lucide="check-square" class="w-8 h-8 mb-3 text-success"></i>
+                                            <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Tudo concluído!</p>
+                                        `;
+                                    } else {
+                                        widgetTxt.innerHTML = `
+                                            <i data-lucide="list-todo" class="w-8 h-8 mb-3 text-[#0A84FF]"></i>
+                                            <p class="text-gray-900 dark:text-white text-sm font-bold">${tarefas.length - concluidas} pendentes</p>
+                                            <p class="text-gray-500 text-xs mt-1">Bora lá organizar o dia!</p>
+                                        `;
+                                    }
+                                    lucide.createIcons();
+                                }
+                            });
+
+                            // Configura Check de Rádio do Tema nas Configurações
+                            const isDark = document.documentElement.classList.contains('dark');
+                            const radios = document.getElementsByName('theme');
+                            for(let r of radios) {
+                                if(r.value === (isDark ? 'dark' : 'light')) r.checked = true;
+                            }
+
+                            switchScreen('screen-home');
+                            switchTab('home');
+
+                            if(widgetInterval) clearInterval(widgetInterval);
+                            renderDashboardWidgets();
+                            widgetInterval = setInterval(renderDashboardWidgets, 10000);
+
+                        } else {
+                            switchScreen('screen-setup');
+                        }
+                    } catch (error) {
+                        console.error(error);
                         switchScreen('screen-setup');
                     }
-                } catch (error) {
-                    console.error(error);
-                    switchScreen('screen-setup');
+                } else {
+                    currentUser = null;
+                    userData = null;
+                    if(widgetInterval) clearInterval(widgetInterval);
+                    setTimeout(() => switchScreen('screen-login'), 1500);
                 }
-            } else {
-                currentUser = null;
-                userData = null;
-                if(widgetInterval) clearInterval(widgetInterval);
-                setTimeout(() => switchScreen('screen-login'), 1500);
-            }
-        });
+            });
+        }
 
         // Botões de Autenticação
-        document.getElementById('btn-login').addEventListener('click', async () => {
-            try {
-                await signInWithPopup(auth, googleProvider);
-            } catch (error) {
-                if (error.code === 'auth/unauthorized-domain') {
-                    alert("⚠️ Domínio Não Autorizado!\n\nAdicione o domínio atual na consola do Firebase (Authentication -> Settings -> Authorized domains).");
-                } else {
-                    alert("Erro ao fazer login: " + error.message);
+        const btnLogin = document.getElementById('btn-login');
+        if(btnLogin) {
+            btnLogin.addEventListener('click', async () => {
+                try {
+                    await signInWithPopup(auth, googleProvider);
+                } catch (error) {
+                    if (error.code === 'auth/unauthorized-domain') {
+                        alert("⚠️ Domínio Não Autorizado!\n\nAdicione o domínio na consola do Firebase.");
+                    } else {
+                        alert("Erro: " + error.message);
+                    }
                 }
-            }
-        });
+            });
+        }
 
-        document.getElementById('btn-logout').addEventListener('click', async () => {
-            await signOut(auth);
-            switchScreen('screen-login');
-        });
+        const btnLogout = document.getElementById('btn-logout');
+        if(btnLogout) {
+             btnLogout.addEventListener('click', async () => {
+                await signOut(auth);
+                switchScreen('screen-login');
+            });
+        }
 
         // --- LÓGICA TELA SETUP PERFIL ---
         let currentModalCallback = null;
         function openModal(title, items, showSearch, callback) {
             currentModalCallback = callback;
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-selection').classList.remove('hidden');
-            document.getElementById('modal-selection').classList.add('flex');
+            const modalTitle = document.getElementById('modal-title');
+            if(modalTitle) modalTitle.innerText = title;
+            
+            const modalSelection = document.getElementById('modal-selection');
+            if(modalSelection) {
+                 modalSelection.classList.remove('hidden');
+                 modalSelection.classList.add('flex');
+            }
             
             const searchContainer = document.getElementById('modal-search-container');
             const searchInput = document.getElementById('modal-search');
             if (showSearch) {
-                searchContainer.classList.remove('hidden');
-                searchInput.value = '';
-                searchInput.oninput = (e) => renderModalList(items, e.target.value);
+                if(searchContainer) searchContainer.classList.remove('hidden');
+                if(searchInput) {
+                    searchInput.value = '';
+                    searchInput.oninput = (e) => renderModalList(items, e.target.value);
+                }
             } else {
-                searchContainer.classList.add('hidden');
+                if(searchContainer) searchContainer.classList.add('hidden');
             }
             renderModalList(items, '');
         }
 
         function renderModalList(items, filter) {
             const list = document.getElementById('modal-list');
+            if(!list) return;
+            
             list.innerHTML = '';
             const filtered = items.filter(i => i.toLowerCase().includes(filter.toLowerCase()));
             
             if (filtered.length === 0) {
-                list.innerHTML = '<div class="text-center text-gray-500 mt-10">Nenhum resultado encontrado.</div>';
+                list.innerHTML = '<div class="text-center text-gray-500 mt-10 font-medium">Nenhum resultado encontrado.</div>';
                 return;
             }
 
             filtered.forEach(item => {
                 const btn = document.createElement('button');
-                btn.className = "w-full text-left bg-transparent hover:bg-gray-100 dark:hover:bg-[#1C1C1E] active:bg-gray-200 dark:active:bg-[#2C2C2E] text-gray-900 dark:text-white py-4 px-4 rounded-xl transition-colors border-b border-gray-200 dark:border-white/5 last:border-0";
-                btn.innerHTML = `<span class="text-base">${item}</span>`;
+                btn.className = "w-full text-left bg-transparent hover:bg-gray-100 dark:hover:bg-white/5 active:bg-gray-200 dark:active:bg-white/10 text-gray-900 dark:text-white py-4 px-4 rounded-xl transition-colors border-b border-gray-200 dark:border-white/5 last:border-0";
+                btn.innerHTML = `<span class="text-base font-medium">${item}</span>`;
                 btn.onclick = () => {
                     if (currentModalCallback) currentModalCallback(item);
-                    document.getElementById('modal-selection').classList.add('hidden');
+                    const modalSelection = document.getElementById('modal-selection');
+                    if(modalSelection) modalSelection.classList.add('hidden');
                 };
                 list.appendChild(btn);
             });
         }
 
-        document.getElementById('btn-close-modal').onclick = () => {
-            document.getElementById('modal-selection').classList.add('hidden');
-            document.getElementById('modal-selection').classList.remove('flex');
+        const btnCloseModal = document.getElementById('btn-close-modal');
+        if(btnCloseModal) {
+             btnCloseModal.onclick = () => {
+                const modalSelection = document.getElementById('modal-selection');
+                if(modalSelection) {
+                     modalSelection.classList.add('hidden');
+                     modalSelection.classList.remove('flex');
+                }
+            }
         }
 
-        // Listeners Setup Form
         const btnUni = document.getElementById('btn-select-uni');
         const labelUni = document.getElementById('label-uni');
         const btnSem = document.getElementById('btn-select-semester');
@@ -932,114 +1093,142 @@
         const iconContainer = document.getElementById('username-icon-container');
         const errorMsg = document.getElementById('username-error-msg');
 
-        document.getElementById('setup-name').addEventListener('input', e => { setupName = e.target.value; validateSetupForm(); });
-        document.getElementById('setup-course').addEventListener('input', e => { setupCourse = e.target.value; validateSetupForm(); });
-        document.getElementById('setup-custom-uni').addEventListener('input', e => { setupCustomUni = e.target.value; validateSetupForm(); });
+        const setupNameInput = document.getElementById('setup-name');
+        if(setupNameInput) setupNameInput.addEventListener('input', e => { setupName = e.target.value; validateSetupForm(); });
+        
+        const setupCourseInput = document.getElementById('setup-course');
+        if(setupCourseInput) setupCourseInput.addEventListener('input', e => { setupCourse = e.target.value; validateSetupForm(); });
+        
+        const setupCustomUniInput = document.getElementById('setup-custom-uni');
+        if(setupCustomUniInput) setupCustomUniInput.addEventListener('input', e => { setupCustomUni = e.target.value; validateSetupForm(); });
 
-        btnSem.addEventListener('click', () => {
-            openModal("Semestre atual", semestersList, false, (sel) => {
-                setupSemester = sel;
-                labelSem.innerText = sel;
-                btnSem.classList.replace('text-gray-500', 'text-gray-900');
-                btnSem.classList.add('dark:text-white');
-                validateSetupForm();
+        if(btnSem) {
+            btnSem.addEventListener('click', () => {
+                openModal("Semestre atual", semestersList, false, (sel) => {
+                    setupSemester = sel;
+                    if(labelSem) labelSem.innerText = sel;
+                    btnSem.classList.replace('text-gray-500', 'text-gray-900');
+                    btnSem.classList.add('dark:text-white');
+                    validateSetupForm();
+                });
             });
-        });
+        }
 
-        btnUni.addEventListener('click', () => {
-            openModal("Buscar Universidade", universitiesList, true, (sel) => {
-                setupUni = sel;
-                labelUni.innerText = sel;
-                btnUni.classList.replace('text-gray-500', 'text-gray-900');
-                btnUni.classList.add('dark:text-white');
-                if (sel === "Outra (Digitar manualmente)") {
-                    customUniContainer.classList.remove('hidden');
-                    customUniContainer.classList.add('flex');
-                } else {
-                    customUniContainer.classList.add('hidden');
-                    customUniContainer.classList.remove('flex');
-                    setupCustomUni = "";
-                }
-                validateSetupForm();
-            });
-        });
-
-        document.getElementById('setup-username').addEventListener('input', (e) => {
-            let val = e.target.value.replace(/\s/g, '').toLowerCase();
-            e.target.value = val;
-            setupUsername = val;
-            clearTimeout(usernameTimeout);
-            
-            if (val.length > 2) {
-                isCheckingUsername = true;
-                iconContainer.innerHTML = iconLoader;
-                errorMsg.classList.add('hidden');
-                e.target.classList.remove('ring-2', 'ring-[#FF3B30]', 'border-transparent');
-                validateSetupForm();
-
-                usernameTimeout = setTimeout(async () => {
-                    try {
-                        const q = query(collection(db, "users"), where("username", "==", val));
-                        const snap = await getDocs(q);
-                        isUsernameAvailable = snap.empty;
-                        
-                        iconContainer.innerHTML = isUsernameAvailable ? iconCheck : iconX;
-                        lucide.createIcons({ root: iconContainer });
-                        
-                        if (!isUsernameAvailable) {
-                            errorMsg.classList.remove('hidden');
-                            e.target.classList.add('ring-2', 'ring-[#FF3B30]');
-                            e.target.classList.remove('border-transparent');
+        if(btnUni) {
+            btnUni.addEventListener('click', () => {
+                openModal("Buscar Universidade", universitiesList, true, (sel) => {
+                    setupUni = sel;
+                    if(labelUni) labelUni.innerText = sel;
+                    btnUni.classList.replace('text-gray-500', 'text-gray-900');
+                    btnUni.classList.add('dark:text-white');
+                    if (sel === "Outra (Digitar manualmente)") {
+                        if(customUniContainer) {
+                             customUniContainer.classList.remove('hidden');
+                             customUniContainer.classList.add('flex');
                         }
-                    } catch(err) {
-                        isUsernameAvailable = false;
-                        iconContainer.innerHTML = iconX;
-                        lucide.createIcons({ root: iconContainer });
-                    } finally {
-                        isCheckingUsername = false;
-                        validateSetupForm();
+                    } else {
+                        if(customUniContainer) {
+                             customUniContainer.classList.add('hidden');
+                             customUniContainer.classList.remove('flex');
+                        }
+                        setupCustomUni = "";
                     }
-                }, 800);
-            } else {
-                isCheckingUsername = false;
-                isUsernameAvailable = true;
-                iconContainer.innerHTML = '';
-                errorMsg.classList.add('hidden');
-                e.target.classList.remove('ring-2', 'ring-[#FF3B30]', 'border-transparent');
-                validateSetupForm();
-            }
-        });
+                    validateSetupForm();
+                });
+            });
+        }
+
+        const setupUsernameInput = document.getElementById('setup-username');
+        if(setupUsernameInput) {
+            setupUsernameInput.addEventListener('input', (e) => {
+                let val = e.target.value.replace(/\s/g, '').toLowerCase();
+                e.target.value = val;
+                setupUsername = val;
+                clearTimeout(usernameTimeout);
+                
+                if (val.length > 2) {
+                    isCheckingUsername = true;
+                    if(iconContainer) iconContainer.innerHTML = iconLoader;
+                    if(errorMsg) errorMsg.classList.add('hidden');
+                    e.target.classList.remove('ring-2', 'ring-[#FF3B30]');
+                    validateSetupForm();
+
+                    usernameTimeout = setTimeout(async () => {
+                        try {
+                            const q = query(collection(db, "users"), where("username", "==", val));
+                            const snap = await getDocs(q);
+                            isUsernameAvailable = snap.empty;
+                            
+                            if(iconContainer) {
+                                iconContainer.innerHTML = isUsernameAvailable ? iconCheck : iconX;
+                                lucide.createIcons({ root: iconContainer });
+                            }
+                            
+                            if (!isUsernameAvailable) {
+                                if(errorMsg) errorMsg.classList.remove('hidden');
+                                e.target.classList.add('ring-2', 'ring-[#FF3B30]');
+                            }
+                        } catch(err) {
+                            isUsernameAvailable = false;
+                            if(iconContainer) {
+                                iconContainer.innerHTML = iconX;
+                                lucide.createIcons({ root: iconContainer });
+                            }
+                        } finally {
+                            isCheckingUsername = false;
+                            validateSetupForm();
+                        }
+                    }, 800);
+                } else {
+                    isCheckingUsername = false;
+                    isUsernameAvailable = true;
+                    if(iconContainer) iconContainer.innerHTML = '';
+                    if(errorMsg) errorMsg.classList.add('hidden');
+                    e.target.classList.remove('ring-2', 'ring-[#FF3B30]');
+                    validateSetupForm();
+                }
+            });
+        }
 
         function validateSetupForm() {
             const isUniValid = setupUni && (setupUni !== "Outra (Digitar manualmente)" || setupCustomUni.trim() !== "");
             const isValid = setupName.trim() && setupUsername.length > 2 && setupCourse.trim() && setupSemester && isUniValid && isUsernameAvailable && !isCheckingUsername;
 
-            if (isValid) {
-                btnFinishSetup.disabled = false;
-                btnFinishSetup.className = "w-full py-4 rounded-2xl font-bold text-lg transition-all bg-primary text-white hover:scale-[1.02] active:scale-95 shadow-lg";
-            } else {
-                btnFinishSetup.disabled = true;
-                btnFinishSetup.className = "w-full py-4 rounded-2xl font-bold text-lg transition-all bg-gray-300 dark:bg-darkSurface text-gray-500 cursor-not-allowed";
+            if(btnFinishSetup) {
+                if (isValid) {
+                    btnFinishSetup.disabled = false;
+                    btnFinishSetup.className = "w-full py-4 rounded-2xl font-bold text-lg transition-all bg-primary text-white hover:scale-[1.02] active:scale-95 shadow-lg";
+                } else {
+                    btnFinishSetup.disabled = true;
+                    btnFinishSetup.className = "w-full py-4 rounded-2xl font-bold text-lg transition-all bg-gray-300 dark:bg-darkSurface text-gray-500 cursor-not-allowed";
+                }
             }
         }
 
-        document.getElementById('form-setup').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            btnFinishSetup.disabled = true;
-            btnFinishSetup.innerText = "A guardar...";
-            const finalUni = setupUni === "Outra (Digitar manualmente)" ? setupCustomUni : setupUni;
-            try {
-                await setDoc(doc(db, "users", currentUser.uid), {
-                    displayName: setupName, username: setupUsername, course: setupCourse,
-                    semester: setupSemester, university: finalUni, profileImageUrl: currentUser.photoURL || ""
-                }, { merge: true });
-                window.location.reload();
-            } catch (error) {
-                alert("Erro ao salvar: " + error.message);
-                btnFinishSetup.disabled = false;
-                btnFinishSetup.innerText = "Finalizar Perfil";
-            }
-        });
+        const formSetup = document.getElementById('form-setup');
+        if(formSetup) {
+            formSetup.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if(btnFinishSetup) {
+                     btnFinishSetup.disabled = true;
+                     btnFinishSetup.innerText = "A guardar...";
+                }
+                const finalUni = setupUni === "Outra (Digitar manualmente)" ? setupCustomUni : setupUni;
+                try {
+                    await setDoc(doc(db, "users", currentUser.uid), {
+                        displayName: setupName, username: setupUsername, course: setupCourse,
+                        semester: setupSemester, university: finalUni, profileImageUrl: currentUser.photoURL || ""
+                    }, { merge: true });
+                    window.location.reload();
+                } catch (error) {
+                    alert("Erro ao salvar: " + error.message);
+                    if(btnFinishSetup) {
+                         btnFinishSetup.disabled = false;
+                         btnFinishSetup.innerText = "Finalizar Perfil";
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>
