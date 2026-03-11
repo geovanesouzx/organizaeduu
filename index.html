@@ -21,6 +21,8 @@
                         primary: '#4A90E2',
                         darkBg: '#000000',
                         lightBg: '#F2F2F7',
+                        darkSurface: '#1C1C1E',
+                        lightSurface: '#FFFFFF',
                         success: '#32D74B',
                         danger: '#FF3B30',
                         warning: '#FF9F0A',
@@ -45,14 +47,14 @@
             -webkit-font-smoothing: antialiased;
             overscroll-behavior-y: none;
         }
+        
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Efeito Liquid Glass Premium (Otimizado para Mobile e PC) */
+        /* Efeito Liquid Glass Premium - Ajustado para não piscar no mobile */
         .glass-card {
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
-            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .dark .glass-card {
             background: rgba(28, 28, 30, 0.65);
@@ -61,33 +63,49 @@
         }
         html:not(.dark) .glass-card {
             background: rgba(255, 255, 255, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 40px rgba(31, 38, 135, 0.05);
         }
-        
-        /* Glass Navbar especifico para não misturar fundos */
+
+        /* Glass Navbar (Para barras fixas) */
         .glass-nav {
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
         }
         .dark .glass-nav {
             background: rgba(20, 20, 20, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         html:not(.dark) .glass-nav {
+            background: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Glass Navbar Inferior Mobile */
+        .dark .glass-bottom-nav {
+            background: rgba(20, 20, 20, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        html:not(.dark) .glass-bottom-nav {
             background: rgba(255, 255, 255, 0.9);
             border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        /* Efeito Hover Apenas para Desktop */
         @media (min-width: 768px) {
             .glass-card.interactive:hover {
                 transform: translateY(-2px);
+                transition: transform 0.2s ease;
             }
         }
+
+        .chat-bubble-ai { border-radius: 20px 20px 20px 4px; }
+        
+        /* Esconder abas inativas de forma elegante */
+        .tab-content { display: none; opacity: 0; transition: opacity 0.3s ease; }
+        .tab-content.active { display: flex; opacity: 1; }
     </style>
 </head>
-<body class="bg-lightBg dark:bg-darkBg text-gray-900 dark:text-white transition-colors duration-500 selection:bg-primary/30 relative min-h-screen overflow-hidden">
+<body class="bg-lightBg dark:bg-darkBg text-gray-900 dark:text-white transition-colors duration-500 selection:bg-primary/30 relative min-h-screen overflow-hidden flex flex-col">
 
     <!-- Orbes de luz de fundo -->
     <div class="fixed top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden">
@@ -97,7 +115,7 @@
     </div>
 
     <!-- 1. TELA DE CARREGAMENTO -->
-    <div id="screen-loading" class="relative z-10 flex flex-col items-center justify-center min-h-screen">
+    <div id="screen-loading" class="relative z-50 flex flex-col items-center justify-center min-h-screen bg-lightBg dark:bg-darkBg">
         <div class="flex flex-col items-center justify-center animate-pulse">
             <img src="https://i.imgur.com/PC5Ijma.png" alt="Logo" class="w-40 h-40 object-contain drop-shadow-2xl" />
             <h1 class="mt-8 text-3xl font-bold tracking-wide">OrganizaEdu</h1>
@@ -105,7 +123,7 @@
     </div>
 
     <!-- 2. TELA DE LOGIN -->
-    <div id="screen-login" class="hidden relative z-10 flex-col items-center justify-center min-h-screen">
+    <div id="screen-login" class="hidden relative z-40 flex-col items-center justify-center min-h-screen bg-transparent">
         <div class="flex flex-col items-center justify-center w-full max-w-5xl px-8 h-full">
             <div class="flex flex-col items-center justify-center flex-1 w-full mt-16 md:mt-0">
                 <img src="https://i.imgur.com/PC5Ijma.png" alt="Logo" class="w-32 h-32 md:w-48 md:h-48 object-contain mb-8 md:mb-12 hover:scale-105 transition-transform duration-500" />
@@ -124,7 +142,7 @@
     </div>
 
     <!-- 3. TELA DE CONFIGURAÇÃO DE PERFIL INICIAL -->
-    <div id="screen-setup" class="hidden relative z-10 flex-col items-center pt-12 px-6 pb-8 min-h-screen overflow-y-auto">
+    <div id="screen-setup" class="hidden relative z-40 flex-col items-center pt-12 px-6 pb-8 min-h-screen overflow-y-auto">
         <div class="w-full max-w-md">
             <h2 class="text-3xl font-extrabold mb-2 text-center tracking-tight">Complete o seu perfil</h2>
             <p class="text-gray-500 dark:text-gray-400 text-center mb-10">Precisamos de alguns dados para personalizar a sua experiência.</p>
@@ -132,13 +150,13 @@
             <form id="form-setup" class="space-y-5">
                 <div class="flex flex-col">
                     <label class="text-sm text-gray-500 dark:text-gray-400 mb-1 ml-1 font-medium">Nome de Perfil</label>
-                    <input type="text" id="setup-name" required placeholder="Ex: João Silva" class="w-full glass-card rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary placeholder-gray-400 dark:placeholder-gray-500" />
+                    <input type="text" id="setup-name" required placeholder="Ex: João Silva" class="w-full glass-card rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary placeholder-gray-400 dark:placeholder-gray-500 bg-transparent" />
                 </div>
 
                 <div class="flex flex-col">
                     <label class="text-sm text-gray-500 dark:text-gray-400 mb-1 ml-1 font-medium">Nome de Utilizador</label>
                     <div class="relative">
-                        <input type="text" id="setup-username" required placeholder="@usuario" class="w-full glass-card rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary placeholder-gray-400 dark:placeholder-gray-500" />
+                        <input type="text" id="setup-username" required placeholder="@usuario" class="w-full glass-card rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary placeholder-gray-400 dark:placeholder-gray-500 bg-transparent" />
                         <div class="absolute right-4 top-1/2 -translate-y-1/2" id="username-icon-container"></div>
                     </div>
                     <p id="username-error-msg" class="hidden text-danger text-xs mt-1 ml-1">Este nome de utilizador já está em uso!</p>
@@ -146,12 +164,12 @@
 
                 <div class="flex flex-col">
                     <label class="text-sm text-gray-500 dark:text-gray-400 mb-1 ml-1 font-medium">Curso</label>
-                    <input type="text" id="setup-course" required placeholder="Ex: Engenharia Informática" class="w-full glass-card rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary placeholder-gray-400 dark:placeholder-gray-500" />
+                    <input type="text" id="setup-course" required placeholder="Ex: Engenharia Informática" class="w-full glass-card rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary placeholder-gray-400 dark:placeholder-gray-500 bg-transparent" />
                 </div>
 
                 <div class="flex flex-col">
                     <label class="text-sm text-gray-500 dark:text-gray-400 mb-1 ml-1 font-medium">Semestre atual</label>
-                    <button type="button" id="btn-select-semester" class="w-full text-left glass-card rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary text-gray-400 dark:text-gray-500 flex justify-between items-center">
+                    <button type="button" id="btn-select-semester" class="w-full text-left glass-card rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary text-gray-400 dark:text-gray-500 flex justify-between items-center bg-transparent">
                         <span id="label-semester">Selecione o semestre...</span>
                         <i data-lucide="chevron-down" class="w-5 h-5"></i>
                     </button>
@@ -159,19 +177,14 @@
 
                 <div class="flex flex-col mb-4">
                     <label class="text-sm text-gray-500 dark:text-gray-400 mb-1 ml-1 font-medium">Universidade</label>
-                    <button type="button" id="btn-select-uni" class="w-full text-left glass-card rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary text-gray-400 dark:text-gray-500 flex justify-between items-center">
+                    <button type="button" id="btn-select-uni" class="w-full text-left glass-card rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary text-gray-400 dark:text-gray-500 flex justify-between items-center bg-transparent">
                         <span id="label-uni" class="truncate pr-4">Toque para buscar...</span>
                         <i data-lucide="chevron-down" class="w-5 h-5 flex-shrink-0"></i>
                     </button>
                 </div>
 
-                <div id="setup-custom-uni-container" class="hidden flex-col mb-8">
-                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1 font-medium">Nome da Universidade</label>
-                    <input type="text" id="setup-custom-uni" placeholder="Digite o nome..." class="w-full glass-card text-gray-900 dark:text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary" />
-                </div>
-
                 <div class="pt-6">
-                    <button type="submit" id="btn-finish-setup" disabled class="w-full py-4 rounded-2xl font-bold text-lg transition-all bg-gray-300 dark:bg-gray-800 text-gray-500 cursor-not-allowed">
+                    <button type="submit" id="btn-finish-setup" disabled class="w-full py-4 rounded-2xl font-bold text-lg transition-all bg-gray-300 dark:bg-[#1C1C1E] text-gray-500 cursor-not-allowed">
                         Finalizar Perfil
                     </button>
                 </div>
@@ -183,7 +196,7 @@
     <div id="screen-home" class="hidden relative z-10 h-screen w-full flex-col md:flex-row overflow-hidden">
         
         <!-- BARRA LATERAL (PC) -->
-        <nav class="hidden md:flex flex-col w-64 glass-card h-full flex-shrink-0 rounded-none border-t-0 border-b-0 border-l-0 z-20 hover:transform-none">
+        <nav class="hidden md:flex flex-col w-64 glass-card h-full flex-shrink-0 rounded-none border-t-0 border-b-0 border-l-0 z-20">
             <div class="p-6 flex items-center gap-3 mb-4 border-b border-gray-200/50 dark:border-white/10">
                 <img src="https://i.imgur.com/PC5Ijma.png" class="w-10 h-10 object-contain drop-shadow-md"/>
                 <span class="font-extrabold text-xl tracking-tight">OrganizaEdu</span>
@@ -212,105 +225,70 @@
             
             <div class="p-4 border-t border-gray-200/50 dark:border-white/10">
                 <button onclick="toggleTheme()" class="flex items-center justify-between w-full px-4 py-3 rounded-xl bg-gray-200/50 dark:bg-white/5 hover:bg-gray-300/50 dark:hover:bg-white/10 transition-colors">
-                    <span class="font-medium text-sm">Tema Escuro</span>
-                    <div class="relative inline-flex items-center h-6 rounded-full w-11 transition-colors bg-gray-400 dark:bg-primary">
-                        <span class="inline-block w-4 h-4 transform bg-white rounded-full transition-transform translate-x-1 dark:translate-x-6"></span>
-                    </div>
+                    <span class="font-medium text-sm">Alternar Tema</span>
+                    <i data-lucide="moon" class="w-4 h-4 hidden dark:block text-primary"></i>
+                    <i data-lucide="sun" class="w-4 h-4 block dark:hidden text-primary"></i>
                 </button>
             </div>
         </nav>
 
-        <!-- ÁREA PRINCIPAL -->
+        <!-- ÁREA PRINCIPAL CONTENT -->
         <div class="flex-1 flex flex-col min-w-0 h-full z-10 relative">
             
-            <!-- HEADER MOBILE -->
-            <header class="md:hidden flex items-center justify-between p-4 px-6 glass-card rounded-none border-t-0 border-l-0 border-r-0 z-20">
-                <div class="flex items-center gap-2">
-                    <img src="https://i.imgur.com/PC5Ijma.png" class="w-8 h-8 object-contain" />
-                    <span class="font-bold text-lg">OrganizaEdu</span>
+            <!-- HEADER MOBILE FIXO E ELEGANTE -->
+            <header class="md:hidden sticky top-0 left-0 right-0 flex items-center justify-between p-4 px-6 glass-nav z-40">
+                <div class="flex items-center gap-3">
+                    <img src="https://i.imgur.com/PC5Ijma.png" class="w-8 h-8 object-contain drop-shadow-md" />
+                    <span class="font-extrabold text-xl tracking-tight">OrganizaEdu</span>
                 </div>
-                <button onclick="toggleTheme()" class="p-2 bg-gray-200/50 dark:bg-white/10 rounded-full text-gray-700 dark:text-gray-200">
-                    <i data-lucide="moon" class="w-5 h-5 hidden dark:block"></i>
-                    <i data-lucide="sun" class="w-5 h-5 block dark:hidden"></i>
+                <button onclick="switchTab('profile')" class="w-9 h-9 rounded-full overflow-hidden bg-gray-200 dark:bg-[#1C1C1E] border border-gray-300 dark:border-white/10 flex items-center justify-center">
+                    <img id="mobile-header-photo" src="" alt="Perfil" class="w-full h-full object-cover hidden" />
+                    <i data-lucide="user" id="mobile-header-placeholder" class="w-5 h-5 text-gray-500"></i>
                 </button>
             </header>
 
-            <!-- CONTEÚDO SCROLLÁVEL DAS ABAS -->
-            <main class="flex-1 overflow-y-auto p-4 md:p-8 pb-32 md:pb-8 no-scrollbar relative">
+            <!-- CONTEÚDO SCROLLÁVEL -->
+            <!-- pb-32 garante que não fique debaixo da nav mobile -->
+            <main class="flex-1 overflow-y-auto w-full pb-32 pt-4 px-4 md:p-8 no-scrollbar relative">
                 
                 <!-- TAB INÍCIO -->
-                <div id="tab-content-home" class="block w-full max-w-5xl mx-auto animate-fade-in">
-                    <div class="flex justify-between items-center mb-8 mt-2 md:mt-0">
-                        <div>
-                            <h1 id="home-greeting" class="text-3xl font-extrabold tracking-tight">Olá, Estudante</h1>
-                            <p class="text-gray-500 dark:text-gray-400 mt-1 font-medium">Bem-vindo(a) ao seu painel.</p>
-                        </div>
-                        <div class="md:hidden w-12 h-12 rounded-full overflow-hidden glass-card flex items-center justify-center cursor-pointer border border-primary/30" onclick="switchTab('profile')">
-                            <img id="home-photo" src="" alt="Perfil" class="w-full h-full object-cover hidden" />
-                            <i data-lucide="user" id="home-photo-placeholder" class="w-6 h-6 text-primary"></i>
-                        </div>
+                <div id="tab-content-home" class="tab-content active flex-col w-full max-w-5xl mx-auto">
+                    <div class="mb-8 pl-2">
+                        <h1 id="home-greeting" class="text-3xl font-extrabold tracking-tight">Olá, Estudante</h1>
+                        <p class="text-gray-500 dark:text-gray-400 mt-1 font-medium">Bem-vindo(a) ao seu painel.</p>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <!-- Aulas Widget -->
-                        <div class="glass-card interactive rounded-3xl p-6 cursor-pointer" onclick="switchTab('aulas')">
-                            <div class="flex items-center mb-4">
-                                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                                    <i data-lucide="book-open" class="w-6 h-6"></i>
-                                </div>
-                                <h3 class="font-bold text-lg ml-4">Aulas de Hoje</h3>
-                            </div>
-                            <div id="home-widget-aulas-content" class="p-5 bg-white/40 dark:bg-black/20 rounded-2xl flex flex-col items-center justify-center text-center min-h-[8rem] border border-white/20 dark:border-white/5">
-                                <i data-lucide="coffee" class="w-8 h-8 mb-3 text-gray-400"></i>
-                                <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">A carregar...</p>
-                            </div>
-                        </div>
-
-                        <!-- Tarefas Widget -->
-                        <div class="glass-card interactive rounded-3xl p-6 cursor-pointer" onclick="switchTab('menu')">
-                            <div class="flex items-center mb-4">
-                                <div class="w-12 h-12 rounded-full bg-[#0A84FF]/10 flex items-center justify-center text-[#0A84FF]">
-                                    <i data-lucide="check-square" class="w-6 h-6"></i>
-                                </div>
-                                <h3 class="font-bold text-lg ml-4">Produtividade</h3>
-                            </div>
-                            <div id="home-widget-tarefas-content" class="p-5 bg-white/40 dark:bg-black/20 rounded-2xl flex flex-col items-center justify-center text-center min-h-[8rem] border border-white/20 dark:border-white/5">
-                                <i data-lucide="check-circle-2" class="w-8 h-8 mb-3 text-gray-400"></i>
-                                <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">A carregar...</p>
-                            </div>
-                        </div>
-
-                        <!-- Circular Widget -->
-                        <div id="home-widget-circular" class="hidden glass-card interactive rounded-3xl p-6 cursor-pointer" onclick="switchTab('circular')">
-                            <div class="flex items-center mb-4">
-                                <div class="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center text-success">
-                                    <i data-lucide="bus-front" class="w-6 h-6"></i>
-                                </div>
-                                <h3 class="font-bold text-lg ml-4">Circular UFRB</h3>
-                            </div>
-                            <div id="home-widget-circular-content" class="p-5 bg-white/40 dark:bg-black/20 rounded-2xl flex flex-col justify-center text-left min-h-[8rem] border border-white/20 dark:border-white/5">
-                                <p class="text-gray-500 text-center text-sm font-medium">A carregar...</p>
-                            </div>
-                        </div>
+                    <!-- Grelha Dinâmica de Widgets -->
+                    <div id="home-widgets-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Preenchido via JS baseado nas preferências -->
                     </div>
                 </div>
 
                 <!-- TAB AULAS -->
-                <div id="tab-content-aulas" class="hidden flex-col w-full max-w-4xl mx-auto min-h-full">
-                    <div class="flex justify-between items-center mb-8 mt-2 md:mt-0">
+                <div id="tab-content-aulas" class="tab-content flex-col w-full max-w-4xl mx-auto min-h-full">
+                    <div class="flex justify-between items-center mb-8 pl-2">
                         <h1 class="text-3xl font-extrabold tracking-tight">As Tuas Aulas</h1>
                     </div>
-                    <div class="flex-1 flex flex-col items-center justify-center text-center border-2 border-dashed border-gray-300 dark:border-white/10 rounded-3xl p-10 glass-card">
-                        <i data-lucide="calendar-x" class="w-16 h-16 text-gray-400 dark:text-gray-500 mb-4"></i>
-                        <h3 class="text-xl font-bold mb-2">Nenhuma aula registada</h3>
-                        <p class="text-gray-500 dark:text-gray-400">A sincronização da base de dados ocorrerá em breve.</p>
+                    
+                    <div id="aulas-list-container" class="space-y-4">
+                        <!-- Lista de aulas via JS -->
+                        <div class="flex flex-col items-center justify-center text-center border-2 border-dashed border-gray-300 dark:border-white/10 rounded-3xl p-10 glass-card w-full">
+                            <i data-lucide="calendar-x" class="w-12 h-12 text-gray-400 dark:text-gray-500 mb-4"></i>
+                            <h3 class="text-lg font-bold mb-2">Nenhuma aula registada</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Clique no + para adicionar a sua grade horária.</p>
+                        </div>
                     </div>
+                    
+                    <!-- FAB Adicionar Aula -->
+                    <button onclick="openAulaModal()" class="fixed bottom-28 md:bottom-10 right-6 md:right-10 w-14 h-14 bg-primary text-white rounded-full flex items-center justify-center shadow-[0_8px_20px_rgba(74,144,226,0.4)] hover:scale-105 active:scale-95 transition-transform z-30">
+                        <i data-lucide="plus" class="w-6 h-6"></i>
+                    </button>
                 </div>
 
                 <!-- TAB IA -->
-                <div id="tab-content-ia" class="hidden flex-col w-full max-w-4xl mx-auto h-[75vh] md:h-full">
-                    <div class="flex items-center mb-6 mt-2 md:mt-0">
-                        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center p-1 mr-4 shadow-md">
+                <div id="tab-content-ia" class="tab-content flex-col w-full max-w-4xl mx-auto h-[75vh] md:h-full">
+                    <div class="flex items-center mb-6 pl-2">
+                        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center p-1 mr-4 shadow-sm">
                             <img src="https://i.imgur.com/PC5Ijma.png" alt="IA" class="w-full h-full object-contain" />
                         </div>
                         <div>
@@ -319,11 +297,11 @@
                         </div>
                     </div>
                     
-                    <div class="flex-1 glass-card rounded-3xl p-4 md:p-6 flex flex-col hover:transform-none">
+                    <div class="flex-1 glass-card rounded-3xl p-4 flex flex-col">
                         <div class="flex-1 overflow-y-auto space-y-4 no-scrollbar flex flex-col justify-end mb-4">
-                            <div class="flex items-start max-w-[85%]">
+                            <div class="flex items-start max-w-[90%]">
                                 <div class="p-4 text-[15px] bg-white/60 dark:bg-[#1C1C1E] border border-gray-200 dark:border-white/5 chat-bubble-ai shadow-sm font-medium leading-relaxed">
-                                    Olá! Sou a Organiza IA ✨<br>A integração do motor LLaMA para a Web está a ser ultimada.
+                                    Olá! Sou a Organiza IA ✨<br>A integração do motor LLaMA para a Web está a ser ultimada. Em breve poderás conversar comigo aqui.
                                 </div>
                             </div>
                         </div>
@@ -337,30 +315,30 @@
                 </div>
 
                 <!-- TAB MENU (FERRAMENTAS) -->
-                <div id="tab-content-menu" class="hidden flex-col w-full max-w-4xl mx-auto min-h-full pb-20">
-                    <h1 class="text-3xl font-extrabold tracking-tight mb-2 mt-2 md:mt-0">Ferramentas</h1>
-                    <p class="text-gray-500 dark:text-gray-400 mb-8 font-medium">Tudo que precisa para o seu dia a dia académico.</p>
+                <div id="tab-content-menu" class="tab-content flex-col w-full max-w-4xl mx-auto min-h-full">
+                    <h1 class="text-3xl font-extrabold tracking-tight mb-2 pl-2">Ferramentas</h1>
+                    <p class="text-gray-500 dark:text-gray-400 mb-8 font-medium pl-2">Tudo que precisa para o seu dia a dia académico.</p>
 
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                        <div onclick="alert('Em breve')" class="glass-card interactive rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer aspect-square text-center">
+                        <div onclick="alert('Funcionalidade em desenvolvimento na versão Web.')" class="glass-card interactive rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer aspect-square text-center">
                             <div class="w-14 h-14 rounded-full bg-success/10 flex items-center justify-center mb-4 text-success">
                                 <i data-lucide="wallet" class="w-7 h-7"></i>
                             </div>
                             <h3 class="font-bold text-sm">Finanças</h3>
                         </div>
-                        <div onclick="alert('Em breve')" class="glass-card interactive rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer aspect-square text-center">
+                        <div onclick="alert('Funcionalidade em desenvolvimento na versão Web.')" class="glass-card interactive rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer aspect-square text-center">
                             <div class="w-14 h-14 rounded-full bg-[#0A84FF]/10 flex items-center justify-center mb-4 text-[#0A84FF]">
                                 <i data-lucide="list-todo" class="w-7 h-7"></i>
                             </div>
                             <h3 class="font-bold text-sm">Tarefas</h3>
                         </div>
-                        <div onclick="alert('Em breve')" class="glass-card interactive rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer aspect-square text-center">
+                        <div onclick="alert('Funcionalidade em desenvolvimento na versão Web.')" class="glass-card interactive rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer aspect-square text-center">
                             <div class="w-14 h-14 rounded-full bg-[#5E5CE6]/10 flex items-center justify-center mb-4 text-[#5E5CE6]">
                                 <i data-lucide="sticky-note" class="w-7 h-7"></i>
                             </div>
                             <h3 class="font-bold text-sm">Anotações</h3>
                         </div>
-                        <div onclick="alert('Em breve')" class="glass-card interactive rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer aspect-square text-center">
+                        <div onclick="alert('Funcionalidade em desenvolvimento na versão Web.')" class="glass-card interactive rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer aspect-square text-center">
                             <div class="w-14 h-14 rounded-full bg-[#00C7BE]/10 flex items-center justify-center mb-4 text-[#00C7BE]">
                                 <i data-lucide="focus" class="w-7 h-7"></i>
                             </div>
@@ -369,28 +347,28 @@
                     </div>
                 </div>
 
-                <!-- TAB CIRCULAR (ITINERÁRIOS COMPLETOS) -->
-                <div id="tab-content-circular" class="hidden flex-col w-full max-w-4xl mx-auto min-h-full pb-20">
-                    <h1 class="text-3xl font-extrabold tracking-tight mb-8 mt-2 md:mt-0">Circular UFRB</h1>
-                    <h2 class="text-xl font-bold mb-4 flex items-center"><i data-lucide="clock" class="w-5 h-5 mr-2 text-primary"></i> Horários de Hoje</h2>
+                <!-- TAB CIRCULAR -->
+                <div id="tab-content-circular" class="tab-content flex-col w-full max-w-4xl mx-auto min-h-full">
+                    <h1 class="text-3xl font-extrabold tracking-tight mb-8 pl-2">Circular UFRB</h1>
+                    <h2 class="text-xl font-bold mb-4 flex items-center pl-2"><i data-lucide="clock" class="w-5 h-5 mr-2 text-primary"></i> Horários de Hoje</h2>
                     <div id="circular-schedule-list" class="space-y-4">
                         <!-- Lista injetada via JS -->
                     </div>
                 </div>
 
                 <!-- TAB PERFIL -->
-                <div id="tab-content-profile" class="hidden flex-col w-full max-w-2xl mx-auto min-h-full items-center pt-2 pb-20">
-                    <div class="flex justify-between items-center mb-8 w-full">
+                <div id="tab-content-profile" class="tab-content flex-col w-full max-w-2xl mx-auto min-h-full items-center">
+                    <div class="flex justify-between items-center mb-8 w-full pl-2 pr-2">
                         <h1 class="text-3xl font-extrabold tracking-tight">Meu Perfil</h1>
                         <button onclick="switchScreen('screen-settings')" class="p-3 glass-card rounded-full hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors">
                             <i data-lucide="settings" class="w-6 h-6"></i>
                         </button>
                     </div>
                     
-                    <div class="flex flex-col items-center mb-8 w-full">
+                    <div class="glass-card rounded-3xl p-8 w-full flex flex-col items-center mb-8">
                         <div class="relative w-32 h-32 mb-4">
                             <img id="profile-tab-photo" src="" alt="Perfil" class="w-full h-full rounded-full border-4 border-primary object-cover shadow-xl hidden" />
-                            <div id="profile-tab-placeholder" class="w-full h-full rounded-full glass-card border-4 border-gray-300 dark:border-white/10 flex items-center justify-center">
+                            <div id="profile-tab-placeholder" class="w-full h-full rounded-full bg-gray-200 dark:bg-[#1C1C1E] border-4 border-gray-300 dark:border-white/10 flex items-center justify-center">
                                 <i data-lucide="user" class="w-12 h-12 text-gray-500"></i>
                             </div>
                         </div>
@@ -398,31 +376,31 @@
                         <p id="profile-tab-username" class="text-primary font-medium mb-6">@usuario</p>
                         
                         <div class="w-full space-y-3">
-                            <div class="glass-card rounded-2xl p-4 flex items-center">
-                                <div class="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 mr-4">
+                            <div class="bg-white/50 dark:bg-black/20 rounded-2xl p-4 flex items-center border border-white/20 dark:border-white/5">
+                                <div class="w-10 h-10 rounded-full bg-[#0A84FF]/10 flex items-center justify-center text-[#0A84FF] mr-4">
                                     <i data-lucide="graduation-cap" class="w-5 h-5"></i>
                                 </div>
-                                <div>
+                                <div class="flex-1 min-w-0">
                                     <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Curso</p>
-                                    <p id="profile-tab-course" class="font-medium text-gray-900 dark:text-white">...</p>
+                                    <p id="profile-tab-course" class="font-medium text-gray-900 dark:text-white truncate">...</p>
                                 </div>
                             </div>
-                            <div class="glass-card rounded-2xl p-4 flex items-center">
+                            <div class="bg-white/50 dark:bg-black/20 rounded-2xl p-4 flex items-center border border-white/20 dark:border-white/5">
                                 <div class="w-10 h-10 rounded-full bg-purple/10 flex items-center justify-center text-purple mr-4">
                                     <i data-lucide="calendar" class="w-5 h-5"></i>
                                 </div>
-                                <div>
+                                <div class="flex-1 min-w-0">
                                     <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Semestre</p>
-                                    <p id="profile-tab-semester" class="font-medium text-gray-900 dark:text-white">...</p>
+                                    <p id="profile-tab-semester" class="font-medium text-gray-900 dark:text-white truncate">...</p>
                                 </div>
                             </div>
-                            <div class="glass-card rounded-2xl p-4 flex items-center">
+                            <div class="bg-white/50 dark:bg-black/20 rounded-2xl p-4 flex items-center border border-white/20 dark:border-white/5">
                                 <div class="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center text-success mr-4">
                                     <i data-lucide="building-2" class="w-5 h-5"></i>
                                 </div>
-                                <div>
+                                <div class="flex-1 min-w-0">
                                     <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Universidade</p>
-                                    <p id="profile-tab-uni" class="font-medium text-gray-900 dark:text-white">...</p>
+                                    <p id="profile-tab-uni" class="font-medium text-gray-900 dark:text-white truncate">...</p>
                                 </div>
                             </div>
                         </div>
@@ -433,13 +411,12 @@
                         Sair da Conta
                     </button>
                 </div>
-
             </main>
         </div>
 
         <!-- NavBar Inferior (MOBILE APENAS) -->
         <div class="md:hidden fixed bottom-0 left-0 right-0 p-4 pb-6 flex justify-center z-50 pointer-events-none">
-            <div class="pointer-events-auto flex items-center justify-evenly w-full max-w-md glass-nav py-3 rounded-[32px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+            <div class="pointer-events-auto flex items-center justify-evenly w-full max-w-md glass-bottom-nav py-3 rounded-[32px] shadow-[0_10px_40px_rgba(0,0,0,0.2)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.6)] backdrop-blur-xl">
                 
                 <button onclick="switchTab('home')" id="bottom-btn-home" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-primary">
                     <i data-lucide="layout-dashboard" class="mb-1 w-6 h-6 stroke-[2.5]"></i>
@@ -474,13 +451,13 @@
 
     <!-- 5. TELA DE CONFIGURAÇÕES -->
     <div id="screen-settings" class="hidden relative z-50 flex-col min-h-screen bg-lightBg dark:bg-darkBg w-full transition-colors duration-500">
-        <header class="flex items-center p-4 pt-6 border-b border-gray-200 dark:border-white/5 glass-card rounded-none z-30 sticky top-0">
-            <button onclick="switchScreen('screen-home'); switchTab('profile');" class="p-2 mr-2 hover:bg-gray-200 dark:hover:bg-white/10 rounded-full transition-colors">
-                <i data-lucide="arrow-left" class="w-6 h-6 text-gray-900 dark:text-white"></i>
+        <header class="flex items-center p-4 px-6 border-b border-gray-200 dark:border-white/5 glass-nav sticky top-0 z-30">
+            <button onclick="switchScreen('screen-home'); switchTab('profile');" class="p-2 mr-3 hover:bg-gray-200 dark:hover:bg-white/10 rounded-full transition-colors">
+                <i data-lucide="arrow-left" class="w-6 h-6"></i>
             </button>
-            <h2 class="text-xl font-bold text-gray-900 dark:text-white">Configurações</h2>
+            <h2 class="text-xl font-bold tracking-tight">Configurações</h2>
         </header>
-        <main class="flex-1 overflow-y-auto p-6 space-y-8 max-w-3xl mx-auto w-full pb-12 no-scrollbar">
+        <main class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 max-w-3xl mx-auto w-full pb-12 no-scrollbar">
             
             <!-- Aparência -->
             <section>
@@ -488,72 +465,86 @@
                 <div class="glass-card rounded-3xl overflow-hidden divide-y divide-gray-200/50 dark:divide-white/5">
                     <label class="flex items-center justify-between p-4 cursor-pointer hover:bg-white/50 dark:hover:bg-white/5 transition-colors">
                         <div class="flex items-center gap-3">
-                            <i data-lucide="sun" class="w-5 h-5 text-gray-500"></i>
-                            <span class="font-medium text-gray-900 dark:text-white">Modo Claro</span>
+                            <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-[#1C1C1E] flex items-center justify-center text-gray-500"><i data-lucide="sun" class="w-4 h-4"></i></div>
+                            <div>
+                                <span class="font-medium text-sm block">Modo Claro</span>
+                            </div>
                         </div>
                         <input type="radio" name="theme" value="light" class="w-5 h-5 accent-primary" onchange="setTheme('light')">
                     </label>
                     <label class="flex items-center justify-between p-4 cursor-pointer hover:bg-white/50 dark:hover:bg-white/5 transition-colors">
                         <div class="flex items-center gap-3">
-                            <i data-lucide="moon" class="w-5 h-5 text-gray-500"></i>
-                            <span class="font-medium text-gray-900 dark:text-white">Modo Escuro</span>
+                            <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-[#1C1C1E] flex items-center justify-center text-gray-500"><i data-lucide="moon" class="w-4 h-4"></i></div>
+                            <div>
+                                <span class="font-medium text-sm block">Modo Escuro</span>
+                            </div>
                         </div>
                         <input type="radio" name="theme" value="dark" class="w-5 h-5 accent-primary" onchange="setTheme('dark')">
                     </label>
                 </div>
             </section>
 
-            <!-- Preferências -->
+            <!-- Preferências dos Widgets -->
             <section>
                 <h3 class="text-xs font-bold text-primary uppercase tracking-wider mb-3 ml-2 flex items-center"><i data-lucide="layout-template" class="w-4 h-4 mr-2"></i> Estilo dos Widgets</h3>
                 <div class="glass-card rounded-3xl overflow-hidden divide-y divide-gray-200/50 dark:divide-white/5">
                     <div class="flex items-center justify-between p-4">
                         <div class="flex items-center gap-3">
-                            <i data-lucide="book-open" class="w-5 h-5 text-gray-500"></i>
-                            <span class="font-medium text-gray-900 dark:text-white">Aulas</span>
+                            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary"><i data-lucide="book-open" class="w-4 h-4"></i></div>
+                            <span class="font-medium text-sm">Aulas</span>
                         </div>
-                        <select class="bg-transparent text-gray-500 outline-none text-right appearance-none font-medium cursor-pointer">
-                            <option>Avançado</option>
-                            <option>Simples</option>
+                        <select id="pref-widget-aulas" onchange="saveWidgetPref('aulasWidgetStyle', this.value)" class="bg-transparent text-primary outline-none text-right appearance-none font-bold text-sm cursor-pointer px-2">
+                            <option value="Avançado">Avançado</option>
+                            <option value="Detalhado">Detalhado</option>
+                            <option value="Simples">Simples</option>
                         </select>
                     </div>
                     <div class="flex items-center justify-between p-4">
                         <div class="flex items-center gap-3">
-                            <i data-lucide="check-square" class="w-5 h-5 text-gray-500"></i>
-                            <span class="font-medium text-gray-900 dark:text-white">Tarefas</span>
+                            <div class="w-8 h-8 rounded-full bg-[#0A84FF]/10 flex items-center justify-center text-[#0A84FF]"><i data-lucide="check-square" class="w-4 h-4"></i></div>
+                            <span class="font-medium text-sm">Tarefas</span>
                         </div>
-                        <select class="bg-transparent text-gray-500 outline-none text-right appearance-none font-medium cursor-pointer">
-                            <option>Avançado</option>
-                            <option>Simples</option>
+                        <select id="pref-widget-tarefas" onchange="saveWidgetPref('tarefasWidgetStyle', this.value)" class="bg-transparent text-primary outline-none text-right appearance-none font-bold text-sm cursor-pointer px-2">
+                            <option value="Avançado">Avançado</option>
+                            <option value="Detalhado">Detalhado</option>
+                            <option value="Simples">Simples</option>
                         </select>
                     </div>
-                    <div class="flex items-center justify-between p-4">
+                    <div class="flex items-center justify-between p-4" id="config-circular-row">
                         <div class="flex items-center gap-3">
-                            <i data-lucide="bus-front" class="w-5 h-5 text-gray-500"></i>
-                            <span class="font-medium text-gray-900 dark:text-white">Circular</span>
+                            <div class="w-8 h-8 rounded-full bg-success/10 flex items-center justify-center text-success"><i data-lucide="bus-front" class="w-4 h-4"></i></div>
+                            <span class="font-medium text-sm">Circular</span>
                         </div>
-                        <select class="bg-transparent text-gray-500 outline-none text-right appearance-none font-medium cursor-pointer">
-                            <option>Avançado</option>
-                            <option>Detalhado</option>
-                            <option>Simples</option>
+                        <select id="pref-widget-circular" onchange="saveWidgetPref('circularWidgetStyle', this.value)" class="bg-transparent text-primary outline-none text-right appearance-none font-bold text-sm cursor-pointer px-2">
+                            <option value="Avançado">Avançado</option>
+                            <option value="Detalhado">Detalhado</option>
+                            <option value="Simples">Simples</option>
                         </select>
                     </div>
                 </div>
-                <p class="text-xs text-gray-500 mt-3 ml-2">As alterações dos widgets são sincronizadas com a app móvel.</p>
+                <p class="text-xs text-gray-500 mt-3 ml-2">Escolha como as informações aparecem no seu painel.</p>
+            </section>
+
+            <!-- Ordem da Tela Inicial -->
+            <section>
+                <h3 class="text-xs font-bold text-primary uppercase tracking-wider mb-3 ml-2 flex items-center"><i data-lucide="arrow-up-down" class="w-4 h-4 mr-2"></i> Ordem do Painel</h3>
+                <div class="glass-card rounded-3xl overflow-hidden divide-y divide-gray-200/50 dark:divide-white/5 p-2" id="home-order-list">
+                    <!-- Gerado via JS para permitir reordenação simples -->
+                </div>
             </section>
 
         </main>
     </div>
 
-    <!-- MODAL DE SELEÇÃO GLOBAL -->
+    <!-- MODAL DE SELEÇÃO GLOBAL (Semestres/Universidades) -->
     <div id="modal-selection" class="hidden fixed inset-0 z-50 flex-col bg-lightBg dark:bg-darkBg transition-colors duration-500">
-        <div class="flex items-center p-4 pt-6 border-b border-gray-200 dark:border-white/5 glass-card rounded-none">
+        <div class="flex items-center p-4 pt-6 border-b border-gray-200 dark:border-white/5 glass-nav">
             <button id="btn-close-modal" class="p-2 mr-2 hover:bg-gray-200 dark:hover:bg-white/10 rounded-full transition-colors">
                 <i data-lucide="arrow-left" class="w-6 h-6"></i>
             </button>
             <h2 id="modal-title" class="text-xl font-bold">Título</h2>
         </div>
-        <div id="modal-search-container" class="p-4 hidden glass-card rounded-none border-b border-gray-200 dark:border-white/5">
+        <div id="modal-search-container" class="p-4 hidden border-b border-gray-200 dark:border-white/5">
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                     <i data-lucide="search" class="w-5 h-5"></i>
@@ -565,6 +556,68 @@
         </div>
     </div>
 
+    <!-- MODAL ADICIONAR AULA -->
+    <div id="modal-add-aula" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-6 transition-opacity">
+        <div class="bg-lightBg dark:bg-[#121212] w-full max-w-md rounded-t-[32px] sm:rounded-[32px] p-6 shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Nova Aula</h2>
+                <button onclick="closeAulaModal()" class="w-8 h-8 bg-gray-200 dark:bg-[#1C1C1E] rounded-full flex items-center justify-center text-gray-500 hover:text-gray-900 dark:hover:text-white">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <form id="form-aula" class="space-y-4 overflow-y-auto no-scrollbar flex-1 pb-4">
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Matéria</label>
+                    <input type="text" id="aula-materia" required placeholder="Ex: Cálculo I" class="w-full bg-white dark:bg-[#1C1C1E] text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 mt-1 outline-none focus:ring-2 focus:ring-primary" />
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Professor</label>
+                    <input type="text" id="aula-prof" placeholder="Ex: João" class="w-full bg-white dark:bg-[#1C1C1E] text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 mt-1 outline-none focus:ring-2 focus:ring-primary" />
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Local / Sala</label>
+                    <input type="text" id="aula-local" placeholder="Ex: Pavilhão 1" class="w-full bg-white dark:bg-[#1C1C1E] text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 mt-1 outline-none focus:ring-2 focus:ring-primary" />
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Dia da Semana</label>
+                    <div class="relative mt-1">
+                        <select id="aula-dia" class="w-full bg-white dark:bg-[#1C1C1E] text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-primary appearance-none font-medium">
+                            <option value="Seg">Segunda-feira</option>
+                            <option value="Ter">Terça-feira</option>
+                            <option value="Qua">Quarta-feira</option>
+                            <option value="Qui">Quinta-feira</option>
+                            <option value="Sex">Sexta-feira</option>
+                            <option value="Sáb">Sábado</option>
+                        </select>
+                        <i data-lucide="chevron-down" class="absolute right-4 top-3.5 w-5 h-5 text-gray-400 pointer-events-none"></i>
+                    </div>
+                </div>
+                <div class="flex gap-4">
+                    <div class="flex-1">
+                        <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Início</label>
+                        <input type="time" id="aula-inicio" required value="08:00" class="w-full bg-white dark:bg-[#1C1C1E] text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 mt-1 outline-none focus:ring-2 focus:ring-primary font-medium" />
+                    </div>
+                    <div class="flex-1">
+                        <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Fim</label>
+                        <input type="time" id="aula-fim" required value="10:00" class="w-full bg-white dark:bg-[#1C1C1E] text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 mt-1 outline-none focus:ring-2 focus:ring-primary font-medium" />
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Cor de Identificação</label>
+                    <div class="flex flex-wrap gap-3 mt-2" id="color-picker-container">
+                        <!-- Cores geradas via JS -->
+                    </div>
+                    <input type="hidden" id="aula-cor" value="#0A84FF">
+                </div>
+                
+                <button type="submit" class="w-full py-4 mt-6 rounded-xl font-bold text-lg bg-primary text-white shadow-lg hover:scale-[1.02] active:scale-95 transition-transform flex justify-center items-center">
+                    <i data-lucide="save" class="w-5 h-5 mr-2"></i> Guardar Aula
+                </button>
+            </form>
+        </div>
+    </div>
+
 
     <!-- ========================================== -->
     <!-- LÓGICA JAVASCRIPT                          -->
@@ -572,7 +625,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA3g9gmFn-Uc_SoLHsVhH7eIwgzMOYmIAQ",
@@ -593,37 +646,205 @@
         let currentTab = 'home';
         let isUfrb = false;
         let widgetInterval = null;
+        let aulasListGlobal = [];
 
-        // Inicializa ícones do Lucide
+        // Inicializa ícones
         lucide.createIcons();
 
-        // --- SISTEMA DE TEMA CLARO/ESCURO ---
-        window.toggleTheme = function() {
-            const html = document.documentElement;
-            html.classList.toggle('dark');
-            const isDark = html.classList.contains('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            
-            // Sincroniza os radio buttons das Settings
-            const radios = document.getElementsByName('theme');
-            for(let r of radios) {
-                if(r.value === (isDark ? 'dark' : 'light')) r.checked = true;
-            }
+        // --- SISTEMA DE PREFERÊNCIAS (SETTINGS) ---
+        function getPref(key, defaultVal) {
+            return localStorage.getItem(key) || defaultVal;
         }
-        
-        window.setTheme = function(mode) {
-            if(mode === 'dark') document.documentElement.classList.add('dark');
-            else document.documentElement.classList.remove('dark');
-            localStorage.setItem('theme', mode);
+        window.saveWidgetPref = function(key, val) {
+            localStorage.setItem(key, val);
+            renderDashboardWidgets(); // Atualiza na hora
         }
 
-        // --- SISTEMA DO CIRCULAR UFRB (Completo) ---
+        // Inicializa valores nas settings
+        document.addEventListener('DOMContentLoaded', () => {
+            const pa = document.getElementById('pref-widget-aulas');
+            if(pa) pa.value = getPref('aulasWidgetStyle', 'Avançado');
+            const pt = document.getElementById('pref-widget-tarefas');
+            if(pt) pt.value = getPref('tarefasWidgetStyle', 'Avançado');
+            const pc = document.getElementById('pref-widget-circular');
+            if(pc) pc.value = getPref('circularWidgetStyle', 'Avançado');
+            
+            renderHomeOrderSettings();
+        });
+
+        // Sistema de Ordem da Home
+        function getHomeOrder() {
+            let orderStr = getPref('homeOrderPreference', 'Circular,Aulas,Tarefas');
+            let order = orderStr.split(',').map(s=>s.trim());
+            // Filter invalid in case of corruption
+            order = order.filter(o => ['Circular', 'Aulas', 'Tarefas'].includes(o));
+            if(order.length !== 3) order = ['Circular', 'Aulas', 'Tarefas'];
+            return order;
+        }
+        
+        window.moveOrder = function(index, direction) {
+            let order = getHomeOrder();
+            if(direction === 'up' && index > 0) {
+                let temp = order[index-1];
+                order[index-1] = order[index];
+                order[index] = temp;
+            } else if(direction === 'down' && index < order.length - 1) {
+                let temp = order[index+1];
+                order[index+1] = order[index];
+                order[index] = temp;
+            }
+            localStorage.setItem('homeOrderPreference', order.join(','));
+            renderHomeOrderSettings();
+            renderDashboardWidgets();
+        }
+
+        function renderHomeOrderSettings() {
+            const container = document.getElementById('home-order-list');
+            if(!container) return;
+            const order = getHomeOrder();
+            
+            container.innerHTML = order.map((item, index) => `
+                <div class="flex items-center justify-between p-3 hover:bg-white/50 dark:hover:bg-white/5 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-[#1C1C1E] flex items-center justify-center text-sm font-bold text-gray-500">${index + 1}</div>
+                        <span class="font-bold text-gray-900 dark:text-white">${item}</span>
+                    </div>
+                    <div class="flex gap-1">
+                        <button onclick="moveOrder(${index}, 'up')" class="p-2 rounded-lg hover:bg-gray-300 dark:hover:bg-[#2C2C2E] ${index === 0 ? 'opacity-30 cursor-not-allowed' : 'text-primary'}" ${index === 0 ? 'disabled' : ''}><i data-lucide="arrow-up" class="w-4 h-4"></i></button>
+                        <button onclick="moveOrder(${index}, 'down')" class="p-2 rounded-lg hover:bg-gray-300 dark:hover:bg-[#2C2C2E] ${index === order.length - 1 ? 'opacity-30 cursor-not-allowed' : 'text-primary'}" ${index === order.length - 1 ? 'disabled' : ''}><i data-lucide="arrow-down" class="w-4 h-4"></i></button>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+
+        // --- SISTEMA DE AULAS ---
+        const colorPalette = ["#0A84FF", "#FF453A", "#32D74B", "#FFD60A", "#B14AE2", "#FF375F", "#FF9F0A", "#3020A0", "#00C7BE"];
+        
+        function renderColorPicker() {
+            const container = document.getElementById('color-picker-container');
+            const input = document.getElementById('aula-cor');
+            if(!container) return;
+            
+            container.innerHTML = colorPalette.map(c => `
+                <div class="color-dot w-8 h-8 rounded-full cursor-pointer border-2 transition-all ${input.value === c ? 'border-gray-400 scale-110 shadow-md' : 'border-transparent hover:border-gray-300'}" 
+                     style="background-color: ${c}" data-color="${c}">
+                     ${input.value === c ? '<div class="w-full h-full flex items-center justify-center text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg></div>' : ''}
+                </div>
+            `).join('');
+            
+            document.querySelectorAll('.color-dot').forEach(dot => {
+                dot.addEventListener('click', (e) => {
+                    input.value = e.currentTarget.dataset.color;
+                    renderColorPicker(); // Atualiza UI
+                });
+            });
+        }
+
+        window.openAulaModal = function() {
+            const modal = document.getElementById('modal-add-aula');
+            if(modal) {
+                modal.classList.remove('hidden');
+                renderColorPicker();
+            }
+        }
+        window.closeAulaModal = function() {
+            const modal = document.getElementById('modal-add-aula');
+            if(modal) modal.classList.add('hidden');
+        }
+
+        const formAula = document.getElementById('form-aula');
+        if(formAula) {
+            formAula.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if(!currentUser) return;
+
+                const aula = {
+                    id: crypto.randomUUID(),
+                    materia: document.getElementById('aula-materia').value,
+                    professor: document.getElementById('aula-prof').value,
+                    local: document.getElementById('aula-local').value,
+                    dia: document.getElementById('aula-dia').value,
+                    inicio: document.getElementById('aula-inicio').value,
+                    fim: document.getElementById('aula-fim').value,
+                    corHex: document.getElementById('aula-cor').value,
+                };
+
+                try {
+                    await setDoc(doc(db, "users", currentUser.uid, "aulas", aula.id), aula);
+                    closeAulaModal();
+                    formAula.reset();
+                    document.getElementById('aula-inicio').value = "08:00";
+                    document.getElementById('aula-fim').value = "10:00";
+                    document.getElementById('aula-cor').value = "#0A84FF";
+                } catch(err) {
+                    alert("Erro ao guardar aula: " + err.message);
+                }
+            });
+        }
+
+        window.deleteAula = async function(id) {
+            if(!currentUser || !confirm("Tem certeza que deseja excluir esta aula?")) return;
+            try {
+                await deleteDoc(doc(db, "users", currentUser.uid, "aulas", id));
+            } catch(e) {
+                console.error("Erro ao deletar: ", e);
+            }
+        }
+
+        function renderAulasTab(aulas) {
+            const container = document.getElementById('aulas-list-container');
+            if(!container) return;
+
+            if(aulas.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center text-center border-2 border-dashed border-gray-300 dark:border-white/10 rounded-3xl p-10 glass-card w-full mt-4">
+                        <i data-lucide="calendar-x" class="w-12 h-12 text-gray-400 dark:text-gray-500 mb-4"></i>
+                        <h3 class="text-lg font-bold mb-2">A tua grade está vazia.</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Usa o botão de '+' para adicionar tuas disciplinas.</p>
+                    </div>`;
+                lucide.createIcons();
+                return;
+            }
+
+            const diasSemana = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+            const nomesDias = {"Seg":"Segunda-feira", "Ter":"Terça-feira", "Qua":"Quarta-feira", "Qui":"Quinta-feira", "Sex":"Sexta-feira", "Sáb":"Sábado"};
+            
+            let html = '';
+            diasSemana.forEach(dia => {
+                const aulasDia = aulas.filter(a => a.dia === dia).sort((a,b) => timeToMinutes(a.inicio) - timeToMinutes(b.inicio));
+                if(aulasDia.length > 0) {
+                    html += `<div class="mt-6 mb-3 px-2"><h3 class="text-lg font-bold text-gray-900 dark:text-white/80">${nomesDias[dia]}</h3></div>`;
+                    html += `<div class="space-y-3">`;
+                    aulasDia.forEach(aula => {
+                        html += `
+                            <div class="glass-card rounded-2xl p-4 flex items-center relative group">
+                                <div class="w-1 h-12 rounded-full mr-4" style="background-color: ${aula.corHex}"></div>
+                                <div class="flex-1">
+                                    <p class="text-xs font-bold" style="color: ${aula.corHex}">${aula.inicio} - ${aula.fim}</p>
+                                    <h4 class="font-bold text-base mt-0.5 text-gray-900 dark:text-white">${aula.materia}</h4>
+                                    <p class="text-xs text-gray-500 font-medium mt-0.5">${aula.professor || 'Sem Prof.'} • ${aula.local || 'Sem Sala'}</p>
+                                </div>
+                                <button onclick="deleteAula('${aula.id}')" class="p-2 rounded-full hover:bg-danger/10 text-gray-400 hover:text-danger transition-colors md:opacity-0 group-hover:opacity-100">
+                                    <i data-lucide="trash-2" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+            });
+            container.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        // --- SISTEMA DO CIRCULAR UFRB (Lógica) ---
         function timeToMinutes(timeStr) {
             const parts = timeStr.split(":");
             if (parts.length !== 2) return 0;
             return parseInt(parts[0]) * 60 + parseInt(parts[1]);
         }
-
         function addBusTime(baseTime, minutesToAdd) {
             const parts = baseTime.split(":");
             let h = parseInt(parts[0]);
@@ -633,32 +854,19 @@
             let newM = totalMins % 60;
             return `${newH.toString().padStart(2, '0')}:${newM.toString().padStart(2, '0')}`;
         }
-
         function createTrip(startTime, endTime, routeType) {
             let stopsList = [];
-            if (routeType === "saida-garagem") {
-                stopsList = ["Garagem", "RU", "Prédio de Fitotecnia", "Prédio de Solos", "Pav 1", "Biblioteca", "Pav 2", "Prédio de Engenharia", "Portão 2", "Tabela 1", "Tabela 2", "Portão 1", "Biblioteca", "Torre Cotec", "RU"];
-            } else if (routeType === "volta-campus") {
-                stopsList = ["RU", "Prédio de Fitotecnia", "Prédio de Solos", "Pav 1", "Biblioteca", "Pav 2", "Prédio de Engenharia", "Portão 2", "Tabela 1", "Tabela 2", "Portão 1", "Biblioteca", "Torre Cotec", "RU"];
-            } else if (routeType === "volta-e-recolhe") {
-                stopsList = ["RU", "Prédio de Fitotecnia", "Prédio de Solos", "Prédio de Engenharia Florestal", "Garagem"];
-            }
-
+            if (routeType === "saida-garagem") stopsList = ["Garagem", "RU", "Prédio de Fitotecnia", "Prédio de Solos", "Pav 1", "Biblioteca", "Pav 2", "Prédio de Engenharia", "Portão 2", "Tabela 1", "Tabela 2", "Portão 1", "Biblioteca", "Torre Cotec", "RU"];
+            else if (routeType === "volta-campus") stopsList = ["RU", "Prédio de Fitotecnia", "Prédio de Solos", "Pav 1", "Biblioteca", "Pav 2", "Prédio de Engenharia", "Portão 2", "Tabela 1", "Tabela 2", "Portão 1", "Biblioteca", "Torre Cotec", "RU"];
+            else if (routeType === "volta-e-recolhe") stopsList = ["RU", "Prédio de Fitotecnia", "Prédio de Solos", "Prédio de Engenharia Florestal", "Garagem"];
+            
             const totalDuration = timeToMinutes(endTime) - timeToMinutes(startTime);
             const stops = stopsList.map((loc, index) => {
                 const fraction = stopsList.length > 1 ? index / (stopsList.length - 1) : 0;
-                const minsToAdd = Math.round(totalDuration * fraction);
-                return { loc, time: addBusTime(startTime, minsToAdd) };
+                return { loc, time: addBusTime(startTime, Math.round(totalDuration * fraction)) };
             });
-
-            const origin = stopsList[0] || "Origem";
-            const dest = stopsList[stopsList.length - 1] || "Destino";
-            let routeName = "Rota Padrão";
-            if (routeType === "saida-garagem") routeName = "Saída da Garagem p/ Campus";
-            else if (routeType === "volta-campus") routeName = "Circulando no Campus";
-            else if (routeType === "volta-e-recolhe") routeName = "Recolhe para Garagem";
-
-            return { start: startTime, end: endTime, origin, dest, routeName, stops };
+            let routeName = routeType === "saida-garagem" ? "Saída da Garagem p/ Campus" : routeType === "volta-campus" ? "Circulando no Campus" : "Recolhe para Garagem";
+            return { start: startTime, end: endTime, origin: stopsList[0]||"", dest: stopsList[stopsList.length-1]||"", routeName, stops };
         }
 
         const busSchedule = [
@@ -679,7 +887,7 @@
         window.toggleTripDetails = function(id) {
             const el = document.getElementById(id);
             const icon = document.getElementById(id.replace('details', 'icon'));
-            if (el && el.classList) { // Add null check
+            if (el && el.classList) {
                 if (el.classList.contains('hidden')) {
                     el.classList.remove('hidden');
                     if (icon) icon.style.transform = 'rotate(180deg)';
@@ -702,27 +910,24 @@
                 const startMins = timeToMinutes(trip.start);
                 const endMins = timeToMinutes(trip.end);
 
-                let status = "upcoming";
                 let statusColor = "text-primary";
                 let bgColor = "bg-primary/10";
                 let borderColor = "border-primary";
                 
                 if (currentMinutes >= startMins && currentMinutes <= endMins) {
-                    status = "current";
                     statusColor = "text-success";
                     bgColor = "bg-success/10";
                     borderColor = "border-success";
                 } else if (currentMinutes > endMins) {
-                    status = "past";
                     statusColor = "text-gray-500 dark:text-gray-400";
-                    bgColor = "bg-gray-200 dark:bg-gray-800";
+                    bgColor = "bg-gray-200 dark:bg-white/5";
                     borderColor = "border-gray-300 dark:border-gray-700";
                 }
 
                 const stopsHtml = trip.stops.map(stop => `
                     <div class="flex justify-between items-center py-3 border-b border-gray-200 dark:border-white/5 last:border-0">
-                        <span class="text-sm font-medium ${timeToMinutes(stop.time) < currentMinutes ? 'text-gray-400' : 'text-gray-900 dark:text-white'}">${stop.loc}</span>
-                        <span class="text-sm font-bold ${timeToMinutes(stop.time) < currentMinutes ? 'text-gray-400' : statusColor}">${stop.time}</span>
+                        <span class="text-sm font-medium ${timeToMinutes(stop.time) < currentMinutes ? 'text-gray-400 dark:text-gray-600' : 'text-gray-900 dark:text-white'}">${stop.loc}</span>
+                        <span class="text-sm font-bold ${timeToMinutes(stop.time) < currentMinutes ? 'text-gray-400 dark:text-gray-600' : statusColor}">${stop.time}</span>
                     </div>
                 `).join('');
 
@@ -731,7 +936,7 @@
                         <div class="p-5 flex items-center border-l-4 ${borderColor}">
                             <div class="flex-1">
                                 <div class="flex items-center gap-2 mb-1">
-                                    <span class="text-xs font-extrabold ${statusColor} ${bgColor} px-2 py-0.5 rounded tracking-wider">${trip.start} - ${trip.end}</span>
+                                    <span class="text-[10px] font-extrabold ${statusColor} ${bgColor} px-2 py-0.5 rounded tracking-widest">${trip.start} - ${trip.end}</span>
                                 </div>
                                 <h3 class="font-bold text-lg text-gray-900 dark:text-white">${trip.routeName}</h3>
                             </div>
@@ -748,53 +953,265 @@
             lucide.createIcons();
         }
 
+        // --- DASHBOARD RENDERING (Widgets Inteligentes) ---
+        // Cria gráficos circulares em SVG
+        function renderCircleProgress(percentage, color, sizeClass = "w-14 h-14", strokeW = "3") {
+            const r = 16;
+            const c = 2 * Math.PI * r;
+            const offset = c - (percentage / 100) * c;
+            return `
+                <div class="relative ${sizeClass}">
+                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                        <circle cx="18" cy="18" r="${r}" fill="none" class="stroke-current opacity-20" stroke-width="${strokeW}" style="color: ${color}"></circle>
+                        <circle cx="18" cy="18" r="${r}" fill="none" class="stroke-current" stroke-width="${strokeW}" stroke-dasharray="${c}" stroke-dashoffset="${offset}" stroke-linecap="round" style="color: ${color}"></circle>
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center font-bold text-xs" style="color: ${color}">${percentage}%</div>
+                </div>
+            `;
+        }
+
         function renderDashboardWidgets() {
             if (!userData) return;
             const now = new Date();
             const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            
+            const diasSemana = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+            const todayStr = diasSemana[now.getDay()];
 
-            if (isUfrb) {
-                const circContainer = document.getElementById('home-widget-circular-content');
-                if (circContainer) { // Add null check
+            const container = document.getElementById('home-widgets-container');
+            if(!container) return;
+
+            const order = getHomeOrder();
+            let html = '';
+
+            order.forEach(widgetType => {
+                if (widgetType === 'Circular' && isUfrb) {
+                    const style = getPref('circularWidgetStyle', 'Avançado');
                     const currentTrip = busSchedule.find(t => currentMinutes >= timeToMinutes(t.start) && currentMinutes <= timeToMinutes(t.end));
                     const nextTrip = busSchedule.find(t => timeToMinutes(t.start) > currentMinutes);
                     
+                    let contentHtml = '';
                     if (currentTrip) {
                         const nextStop = currentTrip.stops.find(s => timeToMinutes(s.time) >= currentMinutes);
-                        circContainer.innerHTML = `
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="text-[10px] font-extrabold text-success bg-success/10 px-2 py-1 rounded tracking-widest">EM ROTA AGORA</span>
-                                <span class="text-xs text-gray-500 font-bold">${currentTrip.start} - ${currentTrip.end}</span>
-                            </div>
-                            <h4 class="font-extrabold text-lg text-gray-900 dark:text-white">${currentTrip.routeName}</h4>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 flex items-center">
-                                <i data-lucide="map-pin" class="w-4 h-4 mr-2 text-success"></i> ${nextStop ? `Próxima: ${nextStop.loc}` : 'Quase no destino'}
-                            </p>
-                        `;
+                        
+                        if(style === 'Simples') {
+                            contentHtml = `
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center text-success flex-shrink-0"><i data-lucide="bus-front" class="w-6 h-6"></i></div>
+                                    <div>
+                                        <h4 class="font-extrabold text-lg text-gray-900 dark:text-white leading-tight">${currentTrip.routeName}</h4>
+                                        <p class="text-sm text-success font-bold mt-0.5">Próxima: ${nextStop ? nextStop.loc : 'Destino'}</p>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            // Detalhado / Avançado
+                            const minsLeft = nextStop ? timeToMinutes(nextStop.time) - currentMinutes : 0;
+                            contentHtml = `
+                                <div class="flex justify-between items-center mb-3">
+                                    <span class="text-[10px] font-extrabold text-success bg-success/10 px-2 py-1 rounded tracking-widest">EM ROTA AGORA</span>
+                                    <span class="text-xs text-gray-500 font-bold">${currentTrip.start} - ${currentTrip.end}</span>
+                                </div>
+                                <h4 class="font-extrabold text-xl text-gray-900 dark:text-white">${currentTrip.routeName}</h4>
+                                <div class="mt-4 bg-white/50 dark:bg-[#121212] rounded-2xl p-3 flex items-center justify-between border border-gray-200 dark:border-white/5">
+                                    <div class="flex items-center">
+                                        <i data-lucide="map-pin" class="w-4 h-4 mr-2 text-success"></i>
+                                        <span class="font-bold text-sm text-gray-900 dark:text-white">${nextStop ? nextStop.loc : 'Quase no destino'}</span>
+                                    </div>
+                                    <span class="text-success font-extrabold text-sm">${minsLeft > 0 ? `em ${minsLeft}m` : 'Agora'}</span>
+                                </div>
+                            `;
+                        }
                     } else if (nextTrip) {
                         const minsLeft = timeToMinutes(nextTrip.start) - currentMinutes;
-                        circContainer.innerHTML = `
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="text-[10px] font-extrabold text-primary bg-primary/10 px-2 py-1 rounded tracking-widest">AGENDADO</span>
-                                <span class="text-xs text-gray-500 font-bold">${nextTrip.start} - ${nextTrip.end}</span>
-                            </div>
-                            <h4 class="font-extrabold text-lg text-gray-900 dark:text-white">${nextTrip.routeName}</h4>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 flex items-center">
-                                <i data-lucide="clock" class="w-4 h-4 mr-2 text-primary"></i> Sai em ${minsLeft} min da ${nextTrip.origin}
-                            </p>
-                        `;
+                        if(style === 'Simples') {
+                            contentHtml = `
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0"><i data-lucide="bus-front" class="w-6 h-6"></i></div>
+                                    <div>
+                                        <h4 class="font-extrabold text-lg text-gray-900 dark:text-white leading-tight">${nextTrip.routeName}</h4>
+                                        <p class="text-sm text-primary font-bold mt-0.5">Inicia às ${nextTrip.start}</p>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            contentHtml = `
+                                <div class="flex justify-between items-center mb-3">
+                                    <span class="text-[10px] font-extrabold text-primary bg-primary/10 px-2 py-1 rounded tracking-widest">AGENDADO</span>
+                                    <span class="text-xs text-gray-500 font-bold">${nextTrip.start} - ${nextTrip.end}</span>
+                                </div>
+                                <h4 class="font-extrabold text-xl text-gray-900 dark:text-white">${nextTrip.routeName}</h4>
+                                <div class="mt-4 bg-white/50 dark:bg-[#121212] rounded-2xl p-3 flex items-center justify-between border border-gray-200 dark:border-white/5">
+                                    <span class="font-medium text-sm text-gray-500">Começa em</span>
+                                    <span class="text-primary font-extrabold text-lg">${minsLeft} min</span>
+                                </div>
+                            `;
+                        }
                     } else {
-                        circContainer.innerHTML = `
-                            <div class="flex flex-col items-center justify-center py-2">
-                                <i data-lucide="moon" class="w-8 h-8 text-gray-400 dark:text-gray-500 mb-2"></i>
-                                <h4 class="font-bold text-md text-gray-900 dark:text-white">Serviço Encerrado</h4>
-                                <p class="text-xs text-gray-500 mt-1">Retorna amanhã</p>
+                        contentHtml = `
+                            <div class="flex flex-col items-center justify-center py-4">
+                                <i data-lucide="moon" class="w-10 h-10 text-gray-400 dark:text-gray-600 mb-3"></i>
+                                <h4 class="font-bold text-lg text-gray-900 dark:text-white">Serviço Encerrado</h4>
+                                <p class="text-sm text-gray-500 mt-1">Retorna amanhã de manhã</p>
                             </div>
                         `;
                     }
+
+                    html += `
+                        <div class="glass-card interactive rounded-3xl p-6 cursor-pointer border ${currentTrip ? 'border-success/30' : (nextTrip ? 'border-primary/20' : '')}" onclick="switchTab('circular')">
+                            ${style === 'Simples' ? contentHtml : `
+                                <div class="flex items-center mb-4">
+                                    <div class="w-10 h-10 rounded-full ${currentTrip ? 'bg-success/10 text-success' : 'bg-primary/10 text-primary'} flex items-center justify-center">
+                                        <i data-lucide="bus-front" class="w-5 h-5"></i>
+                                    </div>
+                                    <h3 class="font-bold text-md ml-3 text-gray-900 dark:text-white">Circular UFRB</h3>
+                                </div>
+                                ${contentHtml}
+                            `}
+                        </div>
+                    `;
                 }
-                renderCircularScheduleList();
-            }
+
+                if (widgetType === 'Aulas') {
+                    const style = getPref('aulasWidgetStyle', 'Avançado');
+                    const aulasHoje = aulasListGlobal.filter(a => a.dia === todayStr).sort((a,b) => timeToMinutes(a.inicio) - timeToMinutes(b.inicio));
+                    const aulaAtual = aulasHoje.find(a => currentMinutes >= timeToMinutes(a.inicio) && currentMinutes <= timeToMinutes(a.fim));
+                    const proximaAula = aulasHoje.find(a => timeToMinutes(a.inicio) > currentMinutes);
+                    
+                    let contentHtml = '';
+                    if (aulasHoje.length === 0) {
+                        contentHtml = `
+                            <div class="flex flex-col items-center justify-center py-4">
+                                <i data-lucide="coffee" class="w-10 h-10 text-primary mb-3"></i>
+                                <h4 class="font-bold text-lg text-gray-900 dark:text-white">Dia Livre</h4>
+                                <p class="text-sm text-gray-500 mt-1">Nenhuma aula para hoje</p>
+                            </div>
+                        `;
+                    } else if (aulaAtual) {
+                        const start = timeToMinutes(aulaAtual.inicio);
+                        const total = timeToMinutes(aulaAtual.fim) - start;
+                        const prog = Math.min(100, Math.max(0, ((currentMinutes - start) / total) * 100));
+                        
+                        if(style === 'Simples') {
+                            contentHtml = `
+                                <div class="flex items-center gap-4">
+                                    <div class="w-1 h-12 rounded-full" style="background-color: ${aulaAtual.corHex}"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-[10px] font-extrabold text-danger mb-0.5 tracking-wider">AGORA</p>
+                                        <h4 class="font-extrabold text-base text-gray-900 dark:text-white truncate">${aulaAtual.materia}</h4>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-xs font-bold text-gray-900 dark:text-white">${aulaAtual.fim}</p>
+                                        <p class="text-xs text-gray-500">Término</p>
+                                    </div>
+                                </div>
+                            `;
+                        } else if(style === 'Detalhado') {
+                            contentHtml = `
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-[10px] font-extrabold text-danger tracking-widest">EM ANDAMENTO</span>
+                                    <span class="text-xs text-gray-500 font-bold">${aulaAtual.inicio} - ${aulaAtual.fim}</span>
+                                </div>
+                                <h4 class="font-extrabold text-xl text-gray-900 dark:text-white truncate" style="color: ${aulaAtual.corHex}">${aulaAtual.materia}</h4>
+                                <p class="text-sm text-gray-500 mt-1 truncate">${aulaAtual.local}</p>
+                                <div class="mt-4 h-1.5 w-full bg-gray-200 dark:bg-white/10 rounded-full overflow-hidden">
+                                    <div class="h-full rounded-full transition-all duration-1000" style="width: ${prog}%; background-color: ${aulaAtual.corHex}"></div>
+                                </div>
+                            `;
+                        } else {
+                            // Avançado
+                            contentHtml = `
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-[10px] font-extrabold text-danger tracking-widest">EM ANDAMENTO</span>
+                                </div>
+                                <h4 class="font-extrabold text-xl text-gray-900 dark:text-white truncate leading-tight">${aulaAtual.materia}</h4>
+                                <p class="text-xs text-gray-500 mt-1 truncate mb-4">${aulaAtual.local}</p>
+                                <div class="flex items-center justify-between bg-white/50 dark:bg-[#121212] rounded-2xl p-3 border border-gray-200 dark:border-white/5">
+                                    <div class="flex items-center">
+                                        ${renderCircleProgress(Math.round(prog), aulaAtual.corHex, "w-10 h-10", "4")}
+                                        <span class="ml-3 text-xs font-bold text-gray-500">Progresso</span>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="block text-sm font-extrabold" style="color: ${aulaAtual.corHex}">${timeToMinutes(aulaAtual.fim) - currentMinutes}m</span>
+                                        <span class="block text-[10px] font-medium text-gray-500 uppercase">Restantes</span>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    } else if (proximaAula) {
+                        const minsLeft = timeToMinutes(proximaAula.inicio) - currentMinutes;
+                        if(style === 'Simples') {
+                            contentHtml = `
+                                <div class="flex items-center gap-4">
+                                    <div class="w-1 h-12 rounded-full" style="background-color: ${proximaAula.corHex}"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-[10px] font-extrabold text-gray-500 mb-0.5 tracking-wider">PRÓXIMA AULA</p>
+                                        <h4 class="font-extrabold text-base text-gray-900 dark:text-white truncate">${proximaAula.materia}</h4>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-xs font-bold" style="color: ${proximaAula.corHex}">${minsLeft}m</p>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            contentHtml = `
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-[10px] font-extrabold tracking-widest" style="color: ${proximaAula.corHex}">AGUARDANDO</span>
+                                </div>
+                                <h4 class="font-extrabold text-xl text-gray-900 dark:text-white truncate leading-tight">${proximaAula.materia}</h4>
+                                <p class="text-xs text-gray-500 mt-1 truncate mb-4">${proximaAula.local}</p>
+                                <div class="bg-white/50 dark:bg-[#121212] rounded-2xl p-3 flex justify-between items-center border border-gray-200 dark:border-white/5">
+                                    <span class="text-xs font-bold text-gray-500">Começa em</span>
+                                    <span class="text-lg font-extrabold" style="color: ${proximaAula.corHex}">${minsLeft} min</span>
+                                </div>
+                            `;
+                        }
+                    } else {
+                        contentHtml = `
+                            <div class="flex flex-col items-center justify-center py-4">
+                                <i data-lucide="check-circle-2" class="w-10 h-10 text-success mb-3"></i>
+                                <h4 class="font-bold text-lg text-gray-900 dark:text-white">Missão Cumprida</h4>
+                                <p class="text-sm text-gray-500 mt-1">Aulas finalizadas por hoje</p>
+                            </div>
+                        `;
+                    }
+
+                    html += `
+                        <div class="glass-card interactive rounded-3xl p-6 cursor-pointer border ${aulaAtual ? `border-[${aulaAtual.corHex}]/30` : ''}" onclick="switchTab('aulas')">
+                            ${style === 'Simples' ? contentHtml : `
+                                <div class="flex items-center mb-4">
+                                    <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                                        <i data-lucide="book-open" class="w-5 h-5"></i>
+                                    </div>
+                                    <h3 class="font-bold text-md ml-3 text-gray-900 dark:text-white">As Tuas Aulas</h3>
+                                </div>
+                                ${contentHtml}
+                            `}
+                        </div>
+                    `;
+                }
+
+                if (widgetType === 'Tarefas') {
+                    // Tarefas widget container is updated by firestore listener directly for real-time.
+                    // We just render the shell here based on order.
+                    html += `
+                        <div class="glass-card interactive rounded-3xl p-6 cursor-pointer" onclick="switchTab('menu')">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 rounded-full bg-[#0A84FF]/10 flex items-center justify-center text-[#0A84FF]">
+                                    <i data-lucide="check-square" class="w-5 h-5"></i>
+                                </div>
+                                <h3 class="font-bold text-md ml-3 text-gray-900 dark:text-white">Produtividade</h3>
+                            </div>
+                            <div id="home-widget-tarefas-content" class="bg-white/50 dark:bg-black/20 rounded-2xl flex flex-col items-center justify-center text-center p-4 min-h-[7rem] border border-gray-200 dark:border-white/5">
+                                <div class="w-5 h-5 border-2 border-gray-400 border-t-[#0A84FF] rounded-full animate-spin"></div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            container.innerHTML = html;
+            renderCircularScheduleList();
             lucide.createIcons();
         }
 
@@ -819,14 +1236,12 @@
             ['home', 'aulas', 'ia', 'menu', 'circular', 'profile'].forEach(id => {
                 const el = document.getElementById(`tab-content-${id}`);
                 if(el) {
-                    el.classList.add('hidden');
-                    el.classList.remove(id === 'home' ? 'block' : 'flex');
+                    el.classList.remove('active');
                 }
             });
             const activeEl = document.getElementById(`tab-content-${tabId}`);
             if(activeEl) {
-                activeEl.classList.remove('hidden');
-                activeEl.classList.add(tabId === 'home' ? 'block' : 'flex');
+                activeEl.classList.add('active');
             }
 
             // Mobile Nav Update
@@ -874,7 +1289,9 @@
 
         // --- AUTENTICAÇÃO E FIRESTORE ---
         window.onload = function() {
-             onAuthStateChanged(auth, async (user) => {
+            lucide.createIcons();
+            
+            onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     currentUser = user;
                     try {
@@ -903,14 +1320,14 @@
                             if(profileUniEl) profileUniEl.innerText = userData.university;
 
                             if(userData.profileImageUrl) {
-                                ['home-photo', 'profile-tab-photo'].forEach(id => {
+                                ['home-photo', 'profile-tab-photo', 'mobile-header-photo'].forEach(id => {
                                     const img = document.getElementById(id);
                                     if(img) {
                                         img.src = userData.profileImageUrl;
                                         img.classList.remove('hidden');
                                     }
                                 });
-                                ['home-photo-placeholder', 'profile-tab-placeholder'].forEach(id => {
+                                ['home-photo-placeholder', 'profile-tab-placeholder', 'mobile-header-placeholder'].forEach(id => {
                                     const placeholder = document.getElementById(id);
                                     if(placeholder) placeholder.classList.add('hidden');
                                 });
@@ -922,9 +1339,6 @@
                             const sideBtnCircular = document.getElementById('sidebar-btn-circular');
 
                             if (isUfrb) {
-                                const homeCircular = document.getElementById('home-widget-circular');
-                                if(homeCircular) homeCircular.classList.remove('hidden');
-                                
                                 if(bottomBtnProfile) {
                                     bottomBtnProfile.setAttribute('onclick', "switchTab('circular')");
                                     bottomBtnProfile.id = 'bottom-btn-circular';
@@ -939,6 +1353,13 @@
                                 }
                             }
 
+                            // Escutar Aulas
+                            onSnapshot(collection(db, "users", user.uid, "aulas"), (snapshot) => {
+                                aulasListGlobal = snapshot.docs.map(doc => doc.data());
+                                renderAulasTab(aulasListGlobal);
+                                renderDashboardWidgets(); // Atualiza widget com dados reais
+                            });
+
                             // Escutar Tarefas
                             onSnapshot(collection(db, "users", user.uid, "tarefas"), (snapshot) => {
                                 const tarefas = snapshot.docs.map(doc => doc.data());
@@ -946,22 +1367,36 @@
                                 const widgetTxt = document.getElementById('home-widget-tarefas-content');
                                 
                                 if(widgetTxt) {
+                                    const style = getPref('tarefasWidgetStyle', 'Avançado');
+                                    
                                     if (tarefas.length === 0) {
                                         widgetTxt.innerHTML = `
-                                            <i data-lucide="check-circle-2" class="w-8 h-8 mb-3 text-gray-400"></i>
+                                            <i data-lucide="check-circle-2" class="w-8 h-8 mb-2 text-gray-400"></i>
                                             <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Tudo em dia.<br>Nenhuma tarefa pendente.</p>
                                         `;
                                     } else if (concluidas === tarefas.length) {
                                         widgetTxt.innerHTML = `
-                                            <i data-lucide="check-square" class="w-8 h-8 mb-3 text-success"></i>
+                                            <i data-lucide="check-square" class="w-8 h-8 mb-2 text-success"></i>
                                             <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Tudo concluído!</p>
                                         `;
                                     } else {
-                                        widgetTxt.innerHTML = `
-                                            <i data-lucide="list-todo" class="w-8 h-8 mb-3 text-[#0A84FF]"></i>
-                                            <p class="text-gray-900 dark:text-white text-sm font-bold">${tarefas.length - concluidas} pendentes</p>
-                                            <p class="text-gray-500 text-xs mt-1">Bora lá organizar o dia!</p>
-                                        `;
+                                        if (style === 'Avançado') {
+                                            const prog = Math.round((concluidas / tarefas.length) * 100);
+                                            widgetTxt.innerHTML = `
+                                                <div class="flex items-center w-full justify-between">
+                                                    ${renderCircleProgress(prog, '#0A84FF', 'w-12 h-12', '4')}
+                                                    <div class="text-right">
+                                                        <span class="block text-xl font-extrabold text-gray-900 dark:text-white">${tarefas.length - concluidas}</span>
+                                                        <span class="block text-[10px] uppercase font-bold text-gray-500">Pendentes</span>
+                                                    </div>
+                                                </div>
+                                            `;
+                                        } else {
+                                            widgetTxt.innerHTML = `
+                                                <i data-lucide="list-todo" class="w-8 h-8 mb-2 text-[#0A84FF]"></i>
+                                                <p class="text-gray-900 dark:text-white text-sm font-bold">${tarefas.length - concluidas} pendentes</p>
+                                            `;
+                                        }
                                     }
                                     lucide.createIcons();
                                 }
@@ -982,6 +1417,9 @@
                             widgetInterval = setInterval(renderDashboardWidgets, 10000);
 
                         } else {
+                            document.getElementById('setup-name').value = user.displayName || '';
+                            setupName = user.displayName || '';
+                            validateSetupForm();
                             switchScreen('screen-setup');
                         }
                     } catch (error) {
@@ -1107,8 +1545,8 @@
                 openModal("Semestre atual", semestersList, false, (sel) => {
                     setupSemester = sel;
                     if(labelSem) labelSem.innerText = sel;
-                    btnSem.classList.replace('text-gray-500', 'text-gray-900');
-                    btnSem.classList.add('dark:text-white');
+                    btnSem.classList.replace('text-gray-400', 'text-gray-900');
+                    btnSem.classList.replace('dark:text-gray-500', 'dark:text-white');
                     validateSetupForm();
                 });
             });
@@ -1119,8 +1557,8 @@
                 openModal("Buscar Universidade", universitiesList, true, (sel) => {
                     setupUni = sel;
                     if(labelUni) labelUni.innerText = sel;
-                    btnUni.classList.replace('text-gray-500', 'text-gray-900');
-                    btnUni.classList.add('dark:text-white');
+                    btnUni.classList.replace('text-gray-400', 'text-gray-900');
+                    btnUni.classList.replace('dark:text-gray-500', 'dark:text-white');
                     if (sel === "Outra (Digitar manualmente)") {
                         if(customUniContainer) {
                              customUniContainer.classList.remove('hidden');
@@ -1150,7 +1588,7 @@
                     isCheckingUsername = true;
                     if(iconContainer) iconContainer.innerHTML = iconLoader;
                     if(errorMsg) errorMsg.classList.add('hidden');
-                    e.target.classList.remove('ring-2', 'ring-[#FF3B30]');
+                    e.target.classList.remove('ring-2', 'ring-danger');
                     validateSetupForm();
 
                     usernameTimeout = setTimeout(async () => {
@@ -1166,7 +1604,7 @@
                             
                             if (!isUsernameAvailable) {
                                 if(errorMsg) errorMsg.classList.remove('hidden');
-                                e.target.classList.add('ring-2', 'ring-[#FF3B30]');
+                                e.target.classList.add('ring-2', 'ring-danger');
                             }
                         } catch(err) {
                             isUsernameAvailable = false;
@@ -1184,7 +1622,7 @@
                     isUsernameAvailable = true;
                     if(iconContainer) iconContainer.innerHTML = '';
                     if(errorMsg) errorMsg.classList.add('hidden');
-                    e.target.classList.remove('ring-2', 'ring-[#FF3B30]');
+                    e.target.classList.remove('ring-2', 'ring-danger');
                     validateSetupForm();
                 }
             });
@@ -1200,7 +1638,7 @@
                     btnFinishSetup.className = "w-full py-4 rounded-2xl font-bold text-lg transition-all bg-primary text-white hover:scale-[1.02] active:scale-95 shadow-lg";
                 } else {
                     btnFinishSetup.disabled = true;
-                    btnFinishSetup.className = "w-full py-4 rounded-2xl font-bold text-lg transition-all bg-gray-300 dark:bg-darkSurface text-gray-500 cursor-not-allowed";
+                    btnFinishSetup.className = "w-full py-4 rounded-2xl font-bold text-lg transition-all bg-gray-300 dark:bg-[#1C1C1E] text-gray-500 cursor-not-allowed";
                 }
             }
         }
