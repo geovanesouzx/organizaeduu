@@ -94,6 +94,7 @@
                     <input type="text" id="setup-course" required class="w-full bg-[#1C1C1E] text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-[#4A90E2] transition-all" />
                 </div>
 
+                <!-- Semestre agora é um BOTÃO que abre o modal -->
                 <div class="flex flex-col">
                     <label class="text-sm text-gray-400 mb-1 ml-1">Semestre atual</label>
                     <button type="button" id="btn-select-semester" class="w-full text-left bg-[#1C1C1E] rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-[#4A90E2] transition-all text-gray-500 truncate">
@@ -101,6 +102,7 @@
                     </button>
                 </div>
 
+                <!-- Universidade agora é um BOTÃO que abre o modal -->
                 <div class="flex flex-col mb-4">
                     <label class="text-sm text-gray-400 mb-1 ml-1">Sua Universidade (Sigla - Nome)</label>
                     <button type="button" id="btn-select-uni" class="w-full text-left bg-[#1C1C1E] rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-[#4A90E2] transition-all text-gray-500 truncate">
@@ -248,7 +250,7 @@
 
 
     <!-- ========================================== -->
-    <!-- LOGICA JAVASCRIPT (Substituindo o React)   -->
+    <!-- LOGICA JAVASCRIPT                          -->
     <!-- ========================================== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -291,12 +293,136 @@
         const iconX = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF3B30" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
         const iconLoader = `<div class="w-5 h-5 border-2 border-gray-400 border-t-[#4A90E2] rounded-full animate-spin"></div>`;
 
+        // LISTA ATUALIZADA EXATAMENTE COMO PEDIDO
         const universitiesList = [
-            "UFRB - Universidade Federal do Recôncavo da Bahia", "UFBA - Universidade Federal da Bahia", "UFOB - Universidade Federal do Oeste da Bahia", "UFSB - Universidade Federal do Sul da Bahia", "UNIVASF - Universidade Federal do Vale do São Francisco", "UNEB - Universidade do Estado da Bahia", "UEFS - Universidade Estadual de Feira de Santana", "UESB - Universidade Estadual do Sudoeste da Bahia", "UESC - Universidade Estadual de Santa Cruz", "IFBA - Instituto Federal da Bahia", "IF Baiano - Instituto Federal Baiano",
-            "UFAC - Universidade Federal do Acre", "UFAL - Universidade Federal de Alagoas", "UNIFAP - Universidade Federal do Amapá", "UFAM - Universidade Federal do Amazonas", "UNILAB - Universidade da Integração Internacional da Lusofonia Afro-Brasileira", "UFC - Universidade Federal do Ceará", "UFCA - Universidade Federal do Cariri", "UnB - Universidade de Brasília", "UFES - Universidade Federal do Espírito Santo", "UFG - Universidade Federal de Goiás", "UFCAT - Universidade Federal de Catalão", "UFJ - Universidade Federal de Jataí", "UFMA - Universidade Federal do Maranhão", "UFMT - Universidade Federal de Mato Grosso", "UFR - Universidade Federal de Rondonópolis", "UFMS - Universidade Federal de Mato Grosso do Sul", "UFGD - Universidade Federal da Grande Dourados", "UFMG - Universidade Federal de Minas Gerais", "UFOP - Universidade Federal de Ouro Preto", "UFLA - Universidade Federal de Lavras", "UFV - Universidade Federal de Viçosa", "UNIFAL - Universidade Federal de Alfenas", "UNIFEI - Universidade Federal de Itajubá", "UFJF - Universidade Federal de Juiz de Fora", "UFSJ - Universidade Federal de São João del-Rei", "UFU - Universidade Federal de Uberlândia", "UFVJM - Universidade Federal dos Vales do Jequitinhonha e Mucuri", "UFTM - Universidade Federal do Triângulo Mineiro", "UFPA - Universidade Federal do Pará", "UNIFESSPA - Universidade Federal do Sul e Sudeste do Pará", "UFOPA - Universidade Federal do Oeste do Pará", "UFPB - Universidade Federal da Paraíba", "UFCG - Universidade Federal de Campina Grande", "UFPR - Universidade Federal do Paraná", "UTFPR - Universidade Tecnológica Federal do Paraná", "UNILA - Universidade Federal da Integração Latino-Americana", "UFPE - Universidade Federal de Pernambuco", "UFRPE - Universidade Federal Rural de Pernambuco", "UFAPE - Universidade Federal do Agreste de Pernambuco", "UFPI - Universidade Federal do Piauí", "UFDPar - Universidade Federal do Delta do Parnaíba", "UFRJ - Universidade Federal do Rio de Janeiro", "UFF - Universidade Federal Fluminense", "UFRRJ - Universidade Federal Rural do Rio de Janeiro", "UNIRIO - Universidade Federal do Estado do Rio de Janeiro", "UFRN - Universidade Federal do Rio Grande do Norte", "UFERSA - Universidade Federal Rural do Semi-Árido", "UFRGS - Universidade Federal do Rio Grande do Sul", "UFSM - Universidade Federal de Santa Maria", "UFPel - Universidade Federal de Pelotas", "UNIPAMPA - Universidade Federal do Pampa", "UFCSPA - Universidade Federal de Ciências da Saúde de Porto Alegre", "UFFS - Universidade Federal da Fronteira Sul", "UNIR - Universidade Federal de Rondônia", "UFRR - Universidade Federal de Roraima", "UFSC - Universidade Federal de Santa Catarina", "UNIFESP - Universidade Federal de São Paulo", "UFSCar - Universidade Federal de São Carlos", "UFABC - Universidade Federal do ABC", "UFS - Universidade Federal de Sergipe", "UFT - Universidade Federal do Tocantins", "UFNT - Universidade Federal do Norte do Tocantins",
-            "USP - Universidade de São Paulo", "UNICAMP - Universidade Estadual de Campinas", "UNESP - Universidade Estadual Paulista", "UERJ - Universidade do Estado do Rio de Janeiro", "UEL - Universidade Estadual de Londrina", "UEM - Universidade Estadual de Maringá", "UENF - Universidade Estadual do Norte Fluminense", "UECE - Universidade Estadual do Ceará", "UVA - Universidade Estadual Vale do Acaraú", "URCA - Universidade Regional do Cariri", "UEMG - Universidade do Estado de Minas Gerais", "UNIMONTES - Universidade Estadual de Montes Claros", "UEG - Universidade Estadual de Goiás", "UEMA - Universidade Estadual do Maranhão", "UEPB - Universidade Estadual da Paraíba", "UEPG - Universidade Estadual de Ponta Grossa", "UNIOESTE - Universidade Estadual do Oeste do Paraná", "UNICENTRO - Universidade Estadual do Centro-Oeste", "UENP - Universidade Estadual do Norte do Paraná",
-            "IFCE - Instituto Federal do Ceará", "IFMG - Instituto Federal de Minas Gerais", "IFPB - Instituto Federal da Paraíba", "IFPE - Instituto Federal de Pernambuco", "IFPI - Instituto Federal do Piauí", "IFPR - Instituto Federal do Paraná", "IFRJ - Instituto Federal do Rio de Janeiro", "IFRN - Instituto Federal do Rio Grande do Norte", "IFRS - Instituto Federal do Rio Grande do Sul", "IFSC - Instituto Federal de Santa Catarina", "IFSP - Instituto Federal de São Paulo",
-            "Anhanguera", "Anhembi Morumbi", "Cruzeiro do Sul", "ESPM - Escola Superior de Propaganda e Marketing", "Estácio", "FGV - Fundação Getulio Vargas", "FMU - Faculdades Metropolitanas Unidas", "Ibmec", "Insper", "Mackenzie - Universidade Presbiteriana Mackenzie", "PUC-Campinas - Pontifícia Universidade Católica de Campinas", "PUC-MG - Pontifícia Universidade Católica de Minas Gerais", "PUC-PR - Pontifícia Universidade Católica do Paraná", "PUC-RJ - Pontifícia Universidade Católica do Rio de Janeiro", "PUC-RS - Pontifícia Universidade Católica do Rio Grande do Sul", "PUC-SP - Pontifícia Universidade Católica de São Paulo", "UNIP - Universidade Paulista", "UNISINOS - Universidade do Vale do Rio dos Sinos",
+            // --- BAHIA (No Topo Absoluto) ---
+            "UFRB - Universidade Federal do Recôncavo da Bahia",
+            "UFBA - Universidade Federal da Bahia",
+            "UFOB - Universidade Federal do Oeste da Bahia",
+            "UFSB - Universidade Federal do Sul da Bahia",
+            "UNIVASF - Universidade Federal do Vale do São Francisco",
+            "UNEB - Universidade do Estado da Bahia",
+            "UEFS - Universidade Estadual de Feira de Santana",
+            "UESB - Universidade Estadual do Sudoeste da Bahia",
+            "UESC - Universidade Estadual de Santa Cruz",
+            "IFBA - Instituto Federal da Bahia",
+            "IF Baiano - Instituto Federal Baiano",
+        
+            // --- UNIVERSIDADES FEDERAIS ---
+            "UFAC - Universidade Federal do Acre",
+            "UFAL - Universidade Federal de Alagoas",
+            "UNIFAP - Universidade Federal do Amapá",
+            "UFAM - Universidade Federal do Amazonas",
+            "UNILAB - Universidade da Integração Internacional da Lusofonia Afro-Brasileira",
+            "UFC - Universidade Federal do Ceará",
+            "UFCA - Universidade Federal do Cariri",
+            "UnB - Universidade de Brasília",
+            "UFES - Universidade Federal do Espírito Santo",
+            "UFG - Universidade Federal de Goiás",
+            "UFCAT - Universidade Federal de Catalão",
+            "UFJ - Universidade Federal de Jataí",
+            "UFMA - Universidade Federal do Maranhão",
+            "UFMT - Universidade Federal de Mato Grosso",
+            "UFR - Universidade Federal de Rondonópolis",
+            "UFMS - Universidade Federal de Mato Grosso do Sul",
+            "UFGD - Universidade Federal da Grande Dourados",
+            "UFMG - Universidade Federal de Minas Gerais",
+            "UFOP - Universidade Federal de Ouro Preto",
+            "UFLA - Universidade Federal de Lavras",
+            "UFV - Universidade Federal de Viçosa",
+            "UNIFAL - Universidade Federal de Alfenas",
+            "UNIFEI - Universidade Federal de Itajubá",
+            "UFJF - Universidade Federal de Juiz de Fora",
+            "UFSJ - Universidade Federal de São João del-Rei",
+            "UFU - Universidade Federal de Uberlândia",
+            "UFVJM - Universidade Federal dos Vales do Jequitinhonha e Mucuri",
+            "UFTM - Universidade Federal do Triângulo Mineiro",
+            "UFPA - Universidade Federal do Pará",
+            "UNIFESSPA - Universidade Federal do Sul e Sudeste do Pará",
+            "UFOPA - Universidade Federal do Oeste do Pará",
+            "UFPB - Universidade Federal da Paraíba",
+            "UFCG - Universidade Federal de Campina Grande",
+            "UFPR - Universidade Federal do Paraná",
+            "UTFPR - Universidade Tecnológica Federal do Paraná",
+            "UNILA - Universidade Federal da Integração Latino-Americana",
+            "UFPE - Universidade Federal de Pernambuco",
+            "UFRPE - Universidade Federal Rural de Pernambuco",
+            "UFAPE - Universidade Federal do Agreste de Pernambuco",
+            "UFPI - Universidade Federal do Piauí",
+            "UFDPar - Universidade Federal do Delta do Parnaíba",
+            "UFRJ - Universidade Federal do Rio de Janeiro",
+            "UFF - Universidade Federal Fluminense",
+            "UFRRJ - Universidade Federal Rural do Rio de Janeiro",
+            "UNIRIO - Universidade Federal do Estado do Rio de Janeiro",
+            "UFRN - Universidade Federal do Rio Grande do Norte",
+            "UFERSA - Universidade Federal Rural do Semi-Árido",
+            "UFRGS - Universidade Federal do Rio Grande do Sul",
+            "UFSM - Universidade Federal de Santa Maria",
+            "UFPel - Universidade Federal de Pelotas",
+            "UNIPAMPA - Universidade Federal do Pampa",
+            "UFCSPA - Universidade Federal de Ciências da Saúde de Porto Alegre",
+            "UFFS - Universidade Federal da Fronteira Sul",
+            "UNIR - Universidade Federal de Rondônia",
+            "UFRR - Universidade Federal de Roraima",
+            "UFSC - Universidade Federal de Santa Catarina",
+            "UNIFESP - Universidade Federal de São Paulo",
+            "UFSCar - Universidade Federal de São Carlos",
+            "UFABC - Universidade Federal do ABC",
+            "UFS - Universidade Federal de Sergipe",
+            "UFT - Universidade Federal do Tocantins",
+            "UFNT - Universidade Federal do Norte do Tocantins",
+        
+            // --- UNIVERSIDADES ESTADUAIS ---
+            "USP - Universidade de São Paulo",
+            "UNICAMP - Universidade Estadual de Campinas",
+            "UNESP - Universidade Estadual Paulista",
+            "UERJ - Universidade do Estado do Rio de Janeiro",
+            "UEL - Universidade Estadual de Londrina",
+            "UEM - Universidade Estadual de Maringá",
+            "UENF - Universidade Estadual do Norte Fluminense",
+            "UECE - Universidade Estadual do Ceará",
+            "UVA - Universidade Estadual Vale do Acaraú",
+            "URCA - Universidade Regional do Cariri",
+            "UEMG - Universidade do Estado de Minas Gerais",
+            "UNIMONTES - Universidade Estadual de Montes Claros",
+            "UEG - Universidade Estadual de Goiás",
+            "UEMA - Universidade Estadual do Maranhão",
+            "UEPB - Universidade Estadual da Paraíba",
+            "UEPG - Universidade Estadual de Ponta Grossa",
+            "UNIOESTE - Universidade Estadual do Oeste do Paraná",
+            "UNICENTRO - Universidade Estadual do Centro-Oeste",
+            "UENP - Universidade Estadual do Norte do Paraná",
+        
+            // --- INSTITUTOS FEDERAIS E PRIVADAS ---
+            "IFCE - Instituto Federal do Ceará",
+            "IFMG - Instituto Federal de Minas Gerais",
+            "IFPB - Instituto Federal da Paraíba",
+            "IFPE - Instituto Federal de Pernambuco",
+            "IFPI - Instituto Federal do Piauí",
+            "IFPR - Instituto Federal do Paraná",
+            "IFRJ - Instituto Federal do Rio de Janeiro",
+            "IFRN - Instituto Federal do Rio Grande do Norte",
+            "IFRS - Instituto Federal do Rio Grande do Sul",
+            "IFSC - Instituto Federal de Santa Catarina",
+            "IFSP - Instituto Federal de São Paulo",
+            "Anhanguera",
+            "Anhembi Morumbi",
+            "Cruzeiro do Sul",
+            "ESPM - Escola Superior de Propaganda e Marketing",
+            "Estácio",
+            "FGV - Fundação Getulio Vargas",
+            "FMU - Faculdades Metropolitanas Unidas",
+            "Ibmec",
+            "Insper",
+            "Mackenzie - Universidade Presbiteriana Mackenzie",
+            "PUC-Campinas - Pontifícia Universidade Católica de Campinas",
+            "PUC-MG - Pontifícia Universidade Católica de Minas Gerais",
+            "PUC-PR - Pontifícia Universidade Católica do Paraná",
+            "PUC-RJ - Pontifícia Universidade Católica do Rio de Janeiro",
+            "PUC-RS - Pontifícia Universidade Católica do Rio Grande do Sul",
+            "PUC-SP - Pontifícia Universidade Católica de São Paulo",
+            "UNIP - Universidade Paulista",
+            "UNISINOS - Universidade do Vale do Rio dos Sinos",
             "Outra (Digitar manualmente)"
         ];
 
