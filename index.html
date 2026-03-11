@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-PT" class="dark"> <!-- Começa em dark por padrão -->
+<html lang="pt-PT" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -7,7 +7,6 @@
     <link rel="icon" href="https://i.imgur.com/PC5Ijma.png" />
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Configuração do Tailwind para Modo Claro/Escuro -->
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -16,15 +15,11 @@
                     colors: {
                         primary: '#4A90E2',
                         darkBg: '#050505',
-                        darkSurface: '#1C1C1E',
-                        lightBg: '#F9FAFB',
-                        lightSurface: '#FFFFFF'
+                        lightBg: '#F2F2F7'
                     }
                 }
             }
         }
-
-        // Recupera o tema guardado antes da página carregar para evitar "flashes" brancos
         if (localStorage.getItem('theme') === 'light') {
             document.documentElement.classList.remove('dark');
         } else {
@@ -40,6 +35,26 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
+        /* Efeito Liquid Glass Profissional */
+        .glass-card {
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            transition: all 0.3s ease;
+        }
+        .dark .glass-card {
+            background: rgba(28, 28, 30, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        html:not(.dark) .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
+        }
+        .glass-card:hover {
+            transform: translateY(-2px);
+        }
+
         .chat-bubble-user {
             background: linear-gradient(to right, #B14AE2, #6A0DAD);
             border-radius: 20px 20px 4px 20px;
@@ -50,30 +65,33 @@
         }
     </style>
 </head>
-<body class="bg-lightBg dark:bg-darkBg text-gray-900 dark:text-white transition-colors duration-300 selection:bg-primary/30">
+<body class="bg-lightBg dark:bg-darkBg text-gray-900 dark:text-white transition-colors duration-500 selection:bg-primary/30 relative min-h-screen overflow-hidden">
+
+    <!-- Orbes de luz de fundo para destacar o vidro (visíveis em Light e Dark) -->
+    <div class="fixed top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden">
+        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary/20 dark:bg-primary/10 rounded-full blur-[100px]"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-[#B14AE2]/20 dark:bg-[#B14AE2]/10 rounded-full blur-[120px]"></div>
+        <div class="absolute top-[40%] left-[60%] w-[400px] h-[400px] bg-[#32D74B]/10 dark:bg-[#32D74B]/5 rounded-full blur-[100px]"></div>
+    </div>
 
     <!-- 1. TELA DE CARREGAMENTO -->
-    <div id="screen-loading" class="flex flex-col items-center justify-center min-h-screen">
+    <div id="screen-loading" class="relative z-10 flex flex-col items-center justify-center min-h-screen">
         <div class="flex flex-col items-center justify-center animate-pulse">
             <img src="https://i.imgur.com/PC5Ijma.png" alt="OrganizaEdu Logo" class="w-40 h-40 object-contain drop-shadow-2xl" />
-            <h1 class="mt-8 text-3xl font-bold tracking-wide text-gray-900 dark:text-white">OrganizaEdu</h1>
+            <h1 class="mt-8 text-3xl font-bold tracking-wide">OrganizaEdu</h1>
         </div>
     </div>
 
     <!-- 2. TELA DE LOGIN -->
-    <div id="screen-login" class="hidden relative flex-col items-center justify-center min-h-screen overflow-hidden">
-        <div class="absolute top-0 left-0 w-72 h-72 md:w-96 md:h-96 bg-indigo-600/10 dark:bg-indigo-600/20 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
-        <div class="absolute bottom-0 right-0 w-80 h-80 md:w-[500px] md:h-[500px] bg-blue-600/5 dark:bg-blue-600/10 rounded-full blur-[120px] translate-x-1/3 translate-y-1/3 pointer-events-none"></div>
-
-        <div class="z-10 flex flex-col items-center justify-center w-full max-w-5xl px-8 h-full">
+    <div id="screen-login" class="hidden relative z-10 flex-col items-center justify-center min-h-screen">
+        <div class="flex flex-col items-center justify-center w-full max-w-5xl px-8 h-full">
             <div class="flex flex-col items-center justify-center flex-1 w-full mt-16 md:mt-0">
                 <img src="https://i.imgur.com/PC5Ijma.png" alt="OrganizaEdu Logo" class="w-32 h-32 md:w-48 md:h-48 object-contain mb-8 md:mb-12 hover:scale-105 transition-transform duration-500" />
-                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4 text-center text-gray-900 dark:text-white">Bem-vindo</h1>
+                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4 text-center">Bem-vindo</h1>
                 <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 text-center max-w-md md:max-w-lg leading-relaxed">A sua vida acadêmica organizada de forma incrivelmente simples.</p>
             </div>
-
             <div class="w-full flex justify-center pb-12 pt-8 md:pb-24">
-                <button id="btn-login" class="flex items-center justify-center w-full max-w-sm md:max-w-md bg-gray-900 dark:bg-white text-white dark:text-black py-4 px-6 rounded-2xl md:rounded-full font-semibold text-lg hover:bg-gray-800 dark:hover:bg-gray-200 hover:scale-[1.02] active:scale-95 transition-all shadow-xl dark:shadow-[0_0_40px_rgba(255,255,255,0.1)]">
+                <button id="btn-login" class="flex items-center justify-center w-full max-w-sm md:max-w-md glass-card py-4 px-6 rounded-full font-semibold text-lg hover:scale-[1.02] active:scale-95 transition-all text-gray-900 dark:text-white">
                     <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
                         <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)"><path fill="#4285F4" d="M -3.264,51.509 C -3.264,50.719 -3.334,49.969 -3.454,49.239 L -14.754,49.239 L -14.754,53.749 L -8.284,53.749 C -8.574,55.229 -9.424,56.479 -10.684,57.329 L -10.684,60.329 L -6.824,60.329 C -4.564,58.239 -3.264,55.159 -3.264,51.509 Z"/><path fill="#34A853" d="M -14.754,63.239 C -11.514,63.239 -8.804,62.159 -6.824,60.329 L -10.684,57.329 C -11.764,58.049 -13.134,58.489 -14.754,58.489 C -17.884,58.489 -20.534,56.379 -21.484,53.529 L -25.464,53.529 L -25.464,56.619 C -23.494,60.539 -19.444,63.239 -14.754,63.239 Z"/><path fill="#FBBC05" d="M -21.484,53.529 C -21.734,52.809 -21.864,52.039 -21.864,51.239 C -21.864,50.439 -21.724,49.669 -21.484,48.949 L -21.484,45.859 L -25.464,45.859 C -26.284,47.479 -26.754,49.299 -26.754,51.239 C -26.754,53.179 -26.284,54.999 -25.464,56.619 L -21.484,53.529 Z"/><path fill="#EA4335" d="M -14.754,43.989 C -12.984,43.989 -11.404,44.599 -10.154,45.789 L -6.734,41.939 C -8.804,40.009 -11.514,38.989 -14.754,38.989 C -19.444,38.989 -23.494,41.689 -25.464,45.859 L -21.484,48.949 C -20.534,46.099 -17.884,43.989 -14.754,43.989 Z"/></g>
                     </svg>
@@ -84,53 +102,52 @@
     </div>
 
     <!-- 3. TELA DE CONFIGURAÇÃO DE PERFIL -->
-    <div id="screen-setup" class="hidden flex-col items-center pt-12 px-6 pb-8 min-h-screen overflow-y-auto">
+    <div id="screen-setup" class="hidden relative z-10 flex-col items-center pt-12 px-6 pb-8 min-h-screen overflow-y-auto">
         <div class="w-full max-w-md">
-            <h2 class="text-3xl font-extrabold mb-2 text-center tracking-tight text-gray-900 dark:text-white">Complete seu perfil</h2>
+            <h2 class="text-3xl font-extrabold mb-2 text-center tracking-tight">Complete seu perfil</h2>
             <p class="text-gray-500 dark:text-gray-400 text-center mb-10">Precisamos de alguns dados para personalizar sua experiência.</p>
 
             <form id="form-setup" class="space-y-5">
                 <div class="flex flex-col">
-                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1">Nome de Perfil (Ex: João Silva)</label>
-                    <input type="text" id="setup-name" required class="w-full bg-white dark:bg-darkSurface border border-gray-300 dark:border-transparent text-gray-900 dark:text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary transition-all shadow-sm" />
+                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1 font-medium">Nome de Perfil</label>
+                    <input type="text" id="setup-name" required placeholder="Ex: João Silva" class="w-full glass-card text-gray-900 dark:text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary" />
                 </div>
 
                 <div class="flex flex-col">
-                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1">Nome de Usuário (@usuario)</label>
+                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1 font-medium">Nome de Usuário</label>
                     <div class="relative">
-                        <input type="text" id="setup-username" required class="w-full bg-white dark:bg-darkSurface border border-gray-300 dark:border-transparent text-gray-900 dark:text-white rounded-2xl px-4 py-4 outline-none transition-all focus:ring-2 focus:ring-primary shadow-sm" />
+                        <input type="text" id="setup-username" required placeholder="@usuario" class="w-full glass-card text-gray-900 dark:text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary" />
                         <div class="absolute right-4 top-1/2 -translate-y-1/2" id="username-icon-container"></div>
                     </div>
                     <p id="username-error-msg" class="hidden text-[#FF3B30] text-xs mt-1 ml-1">Este nome de usuário já está em uso!</p>
-                    <p class="text-gray-500 text-xs mt-1 ml-1">Esse nome deve ser único globalmente.</p>
                 </div>
 
                 <div class="flex flex-col">
-                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1">Qual o seu curso?</label>
-                    <input type="text" id="setup-course" required class="w-full bg-white dark:bg-darkSurface border border-gray-300 dark:border-transparent text-gray-900 dark:text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary transition-all shadow-sm" />
+                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1 font-medium">Curso</label>
+                    <input type="text" id="setup-course" required placeholder="Ex: Engenharia Informática" class="w-full glass-card text-gray-900 dark:text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary" />
                 </div>
 
                 <div class="flex flex-col">
-                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1">Semestre atual</label>
-                    <button type="button" id="btn-select-semester" class="w-full text-left bg-white dark:bg-darkSurface border border-gray-300 dark:border-transparent text-gray-900 dark:text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary transition-all truncate shadow-sm">
+                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1 font-medium">Semestre atual</label>
+                    <button type="button" id="btn-select-semester" class="w-full text-left glass-card rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary text-gray-500 truncate hover:scale-100">
                         Selecione o semestre...
                     </button>
                 </div>
 
                 <div class="flex flex-col mb-4">
-                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1">Sua Universidade (Sigla - Nome)</label>
-                    <button type="button" id="btn-select-uni" class="w-full text-left bg-white dark:bg-darkSurface border border-gray-300 dark:border-transparent text-gray-900 dark:text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary transition-all truncate shadow-sm">
+                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1 font-medium">Universidade</label>
+                    <button type="button" id="btn-select-uni" class="w-full text-left glass-card rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary text-gray-500 truncate hover:scale-100">
                         Toque para buscar...
                     </button>
                 </div>
 
                 <div id="setup-custom-uni-container" class="hidden flex-col mb-8">
-                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1">Qual o nome da sua universidade?</label>
-                    <input type="text" id="setup-custom-uni" class="w-full bg-white dark:bg-darkSurface border border-gray-300 dark:border-transparent text-gray-900 dark:text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary transition-all shadow-sm" />
+                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1 font-medium">Nome da Universidade</label>
+                    <input type="text" id="setup-custom-uni" placeholder="Digite o nome..." class="w-full glass-card text-gray-900 dark:text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary" />
                 </div>
 
                 <div class="pt-6">
-                    <button type="submit" id="btn-finish-setup" disabled class="w-full py-4 rounded-2xl font-bold text-lg transition-all bg-gray-300 dark:bg-darkSurface text-gray-500 cursor-not-allowed">
+                    <button type="submit" id="btn-finish-setup" disabled class="w-full py-4 rounded-2xl font-bold text-lg transition-all bg-gray-300 dark:bg-gray-800 text-gray-500 cursor-not-allowed">
                         Finalizar Perfil
                     </button>
                 </div>
@@ -138,47 +155,47 @@
         </div>
     </div>
 
-    <!-- 4. TELA PRINCIPAL (DASHBOARD) - NOVO LAYOUT WEB -->
-    <div id="screen-home" class="hidden h-screen overflow-hidden">
+    <!-- 4. TELA PRINCIPAL (DASHBOARD E ABAS) -->
+    <div id="screen-home" class="hidden relative z-10 h-screen w-full flex-col md:flex-row overflow-hidden">
         
-        <!-- BARRA LATERAL (APENAS PC/TABLET) -->
-        <nav class="hidden md:flex flex-col w-64 bg-lightSurface dark:bg-darkSurface border-r border-gray-200 dark:border-white/5 h-full flex-shrink-0 transition-colors duration-300">
-            <div class="p-6 flex items-center gap-3 mb-4">
+        <!-- BARRA LATERAL (PC) -->
+        <nav class="hidden md:flex flex-col w-64 glass-card h-full flex-shrink-0 rounded-none border-t-0 border-b-0 border-l-0 z-20 hover:transform-none">
+            <div class="p-6 flex items-center gap-3 mb-4 border-b border-gray-200/50 dark:border-white/10">
                 <img src="https://i.imgur.com/PC5Ijma.png" class="w-10 h-10 object-contain drop-shadow-md"/>
-                <span class="font-extrabold text-xl text-gray-900 dark:text-white tracking-tight">OrganizaEdu</span>
+                <span class="font-extrabold text-xl tracking-tight">OrganizaEdu</span>
             </div>
 
             <div class="flex-1 px-4 space-y-2 overflow-y-auto no-scrollbar">
                 <button onclick="switchTab('home')" id="sidebar-btn-home" class="sidebar-btn flex items-center w-full px-4 py-3.5 rounded-xl font-bold text-primary bg-primary/10 transition-all">
-                    <svg class="mr-3 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                    <svg class="mr-3 w-5 h-5" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"></rect><rect x="14" y="3" width="7" height="5" rx="1"></rect><rect x="14" y="12" width="7" height="9" rx="1"></rect><rect x="3" y="16" width="7" height="5" rx="1"></rect></svg>
                     Painel
                 </button>
-                <button onclick="switchTab('aulas')" id="sidebar-btn-aulas" class="sidebar-btn flex items-center w-full px-4 py-3.5 rounded-xl font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
-                    <svg class="mr-3 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <button onclick="switchTab('aulas')" id="sidebar-btn-aulas" class="sidebar-btn flex items-center w-full px-4 py-3.5 rounded-xl font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-200/50 dark:hover:bg-white/5 transition-all">
+                    <svg class="mr-3 w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                     Aulas
                 </button>
-                <button onclick="switchTab('ia')" id="sidebar-btn-ia" class="sidebar-btn flex items-center w-full px-4 py-3.5 rounded-xl font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
-                    <svg class="mr-3 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
+                <button onclick="switchTab('ia')" id="sidebar-btn-ia" class="sidebar-btn flex items-center w-full px-4 py-3.5 rounded-xl font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-200/50 dark:hover:bg-white/5 transition-all">
+                    <svg class="mr-3 w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
                     Organiza IA
                 </button>
-                <button onclick="switchTab('menu')" id="sidebar-btn-menu" class="sidebar-btn flex items-center w-full px-4 py-3.5 rounded-xl font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
-                    <svg class="mr-3 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
+                <button onclick="switchTab('menu')" id="sidebar-btn-menu" class="sidebar-btn flex items-center w-full px-4 py-3.5 rounded-xl font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-200/50 dark:hover:bg-white/5 transition-all">
+                    <svg class="mr-3 w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
                     Ferramentas
                 </button>
-                <button onclick="switchTab('circular')" id="sidebar-btn-circular" class="sidebar-btn hidden items-center w-full px-4 py-3.5 rounded-xl font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
-                    <svg class="mr-3 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2l.64-2.54c.24-.96.36-1.92.36-2.92V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6.54c0 .99.12 1.96.36 2.92L4 17h2"></path><path d="M14 17v4"></path><path d="M10 17v4"></path><path d="M6 17v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2"></path><path d="M14 17v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2"></path><path d="M8 13h8"></path><circle cx="7" cy="13" r="1"></circle><circle cx="17" cy="13" r="1"></circle></svg>
+                <button onclick="switchTab('circular')" id="sidebar-btn-circular" class="sidebar-btn hidden items-center w-full px-4 py-3.5 rounded-xl font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-200/50 dark:hover:bg-white/5 transition-all">
+                    <svg class="mr-3 w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 17h2l.64-2.54c.24-.96.36-1.92.36-2.92V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6.54c0 .99.12 1.96.36 2.92L4 17h2"></path><path d="M14 17v4"></path><path d="M10 17v4"></path><path d="M6 17v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2"></path><path d="M14 17v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2"></path><path d="M8 13h8"></path><circle cx="7" cy="13" r="1"></circle><circle cx="17" cy="13" r="1"></circle></svg>
                     Circular
                 </button>
-                <button onclick="switchTab('profile')" id="sidebar-btn-profile" class="sidebar-btn flex items-center w-full px-4 py-3.5 rounded-xl font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
-                    <svg class="mr-3 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <button onclick="switchTab('profile')" id="sidebar-btn-profile" class="sidebar-btn flex items-center w-full px-4 py-3.5 rounded-xl font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-200/50 dark:hover:bg-white/5 transition-all">
+                    <svg class="mr-3 w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     Perfil
                 </button>
             </div>
             
-            <div class="p-4 border-t border-gray-200 dark:border-white/5">
-                <button onclick="toggleTheme()" class="flex items-center justify-between w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors">
+            <div class="p-4 border-t border-gray-200/50 dark:border-white/10">
+                <button onclick="toggleTheme()" class="flex items-center justify-between w-full px-4 py-3 rounded-xl bg-gray-200/50 dark:bg-white/5 hover:bg-gray-300/50 dark:hover:bg-white/10 transition-colors">
                     <span class="font-medium text-sm">Tema Escuro</span>
-                    <div class="relative inline-flex items-center h-6 rounded-full w-11 transition-colors bg-gray-300 dark:bg-primary">
+                    <div class="relative inline-flex items-center h-6 rounded-full w-11 transition-colors bg-gray-400 dark:bg-primary">
                         <span class="inline-block w-4 h-4 transform bg-white rounded-full transition-transform translate-x-1 dark:translate-x-6"></span>
                     </div>
                 </button>
@@ -186,121 +203,123 @@
         </nav>
 
         <!-- ÁREA PRINCIPAL -->
-        <div class="flex-1 flex flex-col min-w-0 relative">
+        <div class="flex-1 flex flex-col min-w-0 h-full z-10 relative">
             
-            <!-- HEADER MOBILE (Aparece só no telemóvel) -->
-            <header class="md:hidden flex items-center justify-between p-4 px-6 bg-lightSurface dark:bg-darkSurface border-b border-gray-200 dark:border-white/5">
+            <!-- HEADER MOBILE -->
+            <header class="md:hidden flex items-center justify-between p-4 px-6 glass-card rounded-none border-t-0 border-l-0 border-r-0 hover:transform-none z-20">
                 <div class="flex items-center gap-2">
                     <img src="https://i.imgur.com/PC5Ijma.png" class="w-8 h-8 object-contain" />
-                    <span class="font-bold text-lg text-gray-900 dark:text-white">OrganizaEdu</span>
+                    <span class="font-bold text-lg">OrganizaEdu</span>
                 </div>
-                <button onclick="toggleTheme()" class="p-2 bg-gray-100 dark:bg-white/5 rounded-full text-gray-600 dark:text-gray-300">
-                    <svg id="theme-icon-mobile" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <button onclick="toggleTheme()" class="p-2 bg-gray-200/50 dark:bg-white/10 rounded-full text-gray-700 dark:text-gray-200">
+                    <svg id="theme-icon-mobile" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                 </button>
             </header>
 
             <!-- CONTEÚDO SCROLLÁVEL DAS ABAS -->
-            <main class="flex-1 overflow-y-auto p-4 md:p-8 pb-28 md:pb-8">
+            <main class="flex-1 overflow-y-auto p-4 md:p-8 pb-28 md:pb-8 no-scrollbar">
                 
                 <!-- TAB INÍCIO -->
                 <div id="tab-content-home" class="block w-full max-w-5xl mx-auto animate-fade-in">
                     <div class="flex justify-between items-center mb-8 mt-2 md:mt-0">
                         <div>
-                            <h1 id="home-greeting" class="text-3xl font-extrabold text-gray-900 dark:text-white">Olá, Estudante</h1>
+                            <h1 id="home-greeting" class="text-3xl font-extrabold">Olá, Estudante</h1>
                             <p class="text-gray-500 dark:text-gray-400 mt-1">Bem-vindo(a) ao seu painel.</p>
                         </div>
-                        <div class="md:hidden w-12 h-12 rounded-full overflow-hidden bg-gray-200 dark:bg-[#1C1C1E] border border-gray-300 dark:border-white/10 flex items-center justify-center cursor-pointer" onclick="switchTab('profile')">
+                        <div class="md:hidden w-12 h-12 rounded-full overflow-hidden glass-card flex items-center justify-center cursor-pointer" onclick="switchTab('profile')">
                             <img id="home-photo" src="" alt="Perfil" class="w-full h-full object-cover hidden" />
-                            <span id="home-photo-placeholder" class="text-xl">👤</span>
+                            <svg id="home-photo-placeholder" class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                         </div>
                     </div>
 
-                    <!-- Grelha de Widgets (Adapta-se ao tamanho da tela) -->
+                    <!-- Grelha de Widgets -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         
                         <!-- Aulas Widget -->
-                        <div class="bg-white dark:bg-darkSurface rounded-3xl p-6 border border-gray-200 dark:border-white/5 shadow-sm dark:shadow-none cursor-pointer hover:-translate-y-1 transition-transform" onclick="switchTab('aulas')">
+                        <div class="glass-card rounded-3xl p-6 cursor-pointer" onclick="switchTab('aulas')">
                             <div class="flex items-center mb-4">
                                 <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                                 </div>
-                                <h3 class="font-bold text-lg ml-4 text-gray-900 dark:text-white">Aulas de Hoje</h3>
+                                <h3 class="font-bold text-lg ml-4">Aulas de Hoje</h3>
                             </div>
-                            <div class="p-4 bg-gray-50 dark:bg-[#121212] rounded-2xl flex flex-col items-center justify-center text-center h-32">
-                                <span class="text-3xl mb-2">☕</span>
-                                <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Dia livre!<br>Sem aulas cadastradas.</p>
+                            <div id="home-widget-aulas-content" class="p-4 bg-white/5 dark:bg-black/20 rounded-2xl flex flex-col items-center justify-center text-center min-h-[8rem]">
+                                <!-- Preenchido via JS -->
+                                <svg class="w-8 h-8 mb-2 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17 8h1a4 4 0 1 1 0 8h-1"></path><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path><line x1="6" y1="2" x2="6" y2="4"></line><line x1="10" y1="2" x2="10" y2="4"></line><line x1="14" y1="2" x2="14" y2="4"></line></svg>
+                                <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">A carregar...</p>
                             </div>
                         </div>
 
                         <!-- Tarefas Widget -->
-                        <div class="bg-white dark:bg-darkSurface rounded-3xl p-6 border border-gray-200 dark:border-white/5 shadow-sm dark:shadow-none cursor-pointer hover:-translate-y-1 transition-transform" onclick="switchTab('menu')">
+                        <div class="glass-card rounded-3xl p-6 cursor-pointer" onclick="switchTab('menu')">
                             <div class="flex items-center mb-4">
                                 <div class="w-12 h-12 rounded-full bg-[#0A84FF]/10 flex items-center justify-center text-[#0A84FF]">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
                                 </div>
-                                <h3 class="font-bold text-lg ml-4 text-gray-900 dark:text-white">Produtividade</h3>
+                                <h3 class="font-bold text-lg ml-4">Produtividade</h3>
                             </div>
-                            <div class="p-4 bg-gray-50 dark:bg-[#121212] rounded-2xl flex flex-col items-center justify-center text-center h-32">
+                            <div id="home-widget-tarefas-content" class="p-4 bg-white/5 dark:bg-black/20 rounded-2xl flex flex-col items-center justify-center text-center min-h-[8rem]">
+                                <svg class="w-8 h-8 mb-2 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>
                                 <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Tudo em dia.<br>Nenhuma tarefa pendente.</p>
                             </div>
                         </div>
 
-                        <!-- Circular Widget (Oculto se não UFRB) -->
-                        <div id="home-widget-circular" class="hidden bg-white dark:bg-darkSurface rounded-3xl p-6 border border-gray-200 dark:border-white/5 shadow-sm dark:shadow-none cursor-pointer hover:-translate-y-1 transition-transform" onclick="switchTab('circular')">
+                        <!-- Circular Widget -->
+                        <div id="home-widget-circular" class="hidden glass-card rounded-3xl p-6 cursor-pointer" onclick="switchTab('circular')">
                             <div class="flex items-center mb-4">
                                 <div class="w-12 h-12 rounded-full bg-[#32D74B]/10 flex items-center justify-center text-[#32D74B]">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2l.64-2.54c.24-.96.36-1.92.36-2.92V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6.54c0 .99.12 1.96.36 2.92L4 17h2"></path><path d="M14 17v4"></path><path d="M10 17v4"></path><path d="M6 17v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2"></path><path d="M14 17v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2"></path><path d="M8 13h8"></path><circle cx="7" cy="13" r="1"></circle><circle cx="17" cy="13" r="1"></circle></svg>
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 17h2l.64-2.54c.24-.96.36-1.92.36-2.92V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6.54c0 .99.12 1.96.36 2.92L4 17h2"></path><path d="M14 17v4"></path><path d="M10 17v4"></path><path d="M6 17v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2"></path><path d="M14 17v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2"></path><path d="M8 13h8"></path><circle cx="7" cy="13" r="1"></circle><circle cx="17" cy="13" r="1"></circle></svg>
                                 </div>
-                                <h3 class="font-bold text-lg ml-4 text-gray-900 dark:text-white">Circular UFRB</h3>
+                                <h3 class="font-bold text-lg ml-4">Circular UFRB</h3>
                             </div>
-                            <div class="p-4 bg-gray-50 dark:bg-[#121212] rounded-2xl flex flex-col items-center justify-center text-center h-32">
-                                <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Verificar Rota e Horários.</p>
+                            <div id="home-widget-circular-content" class="p-4 bg-white/5 dark:bg-black/20 rounded-2xl flex flex-col justify-center text-left min-h-[8rem]">
+                                <!-- Preenchido via JS -->
+                                <p class="text-gray-500 text-center text-sm">A carregar...</p>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
                 <!-- TAB AULAS -->
                 <div id="tab-content-aulas" class="hidden flex-col w-full max-w-4xl mx-auto min-h-full">
                     <div class="flex justify-between items-center mb-8 mt-2 md:mt-0">
-                        <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">Aulas</h1>
-                        <button onclick="alert('Adicionar Aula (Em breve)')" class="bg-primary text-white px-4 py-2 rounded-xl font-bold hover:bg-blue-600 transition-colors shadow-lg shadow-primary/30 flex items-center">
-                            <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <h1 class="text-3xl font-extrabold">As Tuas Aulas</h1>
+                        <button onclick="alert('Adicionar Aula em breve (App Nativa tem prioridade)')" class="bg-primary text-white px-4 py-2 rounded-xl font-bold shadow-lg shadow-primary/30 flex items-center hover:scale-105 active:scale-95 transition-transform">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                             Nova Aula
                         </button>
                     </div>
-                    <div class="flex-1 flex flex-col items-center justify-center text-center border-2 border-dashed border-gray-200 dark:border-white/10 rounded-3xl p-10">
-                        <span class="text-5xl mb-4">📅</span>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Nenhuma aula registada</h3>
-                        <p class="text-gray-500 dark:text-gray-400">Adicione as suas disciplinas para acompanhar o seu horário semanal.</p>
+                    <div class="flex-1 flex flex-col items-center justify-center text-center border-2 border-dashed border-gray-300 dark:border-white/10 rounded-3xl p-10 glass-card hover:transform-none">
+                        <svg class="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        <h3 class="text-xl font-bold mb-2">Nenhuma aula registada</h3>
+                        <p class="text-gray-500">A sincronização da base de dados ocorrerá em breve.</p>
                     </div>
                 </div>
 
                 <!-- TAB IA -->
-                <div id="tab-content-ia" class="hidden flex-col w-full max-w-4xl mx-auto h-[80vh] md:h-full">
+                <div id="tab-content-ia" class="hidden flex-col w-full max-w-4xl mx-auto h-[80vh] md:h-[85vh]">
                     <div class="flex items-center mb-6 mt-2 md:mt-0">
                         <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center p-1 mr-4 shadow-sm">
                             <img src="https://i.imgur.com/PC5Ijma.png" alt="IA" class="w-full h-full object-contain" />
                         </div>
                         <div>
-                            <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">Organiza IA</h2>
+                            <h2 class="text-2xl font-extrabold">Organiza IA</h2>
                             <p class="text-sm text-[#32D74B] font-bold">Sempre online</p>
                         </div>
                     </div>
                     
-                    <div class="flex-1 bg-white dark:bg-darkSurface border border-gray-200 dark:border-transparent rounded-3xl p-4 md:p-6 flex flex-col shadow-sm dark:shadow-none">
+                    <div class="flex-1 glass-card rounded-3xl p-4 md:p-6 flex flex-col hover:transform-none">
                         <div class="flex-1 overflow-y-auto space-y-4 no-scrollbar flex flex-col justify-end mb-4">
                             <div class="flex items-start max-w-[85%]">
-                                <div class="p-4 text-[15px] bg-gray-100 dark:bg-[#1C1C1E] text-gray-900 dark:text-white chat-bubble-ai border border-gray-200 dark:border-transparent shadow-sm">
-                                    Olá! Sou a Organiza IA ✨<br>Pode pedir-me para gerir as suas tarefas, adicionar aulas ou criar anotações de estudo!
+                                <div class="p-4 text-[15px] bg-white/50 dark:bg-[#1C1C1E] border border-gray-200 dark:border-transparent chat-bubble-ai shadow-sm">
+                                    Olá! Sou a Organiza IA ✨<br>A integração do motor LLaMA para a Web está a ser ultimada.
                                 </div>
                             </div>
                         </div>
-                        <div class="flex bg-gray-50 dark:bg-[#050505] rounded-full p-1.5 border border-gray-200 dark:border-white/10 shadow-inner">
-                            <input type="text" placeholder="Escreva a sua mensagem..." class="flex-1 bg-transparent px-4 py-2 outline-none text-gray-900 dark:text-white placeholder-gray-500" disabled />
+                        <div class="flex bg-white/50 dark:bg-[#050505] rounded-full p-1.5 border border-gray-300 dark:border-white/10 shadow-inner">
+                            <input type="text" placeholder="Escreva a sua mensagem..." class="flex-1 bg-transparent px-4 py-2 outline-none placeholder-gray-500" disabled />
                             <button class="w-10 h-10 rounded-full bg-[#B14AE2] flex items-center justify-center opacity-50 cursor-not-allowed">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                <svg class="w-4 h-4" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                             </button>
                         </div>
                     </div>
@@ -308,64 +327,62 @@
 
                 <!-- TAB MENU (FERRAMENTAS) -->
                 <div id="tab-content-menu" class="hidden flex-col w-full max-w-4xl mx-auto min-h-full">
-                    <h1 class="text-3xl font-extrabold tracking-tight mb-2 mt-2 md:mt-0 text-gray-900 dark:text-white">Ferramentas</h1>
-                    <p class="text-gray-500 dark:text-gray-400 mb-8">Tudo que você precisa para o seu dia a dia acadêmico.</p>
+                    <h1 class="text-3xl font-extrabold tracking-tight mb-2 mt-2 md:mt-0">Menu de Extras</h1>
+                    <p class="text-gray-500 mb-8">Tudo que você precisa para o seu dia a dia.</p>
 
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                        <!-- Finanças -->
-                        <div onclick="alert('Em breve')" class="bg-white dark:bg-darkSurface border border-gray-200 dark:border-transparent rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer hover:scale-105 transition-transform shadow-sm dark:shadow-none aspect-square text-center">
+                        <div onclick="alert('Em breve')" class="glass-card rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer aspect-square text-center">
                             <div class="w-14 h-14 rounded-full bg-[#32D74B]/10 flex items-center justify-center mb-3 text-[#32D74B]">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
                             </div>
-                            <h3 class="font-bold text-sm text-gray-900 dark:text-white">Finanças</h3>
+                            <h3 class="font-bold text-sm">Finanças</h3>
                         </div>
-                        <!-- Tarefas -->
-                        <div onclick="alert('Em breve')" class="bg-white dark:bg-darkSurface border border-gray-200 dark:border-transparent rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer hover:scale-105 transition-transform shadow-sm dark:shadow-none aspect-square text-center">
+                        <div onclick="alert('Em breve')" class="glass-card rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer aspect-square text-center">
                             <div class="w-14 h-14 rounded-full bg-[#0A84FF]/10 flex items-center justify-center mb-3 text-[#0A84FF]">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
                             </div>
-                            <h3 class="font-bold text-sm text-gray-900 dark:text-white">Tarefas</h3>
+                            <h3 class="font-bold text-sm">Tarefas</h3>
                         </div>
-                        <!-- Anotações -->
-                        <div onclick="alert('Em breve')" class="bg-white dark:bg-darkSurface border border-gray-200 dark:border-transparent rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer hover:scale-105 transition-transform shadow-sm dark:shadow-none aspect-square text-center">
+                        <div onclick="alert('Em breve')" class="glass-card rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer aspect-square text-center">
                             <div class="w-14 h-14 rounded-full bg-[#5E5CE6]/10 flex items-center justify-center mb-3 text-[#5E5CE6]">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                             </div>
-                            <h3 class="font-bold text-sm text-gray-900 dark:text-white">Anotações</h3>
+                            <h3 class="font-bold text-sm">Anotações</h3>
                         </div>
-                        <!-- Modo Foco -->
-                        <div onclick="alert('Em breve')" class="bg-white dark:bg-darkSurface border border-gray-200 dark:border-transparent rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer hover:scale-105 transition-transform shadow-sm dark:shadow-none aspect-square text-center">
+                        <div onclick="alert('Em breve')" class="glass-card rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer aspect-square text-center">
                             <div class="w-14 h-14 rounded-full bg-[#00C7BE]/10 flex items-center justify-center mb-3 text-[#00C7BE]">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
                             </div>
-                            <h3 class="font-bold text-sm text-gray-900 dark:text-white">Modo Foco</h3>
+                            <h3 class="font-bold text-sm">Modo Foco</h3>
                         </div>
                     </div>
                 </div>
 
                 <!-- TAB CIRCULAR -->
                 <div id="tab-content-circular" class="hidden flex-col w-full max-w-4xl mx-auto min-h-full">
-                    <h1 class="text-3xl font-extrabold tracking-tight mb-8 mt-2 md:mt-0 text-gray-900 dark:text-white">Circular UFRB</h1>
-                    <div class="bg-white dark:bg-darkSurface rounded-3xl p-10 border border-gray-200 dark:border-transparent shadow-sm dark:shadow-none text-center">
-                        <span class="text-5xl mb-4 block">🚌</span>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Itinerários</h3>
-                        <p class="text-gray-500 dark:text-gray-400">Roteiro e Horários fixos em breve na versão Web.</p>
+                    <h1 class="text-3xl font-extrabold tracking-tight mb-8 mt-2 md:mt-0">Circular UFRB</h1>
+                    <div class="glass-card rounded-3xl p-10 text-center hover:transform-none">
+                        <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 17h2l.64-2.54c.24-.96.36-1.92.36-2.92V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6.54c0 .99.12 1.96.36 2.92L4 17h2"></path><path d="M14 17v4"></path><path d="M10 17v4"></path><path d="M6 17v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2"></path><path d="M14 17v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2"></path><path d="M8 13h8"></path><circle cx="7" cy="13" r="1"></circle><circle cx="17" cy="13" r="1"></circle></svg>
+                        <h3 class="text-xl font-bold mb-2">Itinerários</h3>
+                        <p class="text-gray-500">Lista completa do roteiro em breve na versão Web.</p>
                     </div>
                 </div>
 
                 <!-- TAB PERFIL -->
                 <div id="tab-content-profile" class="hidden flex-col w-full max-w-lg mx-auto min-h-full items-center pt-8">
-                    <h1 class="text-3xl font-extrabold tracking-tight mb-8 w-full text-left text-gray-900 dark:text-white">Meu Perfil</h1>
+                    <h1 class="text-3xl font-extrabold tracking-tight mb-8 w-full text-left">Meu Perfil</h1>
                     
-                    <div class="bg-white dark:bg-darkSurface rounded-3xl p-8 border border-gray-200 dark:border-transparent shadow-sm dark:shadow-none w-full flex flex-col items-center mb-8">
-                        <img id="profile-tab-photo" src="https://via.placeholder.com/150" alt="Perfil" class="w-32 h-32 rounded-full border-4 border-primary mb-4 object-cover hidden shadow-md" />
-                        <div id="profile-tab-placeholder" class="w-32 h-32 rounded-full bg-gray-100 dark:bg-[#1C1C1E] flex items-center justify-center mb-4 text-4xl border-2 border-gray-200 dark:border-white/10">👤</div>
-                        <h2 id="profile-tab-name" class="text-2xl font-bold mb-1 text-gray-900 dark:text-white">Nome</h2>
-                        <p id="profile-tab-uni" class="text-gray-500 dark:text-gray-400 text-sm text-center">Universidade</p>
+                    <div class="glass-card rounded-3xl p-8 w-full flex flex-col items-center mb-8 hover:transform-none">
+                        <img id="profile-tab-photo" src="" alt="Perfil" class="w-32 h-32 rounded-full border-4 border-primary mb-4 object-cover hidden shadow-md" />
+                        <div id="profile-tab-placeholder" class="w-32 h-32 rounded-full bg-white/5 flex items-center justify-center mb-4 border border-white/10 text-gray-500">
+                            <svg class="w-12 h-12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        </div>
+                        <h2 id="profile-tab-name" class="text-2xl font-bold mb-1">Nome</h2>
+                        <p id="profile-tab-uni" class="text-gray-500 text-sm text-center">Universidade</p>
                     </div>
 
-                    <button id="btn-logout" class="w-full px-6 py-4 bg-[#FF3B30]/10 text-[#FF3B30] rounded-2xl font-bold hover:bg-[#FF3B30]/20 transition-colors flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    <button id="btn-logout" class="w-full px-6 py-4 glass-card border border-[#FF3B30]/30 text-[#FF3B30] rounded-2xl font-bold flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                         Sair da Conta
                     </button>
                 </div>
@@ -374,34 +391,32 @@
         </div>
 
         <!-- NavBar Inferior (MOBILE APENAS) -->
-        <div class="md:hidden fixed bottom-0 left-0 right-0 p-4 pb-6 flex justify-center pointer-events-none z-50">
-            <!-- Glass Effect Adaptado ao Tema -->
-            <div class="pointer-events-auto flex items-center justify-evenly w-full max-w-md bg-white/70 dark:bg-black/50 backdrop-blur-xl border border-gray-200/50 dark:border-white/10 py-3 rounded-[32px] shadow-[0_8px_32px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+        <div class="md:hidden fixed bottom-0 left-0 right-0 p-4 pb-6 flex justify-center z-50 pointer-events-none">
+            <div class="pointer-events-auto flex items-center justify-evenly w-full max-w-md liquid-glass py-3 rounded-[32px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
                 
-                <button onclick="switchTab('home')" id="bottom-btn-home" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-primary dark:text-white">
-                    <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                <button onclick="switchTab('home')" id="bottom-btn-home" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-primary">
+                    <svg class="mb-1 w-6 h-6" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"></rect><rect x="14" y="3" width="7" height="5" rx="1"></rect><rect x="14" y="12" width="7" height="9" rx="1"></rect><rect x="3" y="16" width="7" height="5" rx="1"></rect></svg>
                     <span class="text-[11px] font-bold">Início</span>
                 </button>
                 
-                <button onclick="switchTab('aulas')" id="bottom-btn-aulas" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white">
-                    <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <button onclick="switchTab('aulas')" id="bottom-btn-aulas" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-500">
+                    <svg class="mb-1 w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                     <span class="text-[11px] font-medium">Aulas</span>
                 </button>
 
-                <button onclick="switchTab('ia')" id="bottom-btn-ia" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white">
-                    <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg>
+                <button onclick="switchTab('ia')" id="bottom-btn-ia" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-500">
+                    <svg class="mb-1 w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
                     <span class="text-[11px] font-medium">IA</span>
                 </button>
 
-                <button onclick="switchTab('menu')" id="bottom-btn-menu" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white">
-                    <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
+                <button onclick="switchTab('menu')" id="bottom-btn-menu" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-500">
+                    <svg class="mb-1 w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
                     <span class="text-[11px] font-medium">Menu</span>
                 </button>
 
-                <!-- Este botão muda dinamicamente dependendo da universidade -->
-                <button onclick="switchTab('profile')" id="bottom-btn-profile" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white">
-                    <svg class="mb-1 icon-person" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                    <svg class="mb-1 icon-bus hidden" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2l.64-2.54c.24-.96.36-1.92.36-2.92V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6.54c0 .99.12 1.96.36 2.92L4 17h2"></path><path d="M14 17v4"></path><path d="M10 17v4"></path><path d="M6 17v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2"></path><path d="M14 17v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2"></path><path d="M8 13h8"></path><circle cx="7" cy="13" r="1"></circle><circle cx="17" cy="13" r="1"></circle></svg>
+                <button onclick="switchTab('profile')" id="bottom-btn-profile" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-500">
+                    <svg class="mb-1 icon-person w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <svg class="mb-1 icon-bus hidden w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 17h2l.64-2.54c.24-.96.36-1.92.36-2.92V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6.54c0 .99.12 1.96.36 2.92L4 17h2"></path><path d="M14 17v4"></path><path d="M10 17v4"></path><path d="M6 17v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2"></path><path d="M14 17v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2"></path><path d="M8 13h8"></path><circle cx="7" cy="13" r="1"></circle><circle cx="17" cy="13" r="1"></circle></svg>
                     <span id="bottom-label-profile" class="text-[11px] font-medium">Perfil</span>
                 </button>
 
@@ -410,24 +425,23 @@
 
     </div>
 
-    <!-- MODAL DE SELEÇÃO GLOBAL (Universidade ou Semestre) -->
-    <div id="modal-selection" class="hidden fixed inset-0 z-50 flex-col bg-lightBg dark:bg-darkBg text-gray-900 dark:text-white">
-        <div class="flex items-center p-4 pt-6 border-b border-gray-200 dark:border-white/5 bg-lightSurface dark:bg-darkSurface">
-            <button id="btn-close-modal" class="p-2 mr-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+    <!-- MODAL DE SELEÇÃO GLOBAL -->
+    <div id="modal-selection" class="hidden fixed inset-0 z-50 flex-col bg-lightBg dark:bg-darkBg transition-colors duration-500">
+        <div class="flex items-center p-4 pt-6 border-b border-gray-200 dark:border-white/5 glass-card rounded-none">
+            <button id="btn-close-modal" class="p-2 mr-2 hover:bg-gray-200 dark:hover:bg-white/10 rounded-full transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
             </button>
             <h2 id="modal-title" class="text-xl font-bold">Título</h2>
         </div>
-        <div id="modal-search-container" class="p-4 hidden bg-lightSurface dark:bg-darkSurface">
+        <div id="modal-search-container" class="p-4 hidden glass-card rounded-none border-b border-gray-200 dark:border-white/5">
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 </div>
-                <input type="text" id="modal-search" placeholder="Buscar..." class="w-full bg-gray-100 dark:bg-[#1C1C1E] text-gray-900 dark:text-white rounded-xl pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-primary transition-all" />
+                <input type="text" id="modal-search" placeholder="Buscar..." class="w-full bg-white/50 dark:bg-black/20 border border-gray-300 dark:border-white/10 rounded-xl pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-primary transition-all" />
             </div>
         </div>
-        <div id="modal-list" class="flex-1 overflow-y-auto p-4 space-y-2 no-scrollbar bg-lightBg dark:bg-darkBg">
-            <!-- Itens injetados via JS -->
+        <div id="modal-list" class="flex-1 overflow-y-auto p-4 space-y-2 no-scrollbar bg-transparent">
         </div>
     </div>
 
@@ -438,7 +452,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA3g9gmFn-Uc_SoLHsVhH7eIwgzMOYmIAQ",
@@ -459,6 +473,109 @@
         let userData = null;
         let currentTab = 'home';
         let isUfrb = false;
+        let widgetInterval = null;
+
+        // --- SISTEMA DO CIRCULAR UFRB ---
+        function timeToMinutes(timeStr) {
+            const parts = timeStr.split(":");
+            if (parts.length !== 2) return 0;
+            return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+        }
+
+        function addBusTime(baseTime, minutesToAdd) {
+            const parts = baseTime.split(":");
+            let h = parseInt(parts[0]);
+            let m = parseInt(parts[1]);
+            let totalMins = h * 60 + m + minutesToAdd;
+            let newH = Math.floor(totalMins / 60) % 24;
+            let newM = totalMins % 60;
+            return `${newH.toString().padStart(2, '0')}:${newM.toString().padStart(2, '0')}`;
+        }
+
+        function createTrip(startTime, endTime, routeType) {
+            let stopsList = [];
+            if (routeType === "saida-garagem") {
+                stopsList = ["Garagem", "RU", "Prédio de Fitotecnia", "Prédio de Solos", "Pav 1", "Biblioteca", "Pav 2", "Prédio de Engenharia", "Portão 2", "Tabela 1", "Tabela 2", "Portão 1", "Biblioteca", "Torre Cotec", "RU"];
+            } else if (routeType === "volta-campus") {
+                stopsList = ["RU", "Prédio de Fitotecnia", "Prédio de Solos", "Pav 1", "Biblioteca", "Pav 2", "Prédio de Engenharia", "Portão 2", "Tabela 1", "Tabela 2", "Portão 1", "Biblioteca", "Torre Cotec", "RU"];
+            } else if (routeType === "volta-e-recolhe") {
+                stopsList = ["RU", "Prédio de Fitotecnia", "Prédio de Solos", "Prédio de Engenharia Florestal", "Garagem"];
+            }
+
+            const totalDuration = timeToMinutes(endTime) - timeToMinutes(startTime);
+            const stops = stopsList.map((loc, index) => {
+                const fraction = stopsList.length > 1 ? index / (stopsList.length - 1) : 0;
+                const minsToAdd = Math.round(totalDuration * fraction);
+                return { loc, time: addBusTime(startTime, minsToAdd) };
+            });
+
+            const origin = stopsList[0] || "Origem";
+            const dest = stopsList[stopsList.length - 1] || "Destino";
+            let routeName = "Rota Padrão";
+            if (routeType === "saida-garagem") routeName = "Saída da Garagem p/ Campus";
+            else if (routeType === "volta-campus") routeName = "Circulando no Campus";
+            else if (routeType === "volta-e-recolhe") routeName = "Recolhe para Garagem";
+
+            return { start: startTime, end: endTime, origin, dest, routeName, stops };
+        }
+
+        const busSchedule = [
+            createTrip("06:25", "06:50", "saida-garagem"), createTrip("06:50", "07:10", "volta-campus"),
+            createTrip("07:10", "07:25", "volta-campus"), createTrip("07:25", "07:40", "volta-campus"),
+            createTrip("07:40", "07:55", "volta-campus"), createTrip("07:55", "08:20", "volta-e-recolhe"),
+            createTrip("09:35", "10:00", "saida-garagem"), createTrip("10:00", "10:20", "volta-e-recolhe"),
+            createTrip("11:30", "11:55", "saida-garagem"), createTrip("11:55", "12:20", "volta-campus"),
+            createTrip("12:20", "12:45", "volta-e-recolhe"), createTrip("13:00", "13:25", "saida-garagem"),
+            createTrip("13:25", "13:45", "volta-campus"), createTrip("13:45", "14:00", "volta-campus"),
+            createTrip("14:00", "14:25", "volta-e-recolhe"), createTrip("15:35", "16:00", "saida-garagem"),
+            createTrip("16:00", "16:25", "volta-e-recolhe"), createTrip("17:30", "17:55", "saida-garagem"),
+            createTrip("17:55", "18:15", "volta-campus"), createTrip("18:15", "18:40", "volta-e-recolhe"),
+            createTrip("20:00", "20:20", "volta-e-recolhe"), createTrip("20:40", "21:00", "volta-e-recolhe"),
+            createTrip("21:40", "22:00", "volta-e-recolhe"), createTrip("22:30", "22:50", "volta-e-recolhe")
+        ];
+
+        function renderDashboardWidgets() {
+            if (!userData) return;
+            const now = new Date();
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+            // 1. Renderizar Circular
+            if (isUfrb) {
+                const circContainer = document.getElementById('home-widget-circular-content');
+                const currentTrip = busSchedule.find(t => currentMinutes >= timeToMinutes(t.start) && currentMinutes <= timeToMinutes(t.end));
+                const nextTrip = busSchedule.find(t => timeToMinutes(t.start) > currentMinutes);
+                
+                if (currentTrip) {
+                    const nextStop = currentTrip.stops.find(s => timeToMinutes(s.time) >= currentMinutes);
+                    circContainer.innerHTML = `
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-[#32D74B] bg-[#32D74B]/10 px-2 py-1 rounded">EM ROTA AGORA</span>
+                            <span class="text-xs text-gray-500 font-bold">${currentTrip.start} - ${currentTrip.end}</span>
+                        </div>
+                        <h4 class="font-extrabold text-lg">${currentTrip.routeName}</h4>
+                        <p class="text-sm text-gray-400 mt-1">${nextStop ? `Próxima: ${nextStop.loc}` : 'Quase no destino'}</p>
+                    `;
+                } else if (nextTrip) {
+                    const minsLeft = timeToMinutes(nextTrip.start) - currentMinutes;
+                    circContainer.innerHTML = `
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded">AGENDADO</span>
+                            <span class="text-xs text-gray-500 font-bold">${nextTrip.start} - ${nextTrip.end}</span>
+                        </div>
+                        <h4 class="font-extrabold text-lg">${nextTrip.routeName}</h4>
+                        <p class="text-sm text-gray-400 mt-1">Sai em ${minsLeft} min da ${nextTrip.origin}</p>
+                    `;
+                } else {
+                    circContainer.innerHTML = `
+                        <div class="flex flex-col items-center justify-center">
+                            <svg class="w-8 h-8 text-gray-500 mb-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                            <h4 class="font-bold text-md">Serviço Encerrado</h4>
+                            <p class="text-xs text-gray-500 mt-1">Retorna amanhã</p>
+                        </div>
+                    `;
+                }
+            }
+        }
 
         // Setup Form State
         let setupName = "";
@@ -471,10 +588,9 @@
         let isCheckingUsername = false;
         let usernameTimeout = null;
 
-        // Constantes SVG
-        const iconCheck = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#32D74B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
-        const iconX = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF3B30" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
-        const iconLoader = `<div class="w-5 h-5 border-2 border-gray-400 border-t-[#4A90E2] rounded-full animate-spin"></div>`;
+        const iconCheck = `<svg class="w-5 h-5 text-[#32D74B]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
+        const iconX = `<svg class="w-5 h-5 text-[#FF3B30]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+        const iconLoader = `<div class="w-5 h-5 border-2 border-gray-400 border-t-primary rounded-full animate-spin"></div>`;
 
         const universitiesList = [
             "UFRB - Universidade Federal do Recôncavo da Bahia", "UFBA - Universidade Federal da Bahia", "UFOB - Universidade Federal do Oeste da Bahia", "UFSB - Universidade Federal do Sul da Bahia", "UNIVASF - Universidade Federal do Vale do São Francisco", "UNEB - Universidade do Estado da Bahia", "UEFS - Universidade Estadual de Feira de Santana", "UESB - Universidade Estadual do Sudoeste da Bahia", "UESC - Universidade Estadual de Santa Cruz", "IFBA - Instituto Federal da Bahia", "IF Baiano - Instituto Federal Baiano",
@@ -500,10 +616,8 @@
             const iconMobile = document.getElementById('theme-icon-mobile');
             if(iconMobile) {
                 if(isDark) {
-                    // Moon
                     iconMobile.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
                 } else {
-                    // Sun
                     iconMobile.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
                 }
             }
@@ -513,7 +627,7 @@
         function switchScreen(screenId) {
             ['screen-loading', 'screen-login', 'screen-setup', 'screen-home'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
-                document.getElementById(id).classList.remove('flex');
+                document.getElementById(id).classList.remove(id === 'screen-home' ? 'flex' : 'flex');
             });
             document.getElementById(screenId).classList.remove('hidden');
             document.getElementById(screenId).classList.add('flex');
@@ -535,7 +649,7 @@
                 activeEl.classList.add(tabId === 'home' ? 'block' : 'flex');
             }
 
-            // Atualiza visual da Nav Bottom (Mobile)
+            // Mobile Nav
             document.querySelectorAll('.bottom-btn').forEach(btn => {
                 btn.classList.remove('text-primary', 'dark:text-white', 'text-gray-900');
                 btn.classList.add('text-gray-400', 'dark:text-gray-500');
@@ -552,7 +666,7 @@
                 activeBottomBtn.querySelector('span').classList.add('font-bold');
             }
 
-            // Atualiza visual da Nav Lateral (PC)
+            // PC Nav
             document.querySelectorAll('.sidebar-btn').forEach(btn => {
                 btn.classList.remove('text-primary', 'bg-primary/10', 'font-bold');
                 btn.classList.add('text-gray-600', 'dark:text-gray-400', 'font-medium');
@@ -566,7 +680,6 @@
             }
         }
 
-        // Inicializa o icone de tema
         updateThemeIcons(document.documentElement.classList.contains('dark'));
 
         // --- AUTENTICAÇÃO E ESTADO ---
@@ -579,7 +692,6 @@
                         userData = docSnap.data();
                         isUfrb = userData.university && userData.university.toLowerCase().includes('ufrb');
                         
-                        // Configura Header Home
                         document.getElementById('home-greeting').innerText = `Olá, ${userData.displayName.split(" ")[0] || 'Estudante'}`;
                         if(userData.profileImageUrl) {
                             document.getElementById('home-photo').src = userData.profileImageUrl;
@@ -590,11 +702,9 @@
                             document.getElementById('profile-tab-placeholder').classList.add('hidden');
                         }
                         
-                        // Configura Perfil Tab
                         document.getElementById('profile-tab-name').innerText = userData.displayName;
                         document.getElementById('profile-tab-uni').innerText = userData.university;
 
-                        // Mostra ícone de Circular se for UFRB em ambas as navbars
                         const bottomBtnProfile = document.getElementById('bottom-btn-profile');
                         const bottomBtnLabel = document.getElementById('bottom-label-profile');
                         const sideBtnCircular = document.getElementById('sidebar-btn-circular');
@@ -602,20 +712,33 @@
                         if (isUfrb) {
                             document.getElementById('home-widget-circular').classList.remove('hidden');
                             
-                            // Bottom Nav
                             bottomBtnProfile.setAttribute('onclick', "switchTab('circular')");
                             bottomBtnProfile.id = 'bottom-btn-circular';
                             bottomBtnLabel.innerText = 'Circular';
                             document.querySelectorAll('.icon-person').forEach(el => el.classList.add('hidden'));
                             document.querySelectorAll('.icon-bus').forEach(el => el.classList.remove('hidden'));
 
-                            // Side Nav
                             sideBtnCircular.classList.remove('hidden');
                             sideBtnCircular.classList.add('flex');
                         }
 
+                        // Listeners para dados Reais
+                        onSnapshot(collection(db, "users", user.uid, "tarefas"), (snapshot) => {
+                            const tarefas = snapshot.docs.map(doc => doc.data());
+                            const concluidas = tarefas.filter(t => t.concluida).length;
+                            const widgetTxt = document.getElementById('widget-tarefas-text');
+                            if (tarefas.length === 0) widgetTxt.innerText = "Tudo em dia.";
+                            else if (concluidas === tarefas.length) widgetTxt.innerText = "Tudo concluído!";
+                            else widgetTxt.innerText = `${tarefas.length - concluidas} tarefas pendentes`;
+                        });
+
                         switchScreen('screen-home');
                         switchTab('home');
+
+                        if(widgetInterval) clearInterval(widgetInterval);
+                        renderDashboardWidgets();
+                        widgetInterval = setInterval(renderDashboardWidgets, 10000);
+
                     } else {
                         document.getElementById('setup-name').value = user.displayName || '';
                         setupName = user.displayName || '';
@@ -629,6 +752,7 @@
             } else {
                 currentUser = null;
                 userData = null;
+                if(widgetInterval) clearInterval(widgetInterval);
                 setTimeout(() => switchScreen('screen-login'), 1500);
             }
         });
@@ -738,12 +862,10 @@
             });
         });
 
-        // Username Debounce
         document.getElementById('setup-username').addEventListener('input', (e) => {
             let val = e.target.value.replace(/\s/g, '').toLowerCase();
             e.target.value = val;
             setupUsername = val;
-            
             clearTimeout(usernameTimeout);
             
             if (val.length > 2) {
@@ -800,19 +922,12 @@
             e.preventDefault();
             btnFinishSetup.disabled = true;
             btnFinishSetup.innerText = "A guardar...";
-
             const finalUni = setupUni === "Outra (Digitar manualmente)" ? setupCustomUni : setupUni;
-            
             try {
                 await setDoc(doc(db, "users", currentUser.uid), {
-                    displayName: setupName,
-                    username: setupUsername,
-                    course: setupCourse,
-                    semester: setupSemester,
-                    university: finalUni,
-                    profileImageUrl: currentUser.photoURL || ""
+                    displayName: setupName, username: setupUsername, course: setupCourse,
+                    semester: setupSemester, university: finalUni, profileImageUrl: currentUser.photoURL || ""
                 }, { merge: true });
-                
                 window.location.reload();
             } catch (error) {
                 alert("Erro ao salvar: " + error.message);
@@ -820,7 +935,6 @@
                 btnFinishSetup.innerText = "Finalizar Perfil";
             }
         });
-
     </script>
 </body>
 </html>
