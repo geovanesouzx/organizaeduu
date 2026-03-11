@@ -1,63 +1,81 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-PT" class="dark"> <!-- Começa em dark por padrão -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OrganizaEdu</title>
     <link rel="icon" href="https://i.imgur.com/PC5Ijma.png" />
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configuração do Tailwind para Modo Claro/Escuro -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4A90E2',
+                        darkBg: '#050505',
+                        darkSurface: '#1C1C1E',
+                        lightBg: '#F9FAFB',
+                        lightSurface: '#FFFFFF'
+                    }
+                }
+            }
+        }
+
+        // Recupera o tema guardado antes da página carregar para evitar "flashes" brancos
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+        } else {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
     <style>
         body {
             margin: 0;
-            background-color: #050505;
-            color: white;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
             -webkit-font-smoothing: antialiased;
         }
-        /* Utilitário para ocultar scrollbar mas manter funcionalidade */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Efeito de Vidro da NavBar */
-        .liquid-glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .chat-bubble-user {
+            background: linear-gradient(to right, #B14AE2, #6A0DAD);
+            border-radius: 20px 20px 4px 20px;
+            color: white;
+        }
+        .chat-bubble-ai {
+            border-radius: 20px 20px 20px 4px;
         }
     </style>
 </head>
-<body class="selection:bg-[#4A90E2]/30">
+<body class="bg-lightBg dark:bg-darkBg text-gray-900 dark:text-white transition-colors duration-300 selection:bg-primary/30">
 
     <!-- 1. TELA DE CARREGAMENTO -->
     <div id="screen-loading" class="flex flex-col items-center justify-center min-h-screen">
         <div class="flex flex-col items-center justify-center animate-pulse">
             <img src="https://i.imgur.com/PC5Ijma.png" alt="OrganizaEdu Logo" class="w-40 h-40 object-contain drop-shadow-2xl" />
-            <h1 class="mt-8 text-3xl font-bold tracking-wide">OrganizaEdu</h1>
+            <h1 class="mt-8 text-3xl font-bold tracking-wide text-gray-900 dark:text-white">OrganizaEdu</h1>
         </div>
     </div>
 
     <!-- 2. TELA DE LOGIN -->
     <div id="screen-login" class="hidden relative flex-col items-center justify-center min-h-screen overflow-hidden">
-        <div class="absolute top-0 left-0 w-72 h-72 md:w-96 md:h-96 bg-indigo-600/20 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
-        <div class="absolute bottom-0 right-0 w-80 h-80 md:w-[500px] md:h-[500px] bg-blue-600/10 rounded-full blur-[120px] translate-x-1/3 translate-y-1/3 pointer-events-none"></div>
+        <div class="absolute top-0 left-0 w-72 h-72 md:w-96 md:h-96 bg-indigo-600/10 dark:bg-indigo-600/20 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+        <div class="absolute bottom-0 right-0 w-80 h-80 md:w-[500px] md:h-[500px] bg-blue-600/5 dark:bg-blue-600/10 rounded-full blur-[120px] translate-x-1/3 translate-y-1/3 pointer-events-none"></div>
 
         <div class="z-10 flex flex-col items-center justify-center w-full max-w-5xl px-8 h-full">
             <div class="flex flex-col items-center justify-center flex-1 w-full mt-16 md:mt-0">
                 <img src="https://i.imgur.com/PC5Ijma.png" alt="OrganizaEdu Logo" class="w-32 h-32 md:w-48 md:h-48 object-contain mb-8 md:mb-12 hover:scale-105 transition-transform duration-500" />
-                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4 text-center">Bem-vindo</h1>
-                <p class="text-lg md:text-xl text-gray-400 text-center max-w-md md:max-w-lg leading-relaxed">A sua vida acadêmica organizada de forma incrivelmente simples.</p>
+                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4 text-center text-gray-900 dark:text-white">Bem-vindo</h1>
+                <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 text-center max-w-md md:max-w-lg leading-relaxed">A sua vida acadêmica organizada de forma incrivelmente simples.</p>
             </div>
 
             <div class="w-full flex justify-center pb-12 pt-8 md:pb-24">
-                <button id="btn-login" class="flex items-center justify-center w-full max-w-sm md:max-w-md bg-white text-black py-4 px-6 rounded-2xl md:rounded-full font-semibold text-lg hover:bg-gray-200 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_0_40px_rgba(255,255,255,0.1)]">
+                <button id="btn-login" class="flex items-center justify-center w-full max-w-sm md:max-w-md bg-gray-900 dark:bg-white text-white dark:text-black py-4 px-6 rounded-2xl md:rounded-full font-semibold text-lg hover:bg-gray-800 dark:hover:bg-gray-200 hover:scale-[1.02] active:scale-95 transition-all shadow-xl dark:shadow-[0_0_40px_rgba(255,255,255,0.1)]">
                     <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
-                        <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
-                            <path fill="#4285F4" d="M -3.264,51.509 C -3.264,50.719 -3.334,49.969 -3.454,49.239 L -14.754,49.239 L -14.754,53.749 L -8.284,53.749 C -8.574,55.229 -9.424,56.479 -10.684,57.329 L -10.684,60.329 L -6.824,60.329 C -4.564,58.239 -3.264,55.159 -3.264,51.509 Z"/>
-                            <path fill="#34A853" d="M -14.754,63.239 C -11.514,63.239 -8.804,62.159 -6.824,60.329 L -10.684,57.329 C -11.764,58.049 -13.134,58.489 -14.754,58.489 C -17.884,58.489 -20.534,56.379 -21.484,53.529 L -25.464,53.529 L -25.464,56.619 C -23.494,60.539 -19.444,63.239 -14.754,63.239 Z"/>
-                            <path fill="#FBBC05" d="M -21.484,53.529 C -21.734,52.809 -21.864,52.039 -21.864,51.239 C -21.864,50.439 -21.724,49.669 -21.484,48.949 L -21.484,45.859 L -25.464,45.859 C -26.284,47.479 -26.754,49.299 -26.754,51.239 C -26.754,53.179 -26.284,54.999 -25.464,56.619 L -21.484,53.529 Z"/>
-                            <path fill="#EA4335" d="M -14.754,43.989 C -12.984,43.989 -11.404,44.599 -10.154,45.789 L -6.734,41.939 C -8.804,40.009 -11.514,38.989 -14.754,38.989 C -19.444,38.989 -23.494,41.689 -25.464,45.859 L -21.484,48.949 C -20.534,46.099 -17.884,43.989 -14.754,43.989 Z"/>
-                        </g>
+                        <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)"><path fill="#4285F4" d="M -3.264,51.509 C -3.264,50.719 -3.334,49.969 -3.454,49.239 L -14.754,49.239 L -14.754,53.749 L -8.284,53.749 C -8.574,55.229 -9.424,56.479 -10.684,57.329 L -10.684,60.329 L -6.824,60.329 C -4.564,58.239 -3.264,55.159 -3.264,51.509 Z"/><path fill="#34A853" d="M -14.754,63.239 C -11.514,63.239 -8.804,62.159 -6.824,60.329 L -10.684,57.329 C -11.764,58.049 -13.134,58.489 -14.754,58.489 C -17.884,58.489 -20.534,56.379 -21.484,53.529 L -25.464,53.529 L -25.464,56.619 C -23.494,60.539 -19.444,63.239 -14.754,63.239 Z"/><path fill="#FBBC05" d="M -21.484,53.529 C -21.734,52.809 -21.864,52.039 -21.864,51.239 C -21.864,50.439 -21.724,49.669 -21.484,48.949 L -21.484,45.859 L -25.464,45.859 C -26.284,47.479 -26.754,49.299 -26.754,51.239 C -26.754,53.179 -26.284,54.999 -25.464,56.619 L -21.484,53.529 Z"/><path fill="#EA4335" d="M -14.754,43.989 C -12.984,43.989 -11.404,44.599 -10.154,45.789 L -6.734,41.939 C -8.804,40.009 -11.514,38.989 -14.754,38.989 C -19.444,38.989 -23.494,41.689 -25.464,45.859 L -21.484,48.949 C -20.534,46.099 -17.884,43.989 -14.754,43.989 Z"/></g>
                     </svg>
                     <span class="ml-4">Continuar com o Google</span>
                 </button>
@@ -68,55 +86,51 @@
     <!-- 3. TELA DE CONFIGURAÇÃO DE PERFIL -->
     <div id="screen-setup" class="hidden flex-col items-center pt-12 px-6 pb-8 min-h-screen overflow-y-auto">
         <div class="w-full max-w-md">
-            <h2 class="text-3xl font-extrabold mb-2 text-center tracking-tight">Complete seu perfil</h2>
-            <p class="text-gray-400 text-center mb-10">Precisamos de alguns dados para personalizar sua experiência.</p>
+            <h2 class="text-3xl font-extrabold mb-2 text-center tracking-tight text-gray-900 dark:text-white">Complete seu perfil</h2>
+            <p class="text-gray-500 dark:text-gray-400 text-center mb-10">Precisamos de alguns dados para personalizar sua experiência.</p>
 
             <form id="form-setup" class="space-y-5">
                 <div class="flex flex-col">
-                    <label class="text-sm text-gray-400 mb-1 ml-1">Nome de Perfil (Ex: João Silva)</label>
-                    <input type="text" id="setup-name" required class="w-full bg-[#1C1C1E] text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-[#4A90E2] transition-all" />
+                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1">Nome de Perfil (Ex: João Silva)</label>
+                    <input type="text" id="setup-name" required class="w-full bg-white dark:bg-darkSurface border border-gray-300 dark:border-transparent text-gray-900 dark:text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary transition-all shadow-sm" />
                 </div>
 
                 <div class="flex flex-col">
-                    <label class="text-sm text-gray-400 mb-1 ml-1">Nome de Usuário (@usuario)</label>
+                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1">Nome de Usuário (@usuario)</label>
                     <div class="relative">
-                        <input type="text" id="setup-username" required class="w-full bg-[#1C1C1E] text-white rounded-2xl px-4 py-4 outline-none transition-all focus:ring-2 focus:ring-[#4A90E2]" />
-                        <div class="absolute right-4 top-1/2 -translate-y-1/2" id="username-icon-container">
-                            <!-- Ícones injetados via JS -->
-                        </div>
+                        <input type="text" id="setup-username" required class="w-full bg-white dark:bg-darkSurface border border-gray-300 dark:border-transparent text-gray-900 dark:text-white rounded-2xl px-4 py-4 outline-none transition-all focus:ring-2 focus:ring-primary shadow-sm" />
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2" id="username-icon-container"></div>
                     </div>
                     <p id="username-error-msg" class="hidden text-[#FF3B30] text-xs mt-1 ml-1">Este nome de usuário já está em uso!</p>
                     <p class="text-gray-500 text-xs mt-1 ml-1">Esse nome deve ser único globalmente.</p>
                 </div>
 
                 <div class="flex flex-col">
-                    <label class="text-sm text-gray-400 mb-1 ml-1">Qual o seu curso?</label>
-                    <input type="text" id="setup-course" required class="w-full bg-[#1C1C1E] text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-[#4A90E2] transition-all" />
+                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1">Qual o seu curso?</label>
+                    <input type="text" id="setup-course" required class="w-full bg-white dark:bg-darkSurface border border-gray-300 dark:border-transparent text-gray-900 dark:text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary transition-all shadow-sm" />
                 </div>
 
-                <!-- Semestre agora é um BOTÃO que abre o modal -->
                 <div class="flex flex-col">
-                    <label class="text-sm text-gray-400 mb-1 ml-1">Semestre atual</label>
-                    <button type="button" id="btn-select-semester" class="w-full text-left bg-[#1C1C1E] rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-[#4A90E2] transition-all text-gray-500 truncate">
+                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1">Semestre atual</label>
+                    <button type="button" id="btn-select-semester" class="w-full text-left bg-white dark:bg-darkSurface border border-gray-300 dark:border-transparent text-gray-900 dark:text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary transition-all truncate shadow-sm">
                         Selecione o semestre...
                     </button>
                 </div>
 
-                <!-- Universidade agora é um BOTÃO que abre o modal -->
                 <div class="flex flex-col mb-4">
-                    <label class="text-sm text-gray-400 mb-1 ml-1">Sua Universidade (Sigla - Nome)</label>
-                    <button type="button" id="btn-select-uni" class="w-full text-left bg-[#1C1C1E] rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-[#4A90E2] transition-all text-gray-500 truncate">
+                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1">Sua Universidade (Sigla - Nome)</label>
+                    <button type="button" id="btn-select-uni" class="w-full text-left bg-white dark:bg-darkSurface border border-gray-300 dark:border-transparent text-gray-900 dark:text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary transition-all truncate shadow-sm">
                         Toque para buscar...
                     </button>
                 </div>
 
                 <div id="setup-custom-uni-container" class="hidden flex-col mb-8">
-                    <label class="text-sm text-gray-400 mb-1 ml-1">Qual o nome da sua universidade?</label>
-                    <input type="text" id="setup-custom-uni" class="w-full bg-[#1C1C1E] text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-[#4A90E2] transition-all" />
+                    <label class="text-sm text-gray-600 dark:text-gray-400 mb-1 ml-1">Qual o nome da sua universidade?</label>
+                    <input type="text" id="setup-custom-uni" class="w-full bg-white dark:bg-darkSurface border border-gray-300 dark:border-transparent text-gray-900 dark:text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-primary transition-all shadow-sm" />
                 </div>
 
                 <div class="pt-6">
-                    <button type="submit" id="btn-finish-setup" disabled class="w-full py-4 rounded-2xl font-bold text-lg transition-all bg-[#1C1C1E] text-gray-500 cursor-not-allowed">
+                    <button type="submit" id="btn-finish-setup" disabled class="w-full py-4 rounded-2xl font-bold text-lg transition-all bg-gray-300 dark:bg-darkSurface text-gray-500 cursor-not-allowed">
                         Finalizar Perfil
                     </button>
                 </div>
@@ -124,126 +138,295 @@
         </div>
     </div>
 
-    <!-- 4. TELA PRINCIPAL (HOME DASHBOARD) -->
-    <div id="screen-home" class="hidden flex-col min-h-screen">
-        <div class="flex-1 overflow-y-auto pb-28 pt-8 px-6 max-w-4xl mx-auto w-full">
-            
-            <!-- Tab Início -->
-            <div id="tab-content-home" class="block w-full">
-                <div class="flex justify-between items-center mb-8">
-                    <h1 id="home-greeting" class="text-2xl font-bold">Olá, Estudante</h1>
-                    <div id="home-profile-btn" class="w-12 h-12 rounded-full overflow-hidden bg-[#1C1C1E] border border-white/10 flex items-center justify-center cursor-pointer hover:scale-105 transition-transform">
-                        <img id="home-photo" src="" alt="Perfil" class="w-full h-full object-cover hidden" />
-                        <span id="home-photo-placeholder" class="text-2xl">👤</span>
-                    </div>
-                </div>
-
-                <h2 class="text-3xl font-extrabold tracking-tight mb-6">Seu Painel</h2>
-
-                <div class="space-y-6">
-                    <!-- Circular (Oculto por padrão, ativado via JS se for UFRB) -->
-                    <div id="home-widget-circular" class="w-full hidden">
-                        <h3 class="text-lg font-bold mb-3 px-2">Circular UFRB</h3>
-                        <div class="bg-[#1C1C1E] rounded-3xl p-6 text-center border border-white/5 cursor-pointer hover:bg-[#252528] transition-colors" onclick="switchTab('circular')">
-                            <p class="text-gray-400 text-sm">O widget do Circular aparecerá aqui.</p>
-                        </div>
-                    </div>
-
-                    <div class="w-full">
-                        <h3 class="text-lg font-bold mb-3 px-2">Aulas</h3>
-                        <div class="bg-[#1C1C1E] rounded-3xl p-6 text-center border border-white/5 cursor-pointer hover:bg-[#252528] transition-colors" onclick="switchTab('aulas')">
-                            <p class="text-gray-400 text-sm">O widget de Aulas aparecerá aqui.</p>
-                        </div>
-                    </div>
-
-                    <div class="w-full">
-                        <h3 class="text-lg font-bold mb-3 px-2">Produtividade</h3>
-                        <div class="bg-[#1C1C1E] rounded-3xl p-6 text-center border border-white/5 cursor-pointer hover:bg-[#252528] transition-colors" onclick="switchTab('menu')">
-                            <p class="text-gray-400 text-sm">O widget de Tarefas aparecerá aqui.</p>
-                        </div>
-                    </div>
-                </div>
+    <!-- 4. TELA PRINCIPAL (DASHBOARD) - NOVO LAYOUT WEB -->
+    <div id="screen-home" class="hidden h-screen overflow-hidden">
+        
+        <!-- BARRA LATERAL (APENAS PC/TABLET) -->
+        <nav class="hidden md:flex flex-col w-64 bg-lightSurface dark:bg-darkSurface border-r border-gray-200 dark:border-white/5 h-full flex-shrink-0 transition-colors duration-300">
+            <div class="p-6 flex items-center gap-3 mb-4">
+                <img src="https://i.imgur.com/PC5Ijma.png" class="w-10 h-10 object-contain drop-shadow-md"/>
+                <span class="font-extrabold text-xl text-gray-900 dark:text-white tracking-tight">OrganizaEdu</span>
             </div>
 
-            <!-- Outras Tabs Placeholder -->
-            <div id="tab-content-aulas" class="hidden flex-col items-center justify-center h-full text-center mt-20">
-                <h2 class="text-2xl font-bold mb-2">As Tuas Aulas</h2>
-                <p class="text-gray-500">Página de aulas em construção.</p>
-            </div>
-            <div id="tab-content-ia" class="hidden flex-col items-center justify-center h-full text-center mt-20">
-                <h2 class="text-2xl font-bold mb-2 text-[#B14AE2]">Organiza IA</h2>
-                <p class="text-gray-500">Página da Inteligência Artificial em construção.</p>
-            </div>
-            <div id="tab-content-menu" class="hidden flex-col items-center justify-center h-full text-center mt-20">
-                <h2 class="text-2xl font-bold mb-2">Menu de Extras</h2>
-                <p class="text-gray-500">Tarefas, Finanças e Ferramentas em construção.</p>
-            </div>
-            <div id="tab-content-circular" class="hidden flex-col items-center justify-center h-full text-center mt-20">
-                <h2 class="text-2xl font-bold mb-2">Circular UFRB</h2>
-                <p class="text-gray-500">Horários do autocarro em construção.</p>
-            </div>
-            <div id="tab-content-profile" class="hidden flex-col items-center justify-center h-full text-center mt-20">
-                <img id="profile-page-photo" src="" alt="Perfil" class="w-24 h-24 rounded-full border-2 border-[#4A90E2] mb-4 object-cover hidden" />
-                <h2 id="profile-page-name" class="text-2xl font-bold mb-2"></h2>
-                <p id="profile-page-uni" class="text-gray-400 mb-8"></p>
-                <button id="btn-logout" class="px-6 py-3 bg-[#FF3B30]/10 text-[#FF3B30] rounded-xl font-bold hover:bg-[#FF3B30]/20 transition-colors">
-                    Sair da Conta
+            <div class="flex-1 px-4 space-y-2 overflow-y-auto no-scrollbar">
+                <button onclick="switchTab('home')" id="sidebar-btn-home" class="sidebar-btn flex items-center w-full px-4 py-3.5 rounded-xl font-bold text-primary bg-primary/10 transition-all">
+                    <svg class="mr-3 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                    Painel
+                </button>
+                <button onclick="switchTab('aulas')" id="sidebar-btn-aulas" class="sidebar-btn flex items-center w-full px-4 py-3.5 rounded-xl font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
+                    <svg class="mr-3 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    Aulas
+                </button>
+                <button onclick="switchTab('ia')" id="sidebar-btn-ia" class="sidebar-btn flex items-center w-full px-4 py-3.5 rounded-xl font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
+                    <svg class="mr-3 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
+                    Organiza IA
+                </button>
+                <button onclick="switchTab('menu')" id="sidebar-btn-menu" class="sidebar-btn flex items-center w-full px-4 py-3.5 rounded-xl font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
+                    <svg class="mr-3 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
+                    Ferramentas
+                </button>
+                <button onclick="switchTab('circular')" id="sidebar-btn-circular" class="sidebar-btn hidden items-center w-full px-4 py-3.5 rounded-xl font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
+                    <svg class="mr-3 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2l.64-2.54c.24-.96.36-1.92.36-2.92V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6.54c0 .99.12 1.96.36 2.92L4 17h2"></path><path d="M14 17v4"></path><path d="M10 17v4"></path><path d="M6 17v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2"></path><path d="M14 17v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2"></path><path d="M8 13h8"></path><circle cx="7" cy="13" r="1"></circle><circle cx="17" cy="13" r="1"></circle></svg>
+                    Circular
+                </button>
+                <button onclick="switchTab('profile')" id="sidebar-btn-profile" class="sidebar-btn flex items-center w-full px-4 py-3.5 rounded-xl font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
+                    <svg class="mr-3 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    Perfil
                 </button>
             </div>
+            
+            <div class="p-4 border-t border-gray-200 dark:border-white/5">
+                <button onclick="toggleTheme()" class="flex items-center justify-between w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors">
+                    <span class="font-medium text-sm">Tema Escuro</span>
+                    <div class="relative inline-flex items-center h-6 rounded-full w-11 transition-colors bg-gray-300 dark:bg-primary">
+                        <span class="inline-block w-4 h-4 transform bg-white rounded-full transition-transform translate-x-1 dark:translate-x-6"></span>
+                    </div>
+                </button>
+            </div>
+        </nav>
+
+        <!-- ÁREA PRINCIPAL -->
+        <div class="flex-1 flex flex-col min-w-0 relative">
+            
+            <!-- HEADER MOBILE (Aparece só no telemóvel) -->
+            <header class="md:hidden flex items-center justify-between p-4 px-6 bg-lightSurface dark:bg-darkSurface border-b border-gray-200 dark:border-white/5">
+                <div class="flex items-center gap-2">
+                    <img src="https://i.imgur.com/PC5Ijma.png" class="w-8 h-8 object-contain" />
+                    <span class="font-bold text-lg text-gray-900 dark:text-white">OrganizaEdu</span>
+                </div>
+                <button onclick="toggleTheme()" class="p-2 bg-gray-100 dark:bg-white/5 rounded-full text-gray-600 dark:text-gray-300">
+                    <svg id="theme-icon-mobile" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+            </header>
+
+            <!-- CONTEÚDO SCROLLÁVEL DAS ABAS -->
+            <main class="flex-1 overflow-y-auto p-4 md:p-8 pb-28 md:pb-8">
+                
+                <!-- TAB INÍCIO -->
+                <div id="tab-content-home" class="block w-full max-w-5xl mx-auto animate-fade-in">
+                    <div class="flex justify-between items-center mb-8 mt-2 md:mt-0">
+                        <div>
+                            <h1 id="home-greeting" class="text-3xl font-extrabold text-gray-900 dark:text-white">Olá, Estudante</h1>
+                            <p class="text-gray-500 dark:text-gray-400 mt-1">Bem-vindo(a) ao seu painel.</p>
+                        </div>
+                        <div class="md:hidden w-12 h-12 rounded-full overflow-hidden bg-gray-200 dark:bg-[#1C1C1E] border border-gray-300 dark:border-white/10 flex items-center justify-center cursor-pointer" onclick="switchTab('profile')">
+                            <img id="home-photo" src="" alt="Perfil" class="w-full h-full object-cover hidden" />
+                            <span id="home-photo-placeholder" class="text-xl">👤</span>
+                        </div>
+                    </div>
+
+                    <!-- Grelha de Widgets (Adapta-se ao tamanho da tela) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        
+                        <!-- Aulas Widget -->
+                        <div class="bg-white dark:bg-darkSurface rounded-3xl p-6 border border-gray-200 dark:border-white/5 shadow-sm dark:shadow-none cursor-pointer hover:-translate-y-1 transition-transform" onclick="switchTab('aulas')">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                </div>
+                                <h3 class="font-bold text-lg ml-4 text-gray-900 dark:text-white">Aulas de Hoje</h3>
+                            </div>
+                            <div class="p-4 bg-gray-50 dark:bg-[#121212] rounded-2xl flex flex-col items-center justify-center text-center h-32">
+                                <span class="text-3xl mb-2">☕</span>
+                                <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Dia livre!<br>Sem aulas cadastradas.</p>
+                            </div>
+                        </div>
+
+                        <!-- Tarefas Widget -->
+                        <div class="bg-white dark:bg-darkSurface rounded-3xl p-6 border border-gray-200 dark:border-white/5 shadow-sm dark:shadow-none cursor-pointer hover:-translate-y-1 transition-transform" onclick="switchTab('menu')">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 rounded-full bg-[#0A84FF]/10 flex items-center justify-center text-[#0A84FF]">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+                                </div>
+                                <h3 class="font-bold text-lg ml-4 text-gray-900 dark:text-white">Produtividade</h3>
+                            </div>
+                            <div class="p-4 bg-gray-50 dark:bg-[#121212] rounded-2xl flex flex-col items-center justify-center text-center h-32">
+                                <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Tudo em dia.<br>Nenhuma tarefa pendente.</p>
+                            </div>
+                        </div>
+
+                        <!-- Circular Widget (Oculto se não UFRB) -->
+                        <div id="home-widget-circular" class="hidden bg-white dark:bg-darkSurface rounded-3xl p-6 border border-gray-200 dark:border-white/5 shadow-sm dark:shadow-none cursor-pointer hover:-translate-y-1 transition-transform" onclick="switchTab('circular')">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 rounded-full bg-[#32D74B]/10 flex items-center justify-center text-[#32D74B]">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2l.64-2.54c.24-.96.36-1.92.36-2.92V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6.54c0 .99.12 1.96.36 2.92L4 17h2"></path><path d="M14 17v4"></path><path d="M10 17v4"></path><path d="M6 17v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2"></path><path d="M14 17v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2"></path><path d="M8 13h8"></path><circle cx="7" cy="13" r="1"></circle><circle cx="17" cy="13" r="1"></circle></svg>
+                                </div>
+                                <h3 class="font-bold text-lg ml-4 text-gray-900 dark:text-white">Circular UFRB</h3>
+                            </div>
+                            <div class="p-4 bg-gray-50 dark:bg-[#121212] rounded-2xl flex flex-col items-center justify-center text-center h-32">
+                                <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Verificar Rota e Horários.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- TAB AULAS -->
+                <div id="tab-content-aulas" class="hidden flex-col w-full max-w-4xl mx-auto min-h-full">
+                    <div class="flex justify-between items-center mb-8 mt-2 md:mt-0">
+                        <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">Aulas</h1>
+                        <button onclick="alert('Adicionar Aula (Em breve)')" class="bg-primary text-white px-4 py-2 rounded-xl font-bold hover:bg-blue-600 transition-colors shadow-lg shadow-primary/30 flex items-center">
+                            <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            Nova Aula
+                        </button>
+                    </div>
+                    <div class="flex-1 flex flex-col items-center justify-center text-center border-2 border-dashed border-gray-200 dark:border-white/10 rounded-3xl p-10">
+                        <span class="text-5xl mb-4">📅</span>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Nenhuma aula registada</h3>
+                        <p class="text-gray-500 dark:text-gray-400">Adicione as suas disciplinas para acompanhar o seu horário semanal.</p>
+                    </div>
+                </div>
+
+                <!-- TAB IA -->
+                <div id="tab-content-ia" class="hidden flex-col w-full max-w-4xl mx-auto h-[80vh] md:h-full">
+                    <div class="flex items-center mb-6 mt-2 md:mt-0">
+                        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center p-1 mr-4 shadow-sm">
+                            <img src="https://i.imgur.com/PC5Ijma.png" alt="IA" class="w-full h-full object-contain" />
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">Organiza IA</h2>
+                            <p class="text-sm text-[#32D74B] font-bold">Sempre online</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 bg-white dark:bg-darkSurface border border-gray-200 dark:border-transparent rounded-3xl p-4 md:p-6 flex flex-col shadow-sm dark:shadow-none">
+                        <div class="flex-1 overflow-y-auto space-y-4 no-scrollbar flex flex-col justify-end mb-4">
+                            <div class="flex items-start max-w-[85%]">
+                                <div class="p-4 text-[15px] bg-gray-100 dark:bg-[#1C1C1E] text-gray-900 dark:text-white chat-bubble-ai border border-gray-200 dark:border-transparent shadow-sm">
+                                    Olá! Sou a Organiza IA ✨<br>Pode pedir-me para gerir as suas tarefas, adicionar aulas ou criar anotações de estudo!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex bg-gray-50 dark:bg-[#050505] rounded-full p-1.5 border border-gray-200 dark:border-white/10 shadow-inner">
+                            <input type="text" placeholder="Escreva a sua mensagem..." class="flex-1 bg-transparent px-4 py-2 outline-none text-gray-900 dark:text-white placeholder-gray-500" disabled />
+                            <button class="w-10 h-10 rounded-full bg-[#B14AE2] flex items-center justify-center opacity-50 cursor-not-allowed">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB MENU (FERRAMENTAS) -->
+                <div id="tab-content-menu" class="hidden flex-col w-full max-w-4xl mx-auto min-h-full">
+                    <h1 class="text-3xl font-extrabold tracking-tight mb-2 mt-2 md:mt-0 text-gray-900 dark:text-white">Ferramentas</h1>
+                    <p class="text-gray-500 dark:text-gray-400 mb-8">Tudo que você precisa para o seu dia a dia acadêmico.</p>
+
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                        <!-- Finanças -->
+                        <div onclick="alert('Em breve')" class="bg-white dark:bg-darkSurface border border-gray-200 dark:border-transparent rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer hover:scale-105 transition-transform shadow-sm dark:shadow-none aspect-square text-center">
+                            <div class="w-14 h-14 rounded-full bg-[#32D74B]/10 flex items-center justify-center mb-3 text-[#32D74B]">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                            </div>
+                            <h3 class="font-bold text-sm text-gray-900 dark:text-white">Finanças</h3>
+                        </div>
+                        <!-- Tarefas -->
+                        <div onclick="alert('Em breve')" class="bg-white dark:bg-darkSurface border border-gray-200 dark:border-transparent rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer hover:scale-105 transition-transform shadow-sm dark:shadow-none aspect-square text-center">
+                            <div class="w-14 h-14 rounded-full bg-[#0A84FF]/10 flex items-center justify-center mb-3 text-[#0A84FF]">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+                            </div>
+                            <h3 class="font-bold text-sm text-gray-900 dark:text-white">Tarefas</h3>
+                        </div>
+                        <!-- Anotações -->
+                        <div onclick="alert('Em breve')" class="bg-white dark:bg-darkSurface border border-gray-200 dark:border-transparent rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer hover:scale-105 transition-transform shadow-sm dark:shadow-none aspect-square text-center">
+                            <div class="w-14 h-14 rounded-full bg-[#5E5CE6]/10 flex items-center justify-center mb-3 text-[#5E5CE6]">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            </div>
+                            <h3 class="font-bold text-sm text-gray-900 dark:text-white">Anotações</h3>
+                        </div>
+                        <!-- Modo Foco -->
+                        <div onclick="alert('Em breve')" class="bg-white dark:bg-darkSurface border border-gray-200 dark:border-transparent rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer hover:scale-105 transition-transform shadow-sm dark:shadow-none aspect-square text-center">
+                            <div class="w-14 h-14 rounded-full bg-[#00C7BE]/10 flex items-center justify-center mb-3 text-[#00C7BE]">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                            </div>
+                            <h3 class="font-bold text-sm text-gray-900 dark:text-white">Modo Foco</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB CIRCULAR -->
+                <div id="tab-content-circular" class="hidden flex-col w-full max-w-4xl mx-auto min-h-full">
+                    <h1 class="text-3xl font-extrabold tracking-tight mb-8 mt-2 md:mt-0 text-gray-900 dark:text-white">Circular UFRB</h1>
+                    <div class="bg-white dark:bg-darkSurface rounded-3xl p-10 border border-gray-200 dark:border-transparent shadow-sm dark:shadow-none text-center">
+                        <span class="text-5xl mb-4 block">🚌</span>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Itinerários</h3>
+                        <p class="text-gray-500 dark:text-gray-400">Roteiro e Horários fixos em breve na versão Web.</p>
+                    </div>
+                </div>
+
+                <!-- TAB PERFIL -->
+                <div id="tab-content-profile" class="hidden flex-col w-full max-w-lg mx-auto min-h-full items-center pt-8">
+                    <h1 class="text-3xl font-extrabold tracking-tight mb-8 w-full text-left text-gray-900 dark:text-white">Meu Perfil</h1>
+                    
+                    <div class="bg-white dark:bg-darkSurface rounded-3xl p-8 border border-gray-200 dark:border-transparent shadow-sm dark:shadow-none w-full flex flex-col items-center mb-8">
+                        <img id="profile-tab-photo" src="https://via.placeholder.com/150" alt="Perfil" class="w-32 h-32 rounded-full border-4 border-primary mb-4 object-cover hidden shadow-md" />
+                        <div id="profile-tab-placeholder" class="w-32 h-32 rounded-full bg-gray-100 dark:bg-[#1C1C1E] flex items-center justify-center mb-4 text-4xl border-2 border-gray-200 dark:border-white/10">👤</div>
+                        <h2 id="profile-tab-name" class="text-2xl font-bold mb-1 text-gray-900 dark:text-white">Nome</h2>
+                        <p id="profile-tab-uni" class="text-gray-500 dark:text-gray-400 text-sm text-center">Universidade</p>
+                    </div>
+
+                    <button id="btn-logout" class="w-full px-6 py-4 bg-[#FF3B30]/10 text-[#FF3B30] rounded-2xl font-bold hover:bg-[#FF3B30]/20 transition-colors flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        Sair da Conta
+                    </button>
+                </div>
+
+            </main>
         </div>
 
-        <!-- NavBar Inferior -->
-        <div class="fixed bottom-0 left-0 right-0 p-4 pb-6 flex justify-center pointer-events-none">
-            <div class="pointer-events-auto flex items-center justify-evenly w-full max-w-md liquid-glass py-3 rounded-[32px] shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+        <!-- NavBar Inferior (MOBILE APENAS) -->
+        <div class="md:hidden fixed bottom-0 left-0 right-0 p-4 pb-6 flex justify-center pointer-events-none z-50">
+            <!-- Glass Effect Adaptado ao Tema -->
+            <div class="pointer-events-auto flex items-center justify-evenly w-full max-w-md bg-white/70 dark:bg-black/50 backdrop-blur-xl border border-gray-200/50 dark:border-white/10 py-3 rounded-[32px] shadow-[0_8px_32px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
                 
-                <button id="nav-btn-home" onclick="switchTab('home')" class="nav-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-white">
+                <button onclick="switchTab('home')" id="bottom-btn-home" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-primary dark:text-white">
                     <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
                     <span class="text-[11px] font-bold">Início</span>
                 </button>
                 
-                <button id="nav-btn-aulas" onclick="switchTab('aulas')" class="nav-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-500 hover:text-white">
+                <button onclick="switchTab('aulas')" id="bottom-btn-aulas" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white">
                     <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                     <span class="text-[11px] font-medium">Aulas</span>
                 </button>
 
-                <button id="nav-btn-ia" onclick="switchTab('ia')" class="nav-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-500 hover:text-white">
+                <button onclick="switchTab('ia')" id="bottom-btn-ia" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white">
                     <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg>
                     <span class="text-[11px] font-medium">IA</span>
                 </button>
 
-                <button id="nav-btn-menu" onclick="switchTab('menu')" class="nav-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-500 hover:text-white">
+                <button onclick="switchTab('menu')" id="bottom-btn-menu" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white">
                     <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
                     <span class="text-[11px] font-medium">Menu</span>
                 </button>
 
                 <!-- Este botão muda dinamicamente dependendo da universidade -->
-                <button id="nav-btn-profile" onclick="switchTab('profile')" class="nav-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-500 hover:text-white">
+                <button onclick="switchTab('profile')" id="bottom-btn-profile" class="bottom-btn flex flex-col items-center justify-center w-16 transition-transform active:scale-95 text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white">
                     <svg class="mb-1 icon-person" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     <svg class="mb-1 icon-bus hidden" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2l.64-2.54c.24-.96.36-1.92.36-2.92V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6.54c0 .99.12 1.96.36 2.92L4 17h2"></path><path d="M14 17v4"></path><path d="M10 17v4"></path><path d="M6 17v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2"></path><path d="M14 17v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2"></path><path d="M8 13h8"></path><circle cx="7" cy="13" r="1"></circle><circle cx="17" cy="13" r="1"></circle></svg>
-                    <span id="nav-label-profile" class="text-[11px] font-medium">Perfil</span>
+                    <span id="bottom-label-profile" class="text-[11px] font-medium">Perfil</span>
                 </button>
 
             </div>
         </div>
+
     </div>
 
     <!-- MODAL DE SELEÇÃO GLOBAL (Universidade ou Semestre) -->
-    <div id="modal-selection" class="hidden fixed inset-0 z-50 flex-col bg-[#050505] text-white">
-        <div class="flex items-center p-4 pt-6 border-b border-white/5">
-            <button id="btn-close-modal" class="p-2 mr-2 hover:bg-white/10 rounded-full transition-colors">
+    <div id="modal-selection" class="hidden fixed inset-0 z-50 flex-col bg-lightBg dark:bg-darkBg text-gray-900 dark:text-white">
+        <div class="flex items-center p-4 pt-6 border-b border-gray-200 dark:border-white/5 bg-lightSurface dark:bg-darkSurface">
+            <button id="btn-close-modal" class="p-2 mr-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
             </button>
             <h2 id="modal-title" class="text-xl font-bold">Título</h2>
         </div>
-        <div id="modal-search-container" class="p-4 hidden">
+        <div id="modal-search-container" class="p-4 hidden bg-lightSurface dark:bg-darkSurface">
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 </div>
-                <input type="text" id="modal-search" placeholder="Buscar..." class="w-full bg-[#1C1C1E] text-white rounded-xl pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-[#4A90E2] transition-all" />
+                <input type="text" id="modal-search" placeholder="Buscar..." class="w-full bg-gray-100 dark:bg-[#1C1C1E] text-gray-900 dark:text-white rounded-xl pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-primary transition-all" />
             </div>
         </div>
-        <div id="modal-list" class="flex-1 overflow-y-auto p-4 space-y-2 no-scrollbar">
+        <div id="modal-list" class="flex-1 overflow-y-auto p-4 space-y-2 no-scrollbar bg-lightBg dark:bg-darkBg">
             <!-- Itens injetados via JS -->
         </div>
     </div>
@@ -293,140 +476,38 @@
         const iconX = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF3B30" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
         const iconLoader = `<div class="w-5 h-5 border-2 border-gray-400 border-t-[#4A90E2] rounded-full animate-spin"></div>`;
 
-        // LISTA ATUALIZADA EXATAMENTE COMO PEDIDO
         const universitiesList = [
-            // --- BAHIA (No Topo Absoluto) ---
-            "UFRB - Universidade Federal do Recôncavo da Bahia",
-            "UFBA - Universidade Federal da Bahia",
-            "UFOB - Universidade Federal do Oeste da Bahia",
-            "UFSB - Universidade Federal do Sul da Bahia",
-            "UNIVASF - Universidade Federal do Vale do São Francisco",
-            "UNEB - Universidade do Estado da Bahia",
-            "UEFS - Universidade Estadual de Feira de Santana",
-            "UESB - Universidade Estadual do Sudoeste da Bahia",
-            "UESC - Universidade Estadual de Santa Cruz",
-            "IFBA - Instituto Federal da Bahia",
-            "IF Baiano - Instituto Federal Baiano",
-        
-            // --- UNIVERSIDADES FEDERAIS ---
-            "UFAC - Universidade Federal do Acre",
-            "UFAL - Universidade Federal de Alagoas",
-            "UNIFAP - Universidade Federal do Amapá",
-            "UFAM - Universidade Federal do Amazonas",
-            "UNILAB - Universidade da Integração Internacional da Lusofonia Afro-Brasileira",
-            "UFC - Universidade Federal do Ceará",
-            "UFCA - Universidade Federal do Cariri",
-            "UnB - Universidade de Brasília",
-            "UFES - Universidade Federal do Espírito Santo",
-            "UFG - Universidade Federal de Goiás",
-            "UFCAT - Universidade Federal de Catalão",
-            "UFJ - Universidade Federal de Jataí",
-            "UFMA - Universidade Federal do Maranhão",
-            "UFMT - Universidade Federal de Mato Grosso",
-            "UFR - Universidade Federal de Rondonópolis",
-            "UFMS - Universidade Federal de Mato Grosso do Sul",
-            "UFGD - Universidade Federal da Grande Dourados",
-            "UFMG - Universidade Federal de Minas Gerais",
-            "UFOP - Universidade Federal de Ouro Preto",
-            "UFLA - Universidade Federal de Lavras",
-            "UFV - Universidade Federal de Viçosa",
-            "UNIFAL - Universidade Federal de Alfenas",
-            "UNIFEI - Universidade Federal de Itajubá",
-            "UFJF - Universidade Federal de Juiz de Fora",
-            "UFSJ - Universidade Federal de São João del-Rei",
-            "UFU - Universidade Federal de Uberlândia",
-            "UFVJM - Universidade Federal dos Vales do Jequitinhonha e Mucuri",
-            "UFTM - Universidade Federal do Triângulo Mineiro",
-            "UFPA - Universidade Federal do Pará",
-            "UNIFESSPA - Universidade Federal do Sul e Sudeste do Pará",
-            "UFOPA - Universidade Federal do Oeste do Pará",
-            "UFPB - Universidade Federal da Paraíba",
-            "UFCG - Universidade Federal de Campina Grande",
-            "UFPR - Universidade Federal do Paraná",
-            "UTFPR - Universidade Tecnológica Federal do Paraná",
-            "UNILA - Universidade Federal da Integração Latino-Americana",
-            "UFPE - Universidade Federal de Pernambuco",
-            "UFRPE - Universidade Federal Rural de Pernambuco",
-            "UFAPE - Universidade Federal do Agreste de Pernambuco",
-            "UFPI - Universidade Federal do Piauí",
-            "UFDPar - Universidade Federal do Delta do Parnaíba",
-            "UFRJ - Universidade Federal do Rio de Janeiro",
-            "UFF - Universidade Federal Fluminense",
-            "UFRRJ - Universidade Federal Rural do Rio de Janeiro",
-            "UNIRIO - Universidade Federal do Estado do Rio de Janeiro",
-            "UFRN - Universidade Federal do Rio Grande do Norte",
-            "UFERSA - Universidade Federal Rural do Semi-Árido",
-            "UFRGS - Universidade Federal do Rio Grande do Sul",
-            "UFSM - Universidade Federal de Santa Maria",
-            "UFPel - Universidade Federal de Pelotas",
-            "UNIPAMPA - Universidade Federal do Pampa",
-            "UFCSPA - Universidade Federal de Ciências da Saúde de Porto Alegre",
-            "UFFS - Universidade Federal da Fronteira Sul",
-            "UNIR - Universidade Federal de Rondônia",
-            "UFRR - Universidade Federal de Roraima",
-            "UFSC - Universidade Federal de Santa Catarina",
-            "UNIFESP - Universidade Federal de São Paulo",
-            "UFSCar - Universidade Federal de São Carlos",
-            "UFABC - Universidade Federal do ABC",
-            "UFS - Universidade Federal de Sergipe",
-            "UFT - Universidade Federal do Tocantins",
-            "UFNT - Universidade Federal do Norte do Tocantins",
-        
-            // --- UNIVERSIDADES ESTADUAIS ---
-            "USP - Universidade de São Paulo",
-            "UNICAMP - Universidade Estadual de Campinas",
-            "UNESP - Universidade Estadual Paulista",
-            "UERJ - Universidade do Estado do Rio de Janeiro",
-            "UEL - Universidade Estadual de Londrina",
-            "UEM - Universidade Estadual de Maringá",
-            "UENF - Universidade Estadual do Norte Fluminense",
-            "UECE - Universidade Estadual do Ceará",
-            "UVA - Universidade Estadual Vale do Acaraú",
-            "URCA - Universidade Regional do Cariri",
-            "UEMG - Universidade do Estado de Minas Gerais",
-            "UNIMONTES - Universidade Estadual de Montes Claros",
-            "UEG - Universidade Estadual de Goiás",
-            "UEMA - Universidade Estadual do Maranhão",
-            "UEPB - Universidade Estadual da Paraíba",
-            "UEPG - Universidade Estadual de Ponta Grossa",
-            "UNIOESTE - Universidade Estadual do Oeste do Paraná",
-            "UNICENTRO - Universidade Estadual do Centro-Oeste",
-            "UENP - Universidade Estadual do Norte do Paraná",
-        
-            // --- INSTITUTOS FEDERAIS E PRIVADAS ---
-            "IFCE - Instituto Federal do Ceará",
-            "IFMG - Instituto Federal de Minas Gerais",
-            "IFPB - Instituto Federal da Paraíba",
-            "IFPE - Instituto Federal de Pernambuco",
-            "IFPI - Instituto Federal do Piauí",
-            "IFPR - Instituto Federal do Paraná",
-            "IFRJ - Instituto Federal do Rio de Janeiro",
-            "IFRN - Instituto Federal do Rio Grande do Norte",
-            "IFRS - Instituto Federal do Rio Grande do Sul",
-            "IFSC - Instituto Federal de Santa Catarina",
-            "IFSP - Instituto Federal de São Paulo",
-            "Anhanguera",
-            "Anhembi Morumbi",
-            "Cruzeiro do Sul",
-            "ESPM - Escola Superior de Propaganda e Marketing",
-            "Estácio",
-            "FGV - Fundação Getulio Vargas",
-            "FMU - Faculdades Metropolitanas Unidas",
-            "Ibmec",
-            "Insper",
-            "Mackenzie - Universidade Presbiteriana Mackenzie",
-            "PUC-Campinas - Pontifícia Universidade Católica de Campinas",
-            "PUC-MG - Pontifícia Universidade Católica de Minas Gerais",
-            "PUC-PR - Pontifícia Universidade Católica do Paraná",
-            "PUC-RJ - Pontifícia Universidade Católica do Rio de Janeiro",
-            "PUC-RS - Pontifícia Universidade Católica do Rio Grande do Sul",
-            "PUC-SP - Pontifícia Universidade Católica de São Paulo",
-            "UNIP - Universidade Paulista",
-            "UNISINOS - Universidade do Vale do Rio dos Sinos",
+            "UFRB - Universidade Federal do Recôncavo da Bahia", "UFBA - Universidade Federal da Bahia", "UFOB - Universidade Federal do Oeste da Bahia", "UFSB - Universidade Federal do Sul da Bahia", "UNIVASF - Universidade Federal do Vale do São Francisco", "UNEB - Universidade do Estado da Bahia", "UEFS - Universidade Estadual de Feira de Santana", "UESB - Universidade Estadual do Sudoeste da Bahia", "UESC - Universidade Estadual de Santa Cruz", "IFBA - Instituto Federal da Bahia", "IF Baiano - Instituto Federal Baiano",
+            "UFAC - Universidade Federal do Acre", "UFAL - Universidade Federal de Alagoas", "UNIFAP - Universidade Federal do Amapá", "UFAM - Universidade Federal do Amazonas", "UNILAB - Universidade da Integração Internacional da Lusofonia Afro-Brasileira", "UFC - Universidade Federal do Ceará", "UFCA - Universidade Federal do Cariri", "UnB - Universidade de Brasília", "UFES - Universidade Federal do Espírito Santo", "UFG - Universidade Federal de Goiás", "UFCAT - Universidade Federal de Catalão", "UFJ - Universidade Federal de Jataí", "UFMA - Universidade Federal do Maranhão", "UFMT - Universidade Federal de Mato Grosso", "UFR - Universidade Federal de Rondonópolis", "UFMS - Universidade Federal de Mato Grosso do Sul", "UFGD - Universidade Federal da Grande Dourados", "UFMG - Universidade Federal de Minas Gerais", "UFOP - Universidade Federal de Ouro Preto", "UFLA - Universidade Federal de Lavras", "UFV - Universidade Federal de Viçosa", "UNIFAL - Universidade Federal de Alfenas", "UNIFEI - Universidade Federal de Itajubá", "UFJF - Universidade Federal de Juiz de Fora", "UFSJ - Universidade Federal de São João del-Rei", "UFU - Universidade Federal de Uberlândia", "UFVJM - Universidade Federal dos Vales do Jequitinhonha e Mucuri", "UFTM - Universidade Federal do Triângulo Mineiro", "UFPA - Universidade Federal do Pará", "UNIFESSPA - Universidade Federal do Sul e Sudeste do Pará", "UFOPA - Universidade Federal do Oeste do Pará", "UFPB - Universidade Federal da Paraíba", "UFCG - Universidade Federal de Campina Grande", "UFPR - Universidade Federal do Paraná", "UTFPR - Universidade Tecnológica Federal do Paraná", "UNILA - Universidade Federal da Integração Latino-Americana", "UFPE - Universidade Federal de Pernambuco", "UFRPE - Universidade Federal Rural de Pernambuco", "UFAPE - Universidade Federal do Agreste de Pernambuco", "UFPI - Universidade Federal do Piauí", "UFDPar - Universidade Federal do Delta do Parnaíba", "UFRJ - Universidade Federal do Rio de Janeiro", "UFF - Universidade Federal Fluminense", "UFRRJ - Universidade Federal Rural do Rio de Janeiro", "UNIRIO - Universidade Federal do Estado do Rio de Janeiro", "UFRN - Universidade Federal do Rio Grande do Norte", "UFERSA - Universidade Federal Rural do Semi-Árido", "UFRGS - Universidade Federal do Rio Grande do Sul", "UFSM - Universidade Federal de Santa Maria", "UFPel - Universidade Federal de Pelotas", "UNIPAMPA - Universidade Federal do Pampa", "UFCSPA - Universidade Federal de Ciências da Saúde de Porto Alegre", "UFFS - Universidade Federal da Fronteira Sul", "UNIR - Universidade Federal de Rondônia", "UFRR - Universidade Federal de Roraima", "UFSC - Universidade Federal de Santa Catarina", "UNIFESP - Universidade Federal de São Paulo", "UFSCar - Universidade Federal de São Carlos", "UFABC - Universidade Federal do ABC", "UFS - Universidade Federal de Sergipe", "UFT - Universidade Federal do Tocantins", "UFNT - Universidade Federal do Norte do Tocantins",
+            "USP - Universidade de São Paulo", "UNICAMP - Universidade Estadual de Campinas", "UNESP - Universidade Estadual Paulista", "UERJ - Universidade do Estado do Rio de Janeiro", "UEL - Universidade Estadual de Londrina", "UEM - Universidade Estadual de Maringá", "UENF - Universidade Estadual do Norte Fluminense", "UECE - Universidade Estadual do Ceará", "UVA - Universidade Estadual Vale do Acaraú", "URCA - Universidade Regional do Cariri", "UEMG - Universidade do Estado de Minas Gerais", "UNIMONTES - Universidade Estadual de Montes Claros", "UEG - Universidade Estadual de Goiás", "UEMA - Universidade Estadual do Maranhão", "UEPB - Universidade Estadual da Paraíba", "UEPG - Universidade Estadual de Ponta Grossa", "UNIOESTE - Universidade Estadual do Oeste do Paraná", "UNICENTRO - Universidade Estadual do Centro-Oeste", "UENP - Universidade Estadual do Norte do Paraná",
+            "IFCE - Instituto Federal do Ceará", "IFMG - Instituto Federal de Minas Gerais", "IFPB - Instituto Federal da Paraíba", "IFPE - Instituto Federal de Pernambuco", "IFPI - Instituto Federal do Piauí", "IFPR - Instituto Federal do Paraná", "IFRJ - Instituto Federal do Rio de Janeiro", "IFRN - Instituto Federal do Rio Grande do Norte", "IFRS - Instituto Federal do Rio Grande do Sul", "IFSC - Instituto Federal de Santa Catarina", "IFSP - Instituto Federal de São Paulo",
+            "Anhanguera", "Anhembi Morumbi", "Cruzeiro do Sul", "ESPM - Escola Superior de Propaganda e Marketing", "Estácio", "FGV - Fundação Getulio Vargas", "FMU - Faculdades Metropolitanas Unidas", "Ibmec", "Insper", "Mackenzie - Universidade Presbiteriana Mackenzie", "PUC-Campinas - Pontifícia Universidade Católica de Campinas", "PUC-MG - Pontifícia Universidade Católica de Minas Gerais", "PUC-PR - Pontifícia Universidade Católica do Paraná", "PUC-RJ - Pontifícia Universidade Católica do Rio de Janeiro", "PUC-RS - Pontifícia Universidade Católica do Rio Grande do Sul", "PUC-SP - Pontifícia Universidade Católica de São Paulo", "UNIP - Universidade Paulista", "UNISINOS - Universidade do Vale do Rio dos Sinos",
             "Outra (Digitar manualmente)"
         ];
 
         const semestersList = ["1º Semestre", "2º Semestre", "3º Semestre", "4º Semestre", "5º Semestre", "6º Semestre", "7º Semestre", "8º Semestre", "9º Semestre", "10º Semestre", "11º Semestre", "12º Semestre"];
+
+        // --- SISTEMA DE TEMA CLARO/ESCURO ---
+        window.toggleTheme = function() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            const isDark = html.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcons(isDark);
+        }
+
+        function updateThemeIcons(isDark) {
+            const iconMobile = document.getElementById('theme-icon-mobile');
+            if(iconMobile) {
+                if(isDark) {
+                    // Moon
+                    iconMobile.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+                } else {
+                    // Sun
+                    iconMobile.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+                }
+            }
+        }
 
         // --- NAVEGAÇÃO ENTRE TELAS ---
         function switchScreen(screenId) {
@@ -454,23 +535,39 @@
                 activeEl.classList.add(tabId === 'home' ? 'block' : 'flex');
             }
 
-            // Atualiza visual da Nav Bottom
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-white');
-                btn.classList.add('text-gray-500');
+            // Atualiza visual da Nav Bottom (Mobile)
+            document.querySelectorAll('.bottom-btn').forEach(btn => {
+                btn.classList.remove('text-primary', 'dark:text-white', 'text-gray-900');
+                btn.classList.add('text-gray-400', 'dark:text-gray-500');
                 btn.querySelector('svg').setAttribute('fill', 'none');
                 btn.querySelector('span').classList.remove('font-bold');
                 btn.querySelector('span').classList.add('font-medium');
             });
-            const activeBtn = document.getElementById(`nav-btn-${tabId}`);
-            if(activeBtn) {
-                activeBtn.classList.remove('text-gray-500');
-                activeBtn.classList.add('text-white');
-                activeBtn.querySelector('svg').setAttribute('fill', 'currentColor');
-                activeBtn.querySelector('span').classList.remove('font-medium');
-                activeBtn.querySelector('span').classList.add('font-bold');
+            const activeBottomBtn = document.getElementById(`bottom-btn-${tabId}`);
+            if(activeBottomBtn) {
+                activeBottomBtn.classList.remove('text-gray-400', 'dark:text-gray-500');
+                activeBottomBtn.classList.add('text-primary', 'dark:text-white');
+                activeBottomBtn.querySelector('svg').setAttribute('fill', 'currentColor');
+                activeBottomBtn.querySelector('span').classList.remove('font-medium');
+                activeBottomBtn.querySelector('span').classList.add('font-bold');
+            }
+
+            // Atualiza visual da Nav Lateral (PC)
+            document.querySelectorAll('.sidebar-btn').forEach(btn => {
+                btn.classList.remove('text-primary', 'bg-primary/10', 'font-bold');
+                btn.classList.add('text-gray-600', 'dark:text-gray-400', 'font-medium');
+                btn.querySelector('svg').setAttribute('fill', 'none');
+            });
+            const activeSideBtn = document.getElementById(`sidebar-btn-${tabId}`);
+            if(activeSideBtn) {
+                activeSideBtn.classList.remove('text-gray-600', 'dark:text-gray-400', 'font-medium');
+                activeSideBtn.classList.add('text-primary', 'bg-primary/10', 'font-bold');
+                activeSideBtn.querySelector('svg').setAttribute('fill', 'currentColor');
             }
         }
+
+        // Inicializa o icone de tema
+        updateThemeIcons(document.documentElement.classList.contains('dark'));
 
         // --- AUTENTICAÇÃO E ESTADO ---
         onAuthStateChanged(auth, async (user) => {
@@ -488,32 +585,38 @@
                             document.getElementById('home-photo').src = userData.profileImageUrl;
                             document.getElementById('home-photo').classList.remove('hidden');
                             document.getElementById('home-photo-placeholder').classList.add('hidden');
-                            document.getElementById('profile-page-photo').src = userData.profileImageUrl;
-                            document.getElementById('profile-page-photo').classList.remove('hidden');
+                            document.getElementById('profile-tab-photo').src = userData.profileImageUrl;
+                            document.getElementById('profile-tab-photo').classList.remove('hidden');
+                            document.getElementById('profile-tab-placeholder').classList.add('hidden');
                         }
                         
                         // Configura Perfil Tab
-                        document.getElementById('profile-page-name').innerText = userData.displayName;
-                        document.getElementById('profile-page-uni').innerText = userData.university;
+                        document.getElementById('profile-tab-name').innerText = userData.displayName;
+                        document.getElementById('profile-tab-uni').innerText = userData.university;
 
-                        // Mostra ícone de Circular se for UFRB
-                        const navBtnProfile = document.getElementById('nav-btn-profile');
-                        const navBtnLabel = document.getElementById('nav-label-profile');
+                        // Mostra ícone de Circular se for UFRB em ambas as navbars
+                        const bottomBtnProfile = document.getElementById('bottom-btn-profile');
+                        const bottomBtnLabel = document.getElementById('bottom-label-profile');
+                        const sideBtnCircular = document.getElementById('sidebar-btn-circular');
+
                         if (isUfrb) {
                             document.getElementById('home-widget-circular').classList.remove('hidden');
-                            navBtnProfile.setAttribute('onclick', "switchTab('circular')");
-                            navBtnProfile.id = 'nav-btn-circular';
-                            navBtnLabel.innerText = 'Circular';
-                            document.querySelector('.icon-person').classList.add('hidden');
-                            document.querySelector('.icon-bus').classList.remove('hidden');
-                        } else {
-                            navBtnProfile.setAttribute('onclick', "switchTab('profile')");
+                            
+                            // Bottom Nav
+                            bottomBtnProfile.setAttribute('onclick', "switchTab('circular')");
+                            bottomBtnProfile.id = 'bottom-btn-circular';
+                            bottomBtnLabel.innerText = 'Circular';
+                            document.querySelectorAll('.icon-person').forEach(el => el.classList.add('hidden'));
+                            document.querySelectorAll('.icon-bus').forEach(el => el.classList.remove('hidden'));
+
+                            // Side Nav
+                            sideBtnCircular.classList.remove('hidden');
+                            sideBtnCircular.classList.add('flex');
                         }
 
                         switchScreen('screen-home');
                         switchTab('home');
                     } else {
-                        // Precisa configurar perfil
                         document.getElementById('setup-name').value = user.displayName || '';
                         setupName = user.displayName || '';
                         validateSetupForm();
@@ -530,28 +633,25 @@
             }
         });
 
-        // Botão Login
+        // Botões de Autenticação
         document.getElementById('btn-login').addEventListener('click', async () => {
             try {
                 await signInWithPopup(auth, googleProvider);
             } catch (error) {
                 if (error.code === 'auth/unauthorized-domain') {
-                    alert("⚠️ Domínio Não Autorizado!\n\nPor favor, adicione o domínio atual do site nas configurações do Firebase Authentication (Authorized domains).");
+                    alert("⚠️ Domínio Não Autorizado!\n\nAdicione o domínio atual na consola do Firebase (Authentication -> Settings -> Authorized domains).");
                 } else {
                     alert("Erro ao fazer login: " + error.message);
                 }
             }
         });
 
-        // Botão Logout
         document.getElementById('btn-logout').addEventListener('click', async () => {
             await signOut(auth);
             switchScreen('screen-login');
         });
 
         // --- LÓGICA TELA SETUP PERFIL ---
-        
-        // Modal Genérico
         let currentModalCallback = null;
         function openModal(title, items, showSearch, callback) {
             currentModalCallback = callback;
@@ -583,7 +683,7 @@
 
             filtered.forEach(item => {
                 const btn = document.createElement('button');
-                btn.className = "w-full text-left bg-transparent hover:bg-[#1C1C1E] active:bg-[#2C2C2E] text-white py-4 px-4 rounded-xl transition-colors border-b border-white/5 last:border-0";
+                btn.className = "w-full text-left bg-transparent hover:bg-gray-100 dark:hover:bg-[#1C1C1E] active:bg-gray-200 dark:active:bg-[#2C2C2E] text-gray-900 dark:text-white py-4 px-4 rounded-xl transition-colors border-b border-gray-200 dark:border-white/5 last:border-0";
                 btn.innerHTML = `<span class="text-base">${item}</span>`;
                 btn.onclick = () => {
                     if (currentModalCallback) currentModalCallback(item);
@@ -614,7 +714,8 @@
             openModal("Semestre atual", semestersList, false, (sel) => {
                 setupSemester = sel;
                 btnSem.innerText = sel;
-                btnSem.classList.replace('text-gray-500', 'text-white');
+                btnSem.classList.replace('text-gray-500', 'text-gray-900');
+                btnSem.classList.add('dark:text-white');
                 validateSetupForm();
             });
         });
@@ -623,7 +724,8 @@
             openModal("Buscar Universidade", universitiesList, true, (sel) => {
                 setupUni = sel;
                 btnUni.innerHTML = `<div class="truncate">${sel}</div>`;
-                btnUni.classList.replace('text-gray-500', 'text-white');
+                btnUni.classList.replace('text-gray-500', 'text-gray-900');
+                btnUni.classList.add('dark:text-white');
                 if (sel === "Outra (Digitar manualmente)") {
                     customUniContainer.classList.remove('hidden');
                     customUniContainer.classList.add('flex');
@@ -648,7 +750,7 @@
                 isCheckingUsername = true;
                 iconContainer.innerHTML = iconLoader;
                 errorMsg.classList.add('hidden');
-                e.target.classList.remove('ring-2', 'ring-[#FF3B30]');
+                e.target.classList.remove('ring-2', 'ring-[#FF3B30]', 'border-transparent');
                 validateSetupForm();
 
                 usernameTimeout = setTimeout(async () => {
@@ -661,6 +763,7 @@
                         if (!isUsernameAvailable) {
                             errorMsg.classList.remove('hidden');
                             e.target.classList.add('ring-2', 'ring-[#FF3B30]');
+                            e.target.classList.remove('border-transparent');
                         }
                     } catch(err) {
                         isUsernameAvailable = false;
@@ -675,7 +778,7 @@
                 isUsernameAvailable = true;
                 iconContainer.innerHTML = '';
                 errorMsg.classList.add('hidden');
-                e.target.classList.remove('ring-2', 'ring-[#FF3B30]');
+                e.target.classList.remove('ring-2', 'ring-[#FF3B30]', 'border-transparent');
                 validateSetupForm();
             }
         });
@@ -686,18 +789,17 @@
 
             if (isValid) {
                 btnFinishSetup.disabled = false;
-                btnFinishSetup.className = "w-full py-4 rounded-2xl font-bold text-lg transition-all bg-white text-black hover:scale-[1.02] active:scale-95 shadow-lg";
+                btnFinishSetup.className = "w-full py-4 rounded-2xl font-bold text-lg transition-all bg-primary text-white hover:scale-[1.02] active:scale-95 shadow-lg";
             } else {
                 btnFinishSetup.disabled = true;
-                btnFinishSetup.className = "w-full py-4 rounded-2xl font-bold text-lg transition-all bg-[#1C1C1E] text-gray-500 cursor-not-allowed";
+                btnFinishSetup.className = "w-full py-4 rounded-2xl font-bold text-lg transition-all bg-gray-300 dark:bg-darkSurface text-gray-500 cursor-not-allowed";
             }
         }
 
-        // Submeter Perfil
         document.getElementById('form-setup').addEventListener('submit', async (e) => {
             e.preventDefault();
             btnFinishSetup.disabled = true;
-            btnFinishSetup.innerText = "Salvando...";
+            btnFinishSetup.innerText = "A guardar...";
 
             const finalUni = setupUni === "Outra (Digitar manualmente)" ? setupCustomUni : setupUni;
             
@@ -711,8 +813,6 @@
                     profileImageUrl: currentUser.photoURL || ""
                 }, { merge: true });
                 
-                // O onAuthStateChanged vai detectar automaticamente a mudança de estado e mandar pro Home.
-                // Mas podemos forçar o recarregamento aqui se preciso.
                 window.location.reload();
             } catch (error) {
                 alert("Erro ao salvar: " + error.message);
